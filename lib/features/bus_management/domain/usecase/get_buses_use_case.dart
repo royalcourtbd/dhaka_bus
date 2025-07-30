@@ -9,9 +9,6 @@ class GetBusesUseCase extends BaseUseCase<List<BusEntity>> {
 
   GetBusesUseCase(this._busRepository, ErrorMessageHandler errorMessageHandler)
     : super(errorMessageHandler);
-
-  /// Execute with optional filtering
-  /// [isActive] - null: get all buses, true: get active buses, false: get inactive buses
   Future<Either<String, List<BusEntity>>> execute() async {
     return await _busRepository.getBuses();
   }

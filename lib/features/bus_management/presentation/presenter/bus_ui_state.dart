@@ -10,9 +10,8 @@ class BusUiState extends BaseUiState {
     required this.allBuses,
     required this.selectedBus,
     required this.searchResults,
-    required this.activeBuses,
+
     required this.searchQuery,
-    required this.isSearchMode,
   });
 
   factory BusUiState.empty() {
@@ -22,18 +21,15 @@ class BusUiState extends BaseUiState {
       allBuses: [],
       selectedBus: null,
       searchResults: [],
-      activeBuses: [],
+
       searchQuery: '',
-      isSearchMode: false,
     );
   }
 
   final List<BusEntity> allBuses;
   final BusEntity? selectedBus;
   final List<BusEntity> searchResults;
-  final List<BusEntity> activeBuses;
   final String searchQuery;
-  final bool isSearchMode;
 
   @override
   List<Object?> get props => [
@@ -42,9 +38,7 @@ class BusUiState extends BaseUiState {
     allBuses,
     selectedBus,
     searchResults,
-    activeBuses,
     searchQuery,
-    isSearchMode,
   ];
 
   BusUiState copyWith({
@@ -53,9 +47,7 @@ class BusUiState extends BaseUiState {
     List<BusEntity>? allBuses,
     BusEntity? selectedBus,
     List<BusEntity>? searchResults,
-    List<BusEntity>? activeBuses,
     String? searchQuery,
-    bool? isSearchMode,
   }) {
     return BusUiState(
       isLoading: isLoading ?? this.isLoading,
@@ -63,9 +55,7 @@ class BusUiState extends BaseUiState {
       allBuses: allBuses ?? this.allBuses,
       selectedBus: selectedBus ?? this.selectedBus,
       searchResults: searchResults ?? this.searchResults,
-      activeBuses: activeBuses ?? this.activeBuses,
       searchQuery: searchQuery ?? this.searchQuery,
-      isSearchMode: isSearchMode ?? this.isSearchMode,
     );
   }
 }

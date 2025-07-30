@@ -6,6 +6,7 @@ class BusModel extends BusEntity {
     required super.busId,
     required super.busNameEn,
     required super.busNameBn,
+    super.busImageUrl,
     super.serviceType,
     required super.isActive,
     required super.createdAt,
@@ -16,6 +17,7 @@ class BusModel extends BusEntity {
       busId: json['bus_id'] ?? '',
       busNameEn: json['bus_name_en'] ?? '',
       busNameBn: json['bus_name_bn'] ?? '',
+      busImageUrl: json['bus_image_url'],
       serviceType: json['service_type'],
       isActive: json['is_active'] ?? true,
       createdAt: (json['created_at'] as Timestamp)
@@ -29,6 +31,7 @@ class BusModel extends BusEntity {
       'bus_name_en': busNameEn,
       'bus_name_bn': busNameBn,
       'service_type': serviceType,
+      'bus_image_url': busImageUrl,
       'is_active': isActive,
       'created_at': createdAt,
     };

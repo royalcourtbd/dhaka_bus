@@ -15,21 +15,22 @@ class BusRepositoryImpl implements BusRepository {
   BusRepositoryImpl(this._busRemoteDataSource, this._errorMessageHandler);
 
   @override
-  Future<Either<String, List<BusEntity>>> getAllBuses() async {
+  Future<Either<String, List<BusEntity>>> getBuses({bool? isActive}) async {
     try {
-      logDebug('BusRepository: Getting all buses');
-
       final List<Map<String, dynamic>> busesData = await _busRemoteDataSource
-          .getAllBuses();
+          .getBuses();
 
       final List<BusEntity> buses = busesData
           .map((busData) => _mapToBusEntity(busData))
           .toList();
 
-      logDebug('BusRepository: Successfully converted ${buses.length} buses');
       return right<String, List<BusEntity>>(buses);
     } catch (error) {
-      logError('BusRepository: Error getting all buses - $error');
+      String errorContext = isActive == null
+          ? 'getting all buses'
+          : 'getting ${isActive ? "active" : "inactive"} buses';
+
+      logError('BusRepository: Error $errorContext - $error');
       final String errorMessage = _errorMessageHandler.generateErrorMessage(
         error,
       );
@@ -40,10 +41,7 @@ class BusRepositoryImpl implements BusRepository {
   @override
   Future<Either<String, BusEntity?>> getBusById(String busId) async {
     try {
-      logDebug('BusRepository: Getting bus by ID: $busId');
-
       if (busId.trim().isEmpty) {
-        logDebug('BusRepository: Empty bus ID provided');
         return right<String, BusEntity?>(null);
       }
 
@@ -51,12 +49,11 @@ class BusRepositoryImpl implements BusRepository {
           .getBusById(busId);
 
       if (busData == null) {
-        logDebug('BusRepository: No bus found with ID: $busId');
         return right<String, BusEntity?>(null);
       }
 
       final BusEntity bus = _mapToBusEntity(busData);
-      logDebug('BusRepository: Successfully found bus: ${bus.busNameEn}');
+
       return right<String, BusEntity?>(bus);
     } catch (error) {
       logError('BusRepository: Error getting bus by ID ($busId) - $error');
@@ -72,10 +69,7 @@ class BusRepositoryImpl implements BusRepository {
     String searchQuery,
   ) async {
     try {
-      logDebug('BusRepository: Searching buses with query: $searchQuery');
-
       if (searchQuery.trim().isEmpty) {
-        logDebug('BusRepository: Empty search query provided');
         return right<String, List<BusEntity>>([]);
       }
 
@@ -86,37 +80,9 @@ class BusRepositoryImpl implements BusRepository {
           .map((busData) => _mapToBusEntity(busData))
           .toList();
 
-      logDebug(
-        'BusRepository: Found ${buses.length} buses for query: $searchQuery',
-      );
       return right<String, List<BusEntity>>(buses);
     } catch (error) {
       logError('BusRepository: Error searching buses ($searchQuery) - $error');
-      final String errorMessage = _errorMessageHandler.generateErrorMessage(
-        error,
-      );
-      return left<String, List<BusEntity>>(errorMessage);
-    }
-  }
-
-  @override
-  Future<Either<String, List<BusEntity>>> getActiveBuses() async {
-    try {
-      logDebug('BusRepository: Getting active buses');
-
-      final List<Map<String, dynamic>> busesData = await _busRemoteDataSource
-          .getActiveBuses();
-
-      final List<BusEntity> activeBuses = busesData
-          .map((busData) => _mapToBusEntity(busData))
-          .toList();
-
-      logDebug(
-        'BusRepository: Successfully got ${activeBuses.length} active buses',
-      );
-      return right<String, List<BusEntity>>(activeBuses);
-    } catch (error) {
-      logError('BusRepository: Error getting active buses - $error');
       final String errorMessage = _errorMessageHandler.generateErrorMessage(
         error,
       );
@@ -129,10 +95,7 @@ class BusRepositoryImpl implements BusRepository {
     String serviceType,
   ) async {
     try {
-      logDebug('BusRepository: Getting buses by service type: $serviceType');
-
       if (serviceType.trim().isEmpty) {
-        logDebug('BusRepository: Empty service type provided');
         return right<String, List<BusEntity>>([]);
       }
 
@@ -143,9 +106,6 @@ class BusRepositoryImpl implements BusRepository {
           .map((busData) => _mapToBusEntity(busData))
           .toList();
 
-      logDebug(
-        'BusRepository: Found ${buses.length} buses for service type: $serviceType',
-      );
       return right<String, List<BusEntity>>(buses);
     } catch (error) {
       logError(

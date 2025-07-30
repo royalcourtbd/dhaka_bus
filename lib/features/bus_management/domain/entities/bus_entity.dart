@@ -4,6 +4,7 @@ class BusEntity extends BaseEntity {
   final String busId;
   final String busNameEn;
   final String busNameBn;
+  final String? busImageUrl;
   final String? serviceType;
   final bool isActive;
   final DateTime createdAt;
@@ -12,6 +13,7 @@ class BusEntity extends BaseEntity {
     required this.busId,
     required this.busNameEn,
     required this.busNameBn,
+    this.busImageUrl,
     this.serviceType,
     required this.isActive,
     required this.createdAt,
@@ -23,6 +25,7 @@ class BusEntity extends BaseEntity {
     busNameEn,
     busNameBn,
     serviceType,
+    busImageUrl,
     isActive,
     createdAt,
   ];

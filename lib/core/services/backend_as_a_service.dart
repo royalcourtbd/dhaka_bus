@@ -96,12 +96,15 @@ class BackendAsAService {
   ///================================
 
   /// 1. Get all buses - IMPROVED
-  Future<List<Map<String, dynamic>>> getAllBuses() async {
-    // ✅ Explicit generic type + direct return
+  Future<List<Map<String, dynamic>>> getBuses() async {
     return await catchAndReturnFuture<List<Map<String, dynamic>>>(() async {
           final QuerySnapshot<Map<String, dynamic>> querySnapshot =
-              await _fireStore.collection(busesCollection).get();
+              await _fireStore
+                  .collection(busesCollection)
+                  .where('is_active', isEqualTo: true)
+                  .get();
 
+          // Transform and return data
           return querySnapshot.docs
               .map((doc) => {...doc.data(), 'id': doc.id})
               .toList();
@@ -109,7 +112,6 @@ class BackendAsAService {
         [];
   }
 
-  /// 2. Get bus by ID - ALREADY PERFECT ✅
   Future<Map<String, dynamic>?> getBusById(String busId) async {
     return await catchAndReturnFuture<Map<String, dynamic>?>(() async {
       final DocumentSnapshot<Map<String, dynamic>> docSnapshot =
@@ -122,7 +124,6 @@ class BackendAsAService {
     });
   }
 
-  /// 3. Search bus by name - IMPROVED
   Future<List<Map<String, dynamic>>> searchBusByName(String searchQuery) async {
     // ✅ Input validation + explicit generic type
     if (searchQuery.trim().isEmpty) return [];
@@ -151,27 +152,9 @@ class BackendAsAService {
         [];
   }
 
-  /// 4. Get active buses - IMPROVED
-  Future<List<Map<String, dynamic>>> getActiveBuses() async {
-    return await catchAndReturnFuture<List<Map<String, dynamic>>>(() async {
-          final QuerySnapshot<Map<String, dynamic>> querySnapshot =
-              await _fireStore
-                  .collection(busesCollection)
-                  .where('is_active', isEqualTo: true)
-                  .get();
-
-          return querySnapshot.docs
-              .map((doc) => {...doc.data(), 'id': doc.id})
-              .toList();
-        }) ??
-        [];
-  }
-
-  /// 5. Get buses by service type - IMPROVED
   Future<List<Map<String, dynamic>>> getBusesByServiceType(
     String serviceType,
   ) async {
-    // ✅ Input validation
     if (serviceType.trim().isEmpty) return [];
 
     return await catchAndReturnFuture<List<Map<String, dynamic>>>(() async {

@@ -1,3 +1,7 @@
+import 'package:dhaka_bus/core/config/app_screen.dart';
+import 'package:dhaka_bus/core/static/ui_const.dart';
+import 'package:dhaka_bus/core/utility/number_utility.dart';
+import 'package:dhaka_bus/shared/components/ontap_widget.dart';
 import 'package:flutter/material.dart';
 
 class BusRouteCard extends StatelessWidget {
@@ -6,8 +10,6 @@ class BusRouteCard extends StatelessWidget {
   final String route;
   final String description;
   final Color cardColor;
-  final String busTime;
-  final String fare;
   final bool isExpanded;
   final VoidCallback onTap;
 
@@ -18,8 +20,6 @@ class BusRouteCard extends StatelessWidget {
     required this.route,
     required this.description,
     this.cardColor = Colors.blue,
-    required this.busTime,
-    required this.fare,
     required this.isExpanded,
     required this.onTap,
   });
@@ -27,21 +27,21 @@ class BusRouteCard extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return Container(
-      margin: const EdgeInsets.only(bottom: 12),
+      margin: EdgeInsets.only(bottom: twelvePx),
       decoration: BoxDecoration(
-        borderRadius: BorderRadius.circular(12),
+        borderRadius: radius12,
         border: Border.all(color: Color(0xffDEDEDE), width: 0.5),
       ),
       child: Material(
         color: Colors.transparent,
-        child: InkWell(
-          borderRadius: BorderRadius.circular(12),
+        child: OnTapWidget(
+          borderRadius: twelvePx,
           onTap: onTap,
           child: AnimatedContainer(
-            duration: const Duration(milliseconds: 300),
+            duration: 300.inMilliseconds,
             curve: Curves.easeInOut,
             child: Padding(
-              padding: const EdgeInsets.all(16),
+              padding: padding15,
               child: Column(
                 children: [
                   // Main Card Content
@@ -49,19 +49,19 @@ class BusRouteCard extends StatelessWidget {
                     children: [
                       // Bus Icon
                       Container(
-                        width: 48,
-                        height: 48,
+                        width: fiftyPx,
+                        height: fiftyPx,
                         decoration: BoxDecoration(
-                          color: cardColor.withOpacity(0.1),
-                          borderRadius: BorderRadius.circular(8),
+                          color: cardColor.withValues(alpha: 0.1),
+                          borderRadius: radius8,
                         ),
                         child: Icon(
                           Icons.directions_bus,
                           color: cardColor,
-                          size: 24,
+                          size: twentyFourPx,
                         ),
                       ),
-                      const SizedBox(width: 16),
+                      gapW16,
 
                       // Content
                       Expanded(
@@ -71,22 +71,26 @@ class BusRouteCard extends StatelessWidget {
                             // Title
                             Text(
                               title,
-                              style: TextStyle(
-                                fontSize: 16,
-                                fontWeight: FontWeight.bold,
-                                color: cardColor,
-                              ),
+                              maxLines: 1,
+                              overflow: TextOverflow.ellipsis,
+                              style: Theme.of(context).textTheme.titleMedium
+                                  ?.copyWith(
+                                    fontSize: sixteenPx,
+                                    color: cardColor,
+                                    fontWeight: FontWeight.bold,
+                                  ),
                             ),
-                            const SizedBox(height: 4),
+                            gapH4,
 
                             // Route
                             Text(
                               route,
-                              style: const TextStyle(
-                                fontSize: 14,
-                                fontWeight: FontWeight.w500,
-                                color: Colors.black87,
-                              ),
+                              style: Theme.of(context).textTheme.bodyMedium
+                                  ?.copyWith(
+                                    fontSize: fourteenPx,
+                                    color: Colors.grey[700],
+                                    height: 1.4,
+                                  ),
                             ),
                           ],
                         ),
@@ -95,12 +99,12 @@ class BusRouteCard extends StatelessWidget {
                       // Arrow Icon with Animation
                       AnimatedRotation(
                         turns: isExpanded ? 0.25 : 0,
-                        duration: const Duration(milliseconds: 350),
+                        duration: 350.inMilliseconds,
                         curve: Curves.easeInOutCubic,
                         child: Icon(
                           Icons.keyboard_arrow_right,
                           color: Colors.grey[400],
-                          size: 24,
+                          size: twentyFourPx,
                         ),
                       ),
                     ],
@@ -109,19 +113,19 @@ class BusRouteCard extends StatelessWidget {
                   // Expandable Content with smooth animation
                   ClipRect(
                     child: AnimatedSize(
-                      duration: const Duration(milliseconds: 350),
+                      duration: 350.inMilliseconds,
                       curve: Curves.easeInOutCubic,
                       child: AnimatedContainer(
-                        duration: const Duration(milliseconds: 350),
+                        duration: 350.inMilliseconds,
                         curve: Curves.easeInOutCubic,
                         height: isExpanded ? null : 0,
                         child: AnimatedOpacity(
-                          duration: const Duration(milliseconds: 250),
+                          duration: 250.inMilliseconds,
                           opacity: isExpanded ? 1.0 : 0.0,
                           curve: Curves.easeInOut,
                           child: isExpanded
                               ? Padding(
-                                  padding: const EdgeInsets.only(top: 16),
+                                  padding: paddingTop20,
                                   child: Column(
                                     crossAxisAlignment:
                                         CrossAxisAlignment.start,
@@ -132,23 +136,8 @@ class BusRouteCard extends StatelessWidget {
                                         title: 'রুটের বিস্তারিত:',
                                         content: description,
                                       ),
-                                      const SizedBox(height: 12),
 
-                                      // Time Information
-                                      _buildDetailRow(
-                                        icon: Icons.access_time,
-                                        title: 'সময়সূচি:',
-                                        content: busTime,
-                                      ),
-                                      const SizedBox(height: 12),
-
-                                      // Fare Information
-                                      _buildDetailRow(
-                                        icon: Icons.payments,
-                                        title: 'ভাড়া:',
-                                        content: fare,
-                                      ),
-                                      const SizedBox(height: 8),
+                                      gapH8,
                                     ],
                                   ),
                                 )
@@ -174,8 +163,8 @@ class BusRouteCard extends StatelessWidget {
     return Row(
       crossAxisAlignment: CrossAxisAlignment.start,
       children: [
-        Icon(icon, size: 16, color: cardColor),
-        const SizedBox(width: 8),
+        Icon(icon, size: sixteenPx, color: cardColor),
+        gapW8,
         Expanded(
           child: Column(
             crossAxisAlignment: CrossAxisAlignment.start,
@@ -188,7 +177,7 @@ class BusRouteCard extends StatelessWidget {
                   color: cardColor,
                 ),
               ),
-              const SizedBox(height: 2),
+              gapH2,
               Text(
                 content,
                 style: TextStyle(

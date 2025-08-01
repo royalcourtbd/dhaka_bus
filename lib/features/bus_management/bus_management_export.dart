@@ -33,6 +33,9 @@ export 'domain/usecase/get_routes_by_bus_id_use_case.dart';
 //Presentation
 export 'presentation/presenter/bus_presenter.dart';
 export 'presentation/presenter/bus_ui_state.dart';
+export 'presentation/ui/bus_routes_display_page.dart';
+export 'presentation/widgets/bus_route_card_widget.dart';
+export 'presentation/widgets/swap_button.dart';
 
 //DI
 export 'di/bus_management_di.dart';

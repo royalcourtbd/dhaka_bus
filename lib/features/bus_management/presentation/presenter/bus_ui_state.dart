@@ -13,6 +13,7 @@ class BusUiState extends BaseUiState {
     required this.searchQuery,
     required this.allRoutes,
     required this.busRoutes, // Routes for selected bus
+    required this.expandedCardId, // Track which card is currently expanded
   });
 
   factory BusUiState.empty() {
@@ -25,6 +26,7 @@ class BusUiState extends BaseUiState {
       searchQuery: '',
       allRoutes: [],
       busRoutes: {},
+      expandedCardId: null,
     );
   }
 
@@ -34,6 +36,8 @@ class BusUiState extends BaseUiState {
   final String searchQuery;
   final List<RouteEntity> allRoutes;
   final Map<String, List<RouteEntity>> busRoutes; // bus_id -> routes mapping
+  final String?
+  expandedCardId; // Track which card is currently expanded (null means none)
 
   @override
   List<Object?> get props => [
@@ -45,6 +49,7 @@ class BusUiState extends BaseUiState {
     searchQuery,
     allRoutes,
     busRoutes,
+    expandedCardId,
   ];
 
   BusUiState copyWith({
@@ -56,6 +61,9 @@ class BusUiState extends BaseUiState {
     String? searchQuery,
     List<RouteEntity>? allRoutes,
     Map<String, List<RouteEntity>>? busRoutes,
+    String? expandedCardId,
+    bool clearExpandedCardId =
+        false, // Flag to explicitly set expandedCardId to null
   }) {
     return BusUiState(
       isLoading: isLoading ?? this.isLoading,
@@ -66,6 +74,9 @@ class BusUiState extends BaseUiState {
       searchQuery: searchQuery ?? this.searchQuery,
       allRoutes: allRoutes ?? this.allRoutes,
       busRoutes: busRoutes ?? this.busRoutes,
+      expandedCardId: clearExpandedCardId
+          ? null
+          : (expandedCardId ?? this.expandedCardId),
     );
   }
 }

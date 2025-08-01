@@ -149,6 +149,24 @@ class BusPresenter extends BasePresenter<BusUiState> {
     return await _dataSyncService.isInternetAvailable();
   }
 
+  /// Toggle expansion state for a specific card (only one card can be expanded at a time)
+  void toggleCardExpansion(String cardId) {
+    final String? currentExpandedCard = currentUiState.expandedCardId;
+
+    if (currentExpandedCard == cardId) {
+      // If clicking the same card, collapse it
+      uiState.value = currentUiState.copyWith(clearExpandedCardId: true);
+    } else {
+      // If clicking a different card, expand it and collapse others
+      uiState.value = currentUiState.copyWith(expandedCardId: cardId);
+    }
+  }
+
+  /// Check if a specific card is expanded
+  bool isCardExpanded(String cardId) {
+    return currentUiState.expandedCardId == cardId;
+  }
+
   void swapLocations() {
     final temp = startingStationNameController.text;
     startingStationNameController.text = destinationStationNameController.text;

@@ -60,15 +60,28 @@ class BusRoutesDisplayPage extends StatelessWidget {
             // Bus Routes List Section
             Expanded(
               child: ListView.builder(
+                padding: EdgeInsets.symmetric(horizontal: twentyPx),
                 itemCount: busPresenter.currentUiState.allBuses.length,
                 itemBuilder: (context, index) {
                   final bus = busPresenter.currentUiState.allBuses[index];
+                  final routes =
+                      busPresenter.currentUiState.busRoutes[bus.busId] ?? [];
+                  final routeStops = routes.isNotEmpty
+                      ? routes.first.stops.join(' → ')
+                      : 'রুট তথ্য নেই';
+
+                  // Get first and last stop for description
+                  final routeDescription =
+                      routes.isNotEmpty && routes.first.stops.isNotEmpty
+                      ? '${routes.first.stops.first} → ${routes.first.stops.last}'
+                      : 'রুট তথ্য নেই';
+
                   return BusRouteCard(
                     key: Key('bus_route_card_$index'),
-                    id: bus.busId,
-                    title: bus.busNameEn,
-                    route: bus.busNameBn,
-                    description: bus.busNameEn,
+                    bus: bus,
+
+                    route: routeStops, // Show route stops when expanded
+                    description: routeDescription, // Show first → last stop
 
                     isExpanded: busPresenter.isCardExpanded('route_$index'),
                     onTap: () =>

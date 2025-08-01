@@ -2,6 +2,7 @@ import 'package:dhaka_bus/core/external_libs/user_input_field/src/user_input_fie
 import 'package:dhaka_bus/core/static/svg_path.dart';
 import 'package:dhaka_bus/core/static/ui_const.dart';
 import 'package:dhaka_bus/features/bus_management/bus_management_export.dart';
+import 'package:dhaka_bus/shared/components/submit_button.dart';
 import 'package:flutter/material.dart';
 
 class SearchSection extends StatelessWidget {
@@ -37,6 +38,15 @@ class SearchSection extends StatelessWidget {
                   hintText: 'Enter destination station name',
                   textEditingController:
                       busPresenter.destinationStationNameController,
+                ),
+
+                gapH16,
+                SubmitButton(
+                  title: 'Search',
+                  buttonColor: Theme.of(context).primaryColor,
+                  textColor: Colors.white,
+                  theme: Theme.of(context),
+                  onTap: () {},
                 ),
               ],
             ),

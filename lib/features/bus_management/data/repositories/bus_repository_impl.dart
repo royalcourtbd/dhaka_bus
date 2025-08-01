@@ -15,9 +15,7 @@ class BusRepositoryImpl implements BusRepository {
   BusRepositoryImpl(this._busRemoteDataSource, this._errorMessageHandler);
 
   @override
-  Future<Either<String, List<BusEntity>>> getAllActiveBuses({
-    bool? isActive,
-  }) async {
+  Future<Either<String, List<BusEntity>>> getAllActiveBuses() async {
     try {
       final List<Map<String, dynamic>> busesData = await _busRemoteDataSource
           .getAllActiveBuses();
@@ -28,11 +26,7 @@ class BusRepositoryImpl implements BusRepository {
 
       return right<String, List<BusEntity>>(buses);
     } catch (error) {
-      String errorContext = isActive == null
-          ? 'getting all buses'
-          : 'getting ${isActive ? "active" : "inactive"} buses';
-
-      logError('BusRepository: Error $errorContext - $error');
+      logError('BusRepository: Error getting all active buses - $error');
       final String errorMessage = _errorMessageHandler.generateErrorMessage(
         error,
       );

@@ -1,4 +1,5 @@
 import 'package:dhaka_bus/core/services/backend_as_a_service.dart';
+import 'package:dhaka_bus/core/utility/trial_utility.dart';
 
 abstract class RouteRemoteDataSource {
   Future<List<Map<String, dynamic>>> getAllRoutes();
@@ -12,31 +13,31 @@ class RouteRemoteDataSourceImpl implements RouteRemoteDataSource {
 
   @override
   Future<List<Map<String, dynamic>>> getAllRoutes() async {
-    try {
-      final result = await _backendAsAService.getAllRoutes();
-      return result;
-    } catch (error) {
-      rethrow;
-    }
+    return await catchAndReturnFuture(() async {
+          final List<Map<String, dynamic>> result = await _backendAsAService
+              .getAllRoutes();
+          return result;
+        }) ??
+        [];
   }
 
   @override
   Future<List<Map<String, dynamic>>> getRoutesByBusId(String busId) async {
-    try {
-      if (busId.trim().isEmpty) {
-        return [];
-      }
+    return await catchAndReturnFuture(() async {
+          if (busId.trim().isEmpty) {
+            return <Map<String, dynamic>>[];
+          }
 
-      final allRoutes = await _backendAsAService.getAllRoutes();
+          final List<Map<String, dynamic>> allRoutes = await _backendAsAService
+              .getAllRoutes();
 
-      // Filter routes by bus_id
-      final filteredRoutes = allRoutes
-          .where((route) => route['bus_id'] == busId)
-          .toList();
+          // Filter routes by bus_id
+          final List<Map<String, dynamic>> filteredRoutes = allRoutes
+              .where((route) => route['bus_id'] == busId)
+              .toList();
 
-      return filteredRoutes;
-    } catch (error) {
-      rethrow;
-    }
+          return filteredRoutes;
+        }) ??
+        [];
   }
 }

@@ -1,111 +1,103 @@
-import 'package:dhaka_bus/core/config/app_screen.dart';
 import 'package:dhaka_bus/core/di/service_locator.dart';
-import 'package:dhaka_bus/core/external_libs/user_input_field/src/user_input_field_widget.dart';
-import 'package:dhaka_bus/core/static/svg_path.dart';
-import 'package:dhaka_bus/core/static/ui_const.dart';
+
 import 'package:dhaka_bus/core/widgets/presentable_widget_builder.dart';
-import 'package:dhaka_bus/features/bus_management/presentation/presenter/bus_presenter.dart';
-import 'package:dhaka_bus/features/bus_management/presentation/widgets/swap_button.dart';
-import 'package:dhaka_bus/features/bus_management/presentation/widgets/bus_route_card_widget.dart';
+import 'package:dhaka_bus/features/bus_management/bus_management_export.dart';
+import 'package:dhaka_bus/features/bus_management/presentation/widgets/search_section.dart';
 import 'package:dhaka_bus/shared/components/custom_app_bar_widget.dart';
 import 'package:flutter/material.dart';
 
 class BusRoutesDisplayPage extends StatelessWidget {
   BusRoutesDisplayPage({super.key});
+
   final BusPresenter busPresenter = locate<BusPresenter>();
+
+  // Cache commonly used values
+  static const String _defaultRouteText = 'রুট তথ্য নেই';
+  static const EdgeInsets _horizontalPadding = EdgeInsets.symmetric(
+    horizontal: 20.0,
+  );
+
+  static const Color _backgroundColor = Color(0xfff5f5f5);
 
   @override
   Widget build(BuildContext context) {
     return PresentableWidgetBuilder(
       presenter: busPresenter,
       builder: () => Scaffold(
-        backgroundColor: Colors.grey[100],
-        appBar: CustomAppBar(title: '🚌 Bus & Routes', isRoot: true),
+        backgroundColor: _backgroundColor,
+        appBar: const CustomAppBar(title: '🚌 Bus & Routes', isRoot: true),
         body: Column(
-          crossAxisAlignment: CrossAxisAlignment.center,
           children: [
-            // Search Input Section
-            SizedBox(
-              width: double.infinity,
-              child: Stack(
-                alignment: Alignment.center,
-                children: [
-                  Padding(
-                    padding: EdgeInsets.symmetric(
-                      horizontal: twentyPx,
-                      vertical: tenPx,
-                    ),
-                    child: Column(
-                      mainAxisSize: MainAxisSize.min,
-                      children: [
-                        _buildInputField(
-                          hintText: 'Enter starting station name',
-                          textEditingController:
-                              busPresenter.startingStationNameController,
-                        ),
-                        gapH16,
-                        _buildInputField(
-                          hintText: 'Enter destination station name',
-                          textEditingController:
-                              busPresenter.destinationStationNameController,
-                        ),
-                      ],
-                    ),
-                  ),
-                  SwapButton(busPresenter: busPresenter),
-                ],
-              ),
-            ),
-
-            // Bus Routes List Section
-            Expanded(
-              child: ListView.builder(
-                padding: EdgeInsets.symmetric(horizontal: twentyPx),
-                itemCount: busPresenter.currentUiState.allBuses.length,
-                itemBuilder: (context, index) {
-                  final bus = busPresenter.currentUiState.allBuses[index];
-                  final routes =
-                      busPresenter.currentUiState.busRoutes[bus.busId] ?? [];
-                  final routeStops = routes.isNotEmpty
-                      ? routes.first.stops.join(' → ')
-                      : 'রুট তথ্য নেই';
-
-                  // Get first and last stop for description
-                  final routeDescription =
-                      routes.isNotEmpty && routes.first.stops.isNotEmpty
-                      ? '${routes.first.stops.first} → ${routes.first.stops.last}'
-                      : 'রুট তথ্য নেই';
-
-                  return BusRouteCard(
-                    key: Key('bus_route_card_$index'),
-                    bus: bus,
-
-                    route: routeStops, // Show route stops when expanded
-                    description: routeDescription, // Show first → last stop
-
-                    isExpanded: busPresenter.isCardExpanded('route_$index'),
-                    onTap: () =>
-                        busPresenter.toggleCardExpansion('route_$index'),
-                  );
-                },
-              ),
-            ),
+            SearchSection(busPresenter: busPresenter),
+            _buildBusRoutesList(),
           ],
         ),
       ),
     );
   }
 
-  UserInputField _buildInputField({
-    required String hintText,
-    required TextEditingController textEditingController,
-  }) {
-    return UserInputField(
-      contentPadding: EdgeInsets.symmetric(vertical: 10),
-      hintText: hintText,
-      fillColor: Color(0xffEEEEEE),
-      prefixIconPath: SvgPath.icSearch,
-      textEditingController: textEditingController,
+  Widget _buildBusRoutesList() {
+    return Expanded(
+      child: ListView.builder(
+        padding: _horizontalPadding,
+        itemCount: busPresenter.currentUiState.allBuses.length,
+        itemBuilder: (context, index) => _buildBusRouteCard(index),
+      ),
     );
   }
+
+  Widget _buildBusRouteCard(int index) {
+    final bus = busPresenter.currentUiState.allBuses[index];
+    final routes = busPresenter.currentUiState.busRoutes[bus.busId] ?? [];
+    final cardId = 'route_$index';
+
+    // Calculate route data once and cache it
+    final routeData = _calculateRouteData(routes);
+
+    return BusRouteCard(
+      key: Key('bus_route_card_$index'),
+      bus: bus,
+      route: routeData.fullRoute,
+      description: routeData.shortRoute,
+      isExpanded: busPresenter.isCardExpanded(cardId),
+      onTap: () => busPresenter.toggleCardExpansion(cardId),
+    );
+  }
+
+  // Optimized route calculation with early returns
+  RouteData _calculateRouteData(List<RouteEntity> routes) {
+    if (routes.isEmpty) {
+      return _defaultRouteData;
+    }
+
+    final firstRoute = routes.first;
+    final stops = firstRoute.stops;
+
+    if (stops.isEmpty) {
+      return _defaultRouteData;
+    }
+
+    if (stops.length == 1) {
+      return RouteData(fullRoute: stops.first, shortRoute: stops.first);
+    }
+
+    return RouteData(
+      fullRoute: stops.join(' → '),
+      shortRoute: '${stops.first} → ${stops.last}',
+    );
+  }
+
+  // Cache default route data to avoid repeated object creation
+  static const RouteData _defaultRouteData = RouteData(
+    fullRoute: _defaultRouteText,
+    shortRoute: _defaultRouteText,
+  );
+}
+
+// Helper class for route data
+class RouteData {
+  final String fullRoute;
+  final String shortRoute;
+
+  const RouteData({required this.fullRoute, required this.shortRoute});
 }

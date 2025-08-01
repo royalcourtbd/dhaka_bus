@@ -6,7 +6,7 @@ import 'package:dhaka_bus/features/bus_management/data/models/bus_model.dart';
 import 'package:dhaka_bus/features/bus_management/domain/entities/bus_entity.dart';
 import 'package:dhaka_bus/features/bus_management/domain/repositories/bus_repository.dart';
 import 'package:fpdart/fpdart.dart';
-import 'package:dhaka_bus/core/utility/logger_utility.dart';
+import 'package:dhaka_bus/core/utility/trial_utility.dart';
 
 class BusRepositoryImpl implements BusRepository {
   final BusRemoteDataSource _busRemoteDataSource;
@@ -16,19 +16,23 @@ class BusRepositoryImpl implements BusRepository {
 
   @override
   Future<Either<String, List<BusEntity>>> getAllActiveBuses() async {
-    try {
-      final List<Map<String, dynamic>> busesData = await _busRemoteDataSource
-          .getAllActiveBuses();
+    final Either<String, List<BusEntity>>? result =
+        await catchAndReturnFuture<Either<String, List<BusEntity>>>(() async {
+          final List<Map<String, dynamic>> busesData =
+              await _busRemoteDataSource.getAllActiveBuses();
 
-      final List<BusEntity> buses = busesData
-          .map((busData) => _mapToBusEntity(busData))
-          .toList();
+          final List<BusEntity> buses = busesData
+              .map((Map<String, dynamic> busData) => _mapToBusEntity(busData))
+              .toList();
 
-      return right<String, List<BusEntity>>(buses);
-    } catch (error) {
-      logError('BusRepository: Error getting all active buses - $error');
+          return right<String, List<BusEntity>>(buses);
+        });
+
+    if (result != null) {
+      return result;
+    } else {
       final String errorMessage = _errorMessageHandler.generateErrorMessage(
-        error,
+        'Unknown error occurred while getting all active buses',
       );
       return left<String, List<BusEntity>>(errorMessage);
     }

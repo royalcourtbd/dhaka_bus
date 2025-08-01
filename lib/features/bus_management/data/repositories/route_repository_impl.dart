@@ -4,7 +4,7 @@ import 'package:dhaka_bus/features/bus_management/data/models/route_model.dart';
 import 'package:dhaka_bus/features/bus_management/domain/entities/route_entity.dart';
 import 'package:dhaka_bus/features/bus_management/domain/repositories/route_repository.dart';
 import 'package:fpdart/fpdart.dart';
-import 'package:dhaka_bus/core/utility/logger_utility.dart';
+import 'package:dhaka_bus/core/utility/trial_utility.dart';
 
 class RouteRepositoryImpl implements RouteRepository {
   final RouteRemoteDataSource _routeRemoteDataSource;
@@ -14,19 +14,26 @@ class RouteRepositoryImpl implements RouteRepository {
 
   @override
   Future<Either<String, List<RouteEntity>>> getAllRoutes() async {
-    try {
-      final List<Map<String, dynamic>> routesData = await _routeRemoteDataSource
-          .getAllRoutes();
+    final Either<String, List<RouteEntity>>? result =
+        await catchAndReturnFuture<Either<String, List<RouteEntity>>>(() async {
+          final List<Map<String, dynamic>> routesData =
+              await _routeRemoteDataSource.getAllRoutes();
 
-      final List<RouteEntity> routes = routesData
-          .map((routeData) => _mapToRouteEntity(routeData))
-          .toList();
+          final List<RouteEntity> routes = routesData
+              .map(
+                (Map<String, dynamic> routeData) =>
+                    _mapToRouteEntity(routeData),
+              )
+              .toList();
 
-      return right<String, List<RouteEntity>>(routes);
-    } catch (error) {
-      logError('RouteRepository: Error getting all routes - $error');
+          return right<String, List<RouteEntity>>(routes);
+        });
+
+    if (result != null) {
+      return result;
+    } else {
       final String errorMessage = _errorMessageHandler.generateErrorMessage(
-        error,
+        'Unknown error occurred while getting all routes',
       );
       return left<String, List<RouteEntity>>(errorMessage);
     }
@@ -36,25 +43,30 @@ class RouteRepositoryImpl implements RouteRepository {
   Future<Either<String, List<RouteEntity>>> getRoutesByBusId(
     String busId,
   ) async {
-    try {
-      if (busId.trim().isEmpty) {
-        return right<String, List<RouteEntity>>([]);
-      }
+    final Either<String, List<RouteEntity>>? result =
+        await catchAndReturnFuture<Either<String, List<RouteEntity>>>(() async {
+          if (busId.trim().isEmpty) {
+            return right<String, List<RouteEntity>>([]);
+          }
 
-      final List<Map<String, dynamic>> routesData = await _routeRemoteDataSource
-          .getRoutesByBusId(busId);
+          final List<Map<String, dynamic>> routesData =
+              await _routeRemoteDataSource.getRoutesByBusId(busId);
 
-      final List<RouteEntity> routes = routesData
-          .map((routeData) => _mapToRouteEntity(routeData))
-          .toList();
+          final List<RouteEntity> routes = routesData
+              .map(
+                (Map<String, dynamic> routeData) =>
+                    _mapToRouteEntity(routeData),
+              )
+              .toList();
 
-      return right<String, List<RouteEntity>>(routes);
-    } catch (error) {
-      logError(
-        'RouteRepository: Error getting routes for bus ($busId) - $error',
-      );
+          return right<String, List<RouteEntity>>(routes);
+        });
+
+    if (result != null) {
+      return result;
+    } else {
       final String errorMessage = _errorMessageHandler.generateErrorMessage(
-        error,
+        'Unknown error occurred while getting routes for bus ($busId)',
       );
       return left<String, List<RouteEntity>>(errorMessage);
     }

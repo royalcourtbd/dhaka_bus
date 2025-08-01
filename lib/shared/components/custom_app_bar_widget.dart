@@ -84,7 +84,7 @@ class CustomAppBar extends StatelessWidget implements PreferredSizeWidget {
                     overflow: TextOverflow.ellipsis,
                     style:
                         titleStyle ??
-                        TextStyle(fontSize: 18, fontWeight: FontWeight.w600),
+                        TextStyle(fontSize: 20, fontWeight: FontWeight.w600),
                   ),
                 ),
                 if (dropDownPath != null) ...[

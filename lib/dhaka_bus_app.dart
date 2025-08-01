@@ -1,4 +1,4 @@
-import 'package:dhaka_bus/features/bus_management/presentation/ui/buses_list_page.dart.dart';
+import 'package:dhaka_bus/features/bus_management/presentation/ui/bus_routes_display_page.dart';
 import 'package:flutter/material.dart';
 import 'package:get/route_manager.dart';
 import 'package:dhaka_bus/core/config/app_screen.dart';
@@ -33,7 +33,7 @@ class InitialApp extends StatelessWidget {
           theme: AappTheme.lightTheme,
           title: 'Initial Project',
           // home: isFirstRun ? OnboardingPage() : MainPage(),
-          home: BusDemoPage(),
+          home: BusRoutesDisplayPage(),
         );
       },
     );

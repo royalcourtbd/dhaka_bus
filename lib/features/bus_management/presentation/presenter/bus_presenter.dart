@@ -4,6 +4,7 @@ import 'dart:developer';
 import 'package:dhaka_bus/core/base/base_presenter.dart';
 import 'package:dhaka_bus/core/utility/navigation_helpers.dart';
 import 'package:dhaka_bus/features/bus_management/bus_management_export.dart';
+import 'package:flutter/widgets.dart';
 
 class BusPresenter extends BasePresenter<BusUiState> {
   final GetBusesUseCase _getAllActiveBusesUseCase;
@@ -20,6 +21,11 @@ class BusPresenter extends BasePresenter<BusUiState> {
 
   final Obs<BusUiState> uiState = Obs<BusUiState>(BusUiState.empty());
   BusUiState get currentUiState => uiState.value;
+
+  final TextEditingController startingStationNameController =
+      TextEditingController();
+  final TextEditingController destinationStationNameController =
+      TextEditingController();
 
   @override
   void onInit() {
@@ -141,6 +147,12 @@ class BusPresenter extends BasePresenter<BusUiState> {
   /// Check if internet is available
   Future<bool> isInternetAvailable() async {
     return await _dataSyncService.isInternetAvailable();
+  }
+
+  void swapLocations() {
+    final temp = startingStationNameController.text;
+    startingStationNameController.text = destinationStationNameController.text;
+    destinationStationNameController.text = temp;
   }
 
   @override

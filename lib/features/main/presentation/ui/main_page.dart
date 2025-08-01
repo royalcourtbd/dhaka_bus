@@ -1,4 +1,4 @@
-import 'package:dhaka_bus/features/bus_management/presentation/ui/buses_list_page.dart.dart';
+import 'package:dhaka_bus/features/bus_management/presentation/ui/bus_routes_display_page.dart';
 import 'package:flutter/material.dart';
 import 'package:dhaka_bus/core/di/service_locator.dart';
 import 'package:dhaka_bus/core/widgets/presentable_widget_builder.dart';
@@ -13,11 +13,11 @@ class MainPage extends StatelessWidget {
   final MainPresenter _mainPresenter = locate<MainPresenter>();
 
   final List<Widget> _pages = <Widget>[
-    BusDemoPage(),
-    BusDemoPage(),
-    BusDemoPage(),
-    BusDemoPage(),
-    BusDemoPage(),
+    BusRoutesDisplayPage(),
+    BusRoutesDisplayPage(),
+    BusRoutesDisplayPage(),
+    BusRoutesDisplayPage(),
+    BusRoutesDisplayPage(),
   ];
 
   @override

@@ -2,6 +2,8 @@ import 'package:dhaka_bus/features/bus_management/domain/entities/route_entity.d
 import 'package:fpdart/fpdart.dart';
 
 abstract class RouteRepository {
-  Future<Either<String, List<RouteEntity>>> getAllRoutes();
+  Future<Either<String, List<RouteEntity>>> getAllRoutes({
+    bool forceSync = false,
+  });
   Future<Either<String, List<RouteEntity>>> getRoutesByBusId(String busId);
 }

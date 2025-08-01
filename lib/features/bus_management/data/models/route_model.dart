@@ -18,7 +18,9 @@ class RouteModel extends RouteEntity {
       stops: List<String>.from(json['stops'] ?? []),
       routeDistance: json['route_distance'] ?? '',
       totalStops: json['total_stops'] ?? 0,
-      createdAt: (json['created_at'] as Timestamp).toDate(),
+      createdAt: json['created_at'] is String
+          ? DateTime.parse(json['created_at'])
+          : (json['created_at'] as Timestamp).toDate(),
     );
   }
 
@@ -29,7 +31,20 @@ class RouteModel extends RouteEntity {
       'stops': stops,
       'route_distance': routeDistance,
       'total_stops': totalStops,
-      'created_at': createdAt,
+      'created_at': createdAt.toIso8601String(),
     };
+  }
+}
+
+extension RouteModelExtension on RouteModel {
+  static RouteModel fromEntity(RouteEntity entity) {
+    return RouteModel(
+      routeId: entity.routeId,
+      busId: entity.busId,
+      stops: entity.stops,
+      routeDistance: entity.routeDistance,
+      totalStops: entity.totalStops,
+      createdAt: entity.createdAt,
+    );
   }
 }

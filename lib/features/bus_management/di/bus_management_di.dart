@@ -1,9 +1,12 @@
 import 'package:dhaka_bus/core/base/base_presenter.dart';
 import 'package:dhaka_bus/core/di/service_locator.dart';
+import 'package:dhaka_bus/features/bus_management/data/datasource/bus_local_datasource.dart';
 import 'package:dhaka_bus/features/bus_management/data/datasource/bus_remote_datasource.dart';
+import 'package:dhaka_bus/features/bus_management/data/datasource/route_local_datasource.dart';
 import 'package:dhaka_bus/features/bus_management/data/datasource/route_remote_datasource.dart';
 import 'package:dhaka_bus/features/bus_management/data/repositories/bus_repository_impl.dart';
 import 'package:dhaka_bus/features/bus_management/data/repositories/route_repository_impl.dart';
+import 'package:dhaka_bus/features/bus_management/data/services/data_sync_service.dart';
 import 'package:dhaka_bus/features/bus_management/domain/repositories/bus_repository.dart';
 import 'package:dhaka_bus/features/bus_management/domain/repositories/route_repository.dart';
 import 'package:dhaka_bus/features/bus_management/domain/usecase/get_all_active_buses_use_case.dart';
@@ -21,6 +24,19 @@ class BusManagementDi {
 
     serviceLocator.registerLazySingleton<RouteRemoteDataSource>(
       () => RouteRemoteDataSourceImpl(locate()),
+    );
+
+    serviceLocator.registerLazySingleton<BusLocalDataSource>(
+      () => BusLocalDataSourceImpl(locate()),
+    );
+
+    serviceLocator.registerLazySingleton<RouteLocalDataSource>(
+      () => RouteLocalDataSourceImpl(locate()),
+    );
+
+    ///Data Sync Service
+    serviceLocator.registerLazySingleton<DataSyncService>(
+      () => DataSyncService(locate(), locate(), locate(), locate()),
     );
 
     //  Repositories
@@ -42,7 +58,7 @@ class BusManagementDi {
 
     // Presenters
     serviceLocator.registerFactory(
-      () => loadPresenter(BusPresenter(locate(), locate(), locate())),
+      () => loadPresenter(BusPresenter(locate(), locate(), locate(), locate())),
     );
   }
 }

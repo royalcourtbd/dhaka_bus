@@ -20,8 +20,9 @@ class BusModel extends BusEntity {
       busImageUrl: json['bus_image_url'],
       serviceType: json['service_type'],
       isActive: json['is_active'] ?? true,
-      createdAt: (json['created_at'] as Timestamp)
-          .toDate(), // Firebase Timestamp to DateTime
+      createdAt: json['created_at'] is String
+          ? DateTime.parse(json['created_at'])
+          : (json['created_at'] as Timestamp).toDate(),
     );
   }
 
@@ -33,7 +34,21 @@ class BusModel extends BusEntity {
       'service_type': serviceType,
       'bus_image_url': busImageUrl,
       'is_active': isActive,
-      'created_at': createdAt,
+      'created_at': createdAt.toIso8601String(),
     };
+  }
+}
+
+extension BusModelExtension on BusModel {
+  static BusModel fromEntity(BusEntity entity) {
+    return BusModel(
+      busId: entity.busId,
+      busNameEn: entity.busNameEn,
+      busNameBn: entity.busNameBn,
+      busImageUrl: entity.busImageUrl,
+      serviceType: entity.serviceType,
+      isActive: entity.isActive,
+      createdAt: entity.createdAt,
+    );
   }
 }

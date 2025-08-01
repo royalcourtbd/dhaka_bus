@@ -12,7 +12,9 @@ class GetRoutesUseCase extends BaseUseCase<List<RouteEntity>> {
     ErrorMessageHandler errorMessageHandler,
   ) : super(errorMessageHandler);
 
-  Future<Either<String, List<RouteEntity>>> execute() async {
-    return await _routeRepository.getAllRoutes();
+  Future<Either<String, List<RouteEntity>>> execute({
+    bool forceSync = false,
+  }) async {
+    return await _routeRepository.getAllRoutes(forceSync: forceSync);
   }
 }

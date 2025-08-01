@@ -10,6 +10,6 @@ class GetBusesUseCase extends BaseUseCase<List<BusEntity>> {
   GetBusesUseCase(this._busRepository, ErrorMessageHandler errorMessageHandler)
     : super(errorMessageHandler);
   Future<Either<String, List<BusEntity>>> execute() async {
-    return await _busRepository.getBuses();
+    return await _busRepository.getAllActiveBuses();
   }
 }

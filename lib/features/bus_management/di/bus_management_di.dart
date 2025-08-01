@@ -3,10 +3,7 @@ import 'package:dhaka_bus/core/di/service_locator.dart';
 import 'package:dhaka_bus/features/bus_management/data/datasource/bus_remote_datasource.dart';
 import 'package:dhaka_bus/features/bus_management/data/repositories/bus_repository_impl.dart';
 import 'package:dhaka_bus/features/bus_management/domain/repositories/bus_repository.dart';
-import 'package:dhaka_bus/features/bus_management/domain/usecase/get_bus_by_id_use_case.dart';
-import 'package:dhaka_bus/features/bus_management/domain/usecase/get_buses_by_service_type_use_case.dart';
 import 'package:dhaka_bus/features/bus_management/domain/usecase/get_buses_use_case.dart';
-import 'package:dhaka_bus/features/bus_management/domain/usecase/search_bus_use_case.dart';
 import 'package:dhaka_bus/features/bus_management/presentation/presenter/bus_presenter.dart';
 import 'package:get_it/get_it.dart';
 
@@ -23,17 +20,11 @@ class BusManagementDi {
     );
 
     // Use Cases
-    serviceLocator
-      ..registerLazySingleton(() => GetBusesUseCase(locate(), locate()))
-      ..registerLazySingleton(() => GetBusByIdUseCase(locate(), locate()))
-      ..registerLazySingleton(
-        () => GetBusesByServiceTypeUseCase(locate(), locate()),
-      )
-      ..registerLazySingleton(() => SearchBusUseCase(locate(), locate()));
+    serviceLocator.registerLazySingleton(
+      () => GetBusesUseCase(locate(), locate()),
+    );
 
     // Presenters
-    serviceLocator.registerFactory(
-      () => loadPresenter(BusPresenter(locate(), locate(), locate(), locate())),
-    );
+    serviceLocator.registerFactory(() => loadPresenter(BusPresenter(locate())));
   }
 }

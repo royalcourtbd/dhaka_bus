@@ -31,9 +31,7 @@ class BusDemoPage extends StatelessWidget {
                 trailing: bus.isActive
                     ? const Icon(Icons.check_circle, color: Colors.green)
                     : const Icon(Icons.cancel, color: Colors.red),
-                onTap: () {
-                  _busPresenter.loadBusById(bus.busId);
-                },
+                onTap: () {},
               );
             },
           ),

@@ -95,79 +95,90 @@ class BackendAsAService {
 
   ///================================
 
-  /// 1. Get all buses - IMPROVED
-  Future<List<Map<String, dynamic>>> getBuses() async {
+  /// 🚌 Get ALL ACTIVE buses for offline storage
+  /// This replaces individual bus operations - fetches only active buses
+  Future<List<Map<String, dynamic>>> getAllActiveBuses() async {
     return await catchAndReturnFuture<List<Map<String, dynamic>>>(() async {
+          logInfo('🚌 Fetching all active buses from Firestore...');
+
           final QuerySnapshot<Map<String, dynamic>> querySnapshot =
               await _fireStore
                   .collection(busesCollection)
-                  .where('is_active', isEqualTo: true)
+                  .where(isActive, isEqualTo: true) // Only active buses
                   .get();
 
-          // Transform and return data
-          return querySnapshot.docs
-              .map((doc) => {...doc.data(), 'id': doc.id})
-              .toList();
-        }) ??
-        [];
-  }
-
-  Future<Map<String, dynamic>?> getBusById(String busId) async {
-    return await catchAndReturnFuture<Map<String, dynamic>?>(() async {
-      final DocumentSnapshot<Map<String, dynamic>> docSnapshot =
-          await _fireStore.collection(busesCollection).doc(busId).get();
-
-      if (docSnapshot.exists && docSnapshot.data() != null) {
-        return {...docSnapshot.data()!, 'id': docSnapshot.id};
-      }
-      return null;
-    });
-  }
-
-  Future<List<Map<String, dynamic>>> searchBusByName(String searchQuery) async {
-    // ✅ Input validation + explicit generic type
-    if (searchQuery.trim().isEmpty) return [];
-
-    return await catchAndReturnFuture<List<Map<String, dynamic>>>(() async {
-          final QuerySnapshot<Map<String, dynamic>> querySnapshot =
-              await _fireStore
-                  .collection(busesCollection)
-                  .where('is_active', isEqualTo: true)
-                  .get();
-
-          final allBuses = querySnapshot.docs
-              .map((doc) => {...doc.data(), 'id': doc.id})
-              .toList();
-
-          // Filter by name (English or Bengali)
-          return allBuses.where((bus) {
-            final busNameEn = (bus['bus_name_en'] as String? ?? '')
-                .toLowerCase();
-            final busNameBn = bus['bus_name_bn'] as String? ?? '';
-            final query = searchQuery.toLowerCase();
-
-            return busNameEn.contains(query) || busNameBn.contains(searchQuery);
+          final List<Map<String, dynamic>> buses = querySnapshot.docs.map((
+            doc,
+          ) {
+            final data = doc.data();
+            // Add document ID as 'id' field for consistency
+            return {
+              ...data,
+              'id': doc.id, // Firebase document ID
+            };
           }).toList();
+
+          logInfo(
+            '✅ Successfully fetched ${buses.length} active buses from Firestore',
+          );
+
+          // Log service type breakdown for debugging
+          final Map<String, int> serviceTypes = {};
+          for (final bus in buses) {
+            final serviceType = bus['service_type'] as String? ?? 'Unknown';
+            serviceTypes[serviceType] = (serviceTypes[serviceType] ?? 0) + 1;
+          }
+
+          logInfo('📊 Active Bus Breakdown: $serviceTypes');
+
+          return buses;
         }) ??
         [];
   }
 
-  Future<List<Map<String, dynamic>>> getBusesByServiceType(
-    String serviceType,
-  ) async {
-    if (serviceType.trim().isEmpty) return [];
-
+  /// 🛣️ Get ALL routes for offline storage
+  /// This replaces individual route operations - fetches all routes
+  Future<List<Map<String, dynamic>>> getAllRoutes() async {
     return await catchAndReturnFuture<List<Map<String, dynamic>>>(() async {
-          final QuerySnapshot<Map<String, dynamic>> querySnapshot =
-              await _fireStore
-                  .collection(busesCollection)
-                  .where('service_type', isEqualTo: serviceType)
-                  .where('is_active', isEqualTo: true)
-                  .get();
+          logInfo('🛣️ Fetching all routes from Firestore...');
 
-          return querySnapshot.docs
-              .map((doc) => {...doc.data(), 'id': doc.id})
-              .toList();
+          final QuerySnapshot<Map<String, dynamic>> querySnapshot =
+              await _fireStore.collection(routesCollection).get();
+
+          final List<Map<String, dynamic>> routes = querySnapshot.docs.map((
+            doc,
+          ) {
+            final data = doc.data();
+            // Add document ID as 'id' field for consistency
+            return {
+              ...data,
+              'id': doc.id, // Firebase document ID
+            };
+          }).toList();
+
+          logInfo(
+            '✅ Successfully fetched ${routes.length} routes from Firestore',
+          );
+
+          // Log route statistics for debugging
+          final Map<String, int> busRouteCount = {};
+          int totalStops = 0;
+
+          for (final route in routes) {
+            final busId = route['bus_id'] as String? ?? 'unknown';
+            busRouteCount[busId] = (busRouteCount[busId] ?? 0) + 1;
+            totalStops += (route['total_stops'] as int? ?? 0);
+          }
+
+          final avgStopsPerRoute = routes.isNotEmpty
+              ? (totalStops / routes.length).round()
+              : 0;
+
+          logInfo(
+            '📊 Route Stats - Total: ${routes.length}, Unique Buses: ${busRouteCount.keys.length}, Avg Stops: $avgStopsPerRoute',
+          );
+
+          return routes;
         }) ??
         [];
   }

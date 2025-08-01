@@ -114,4 +114,11 @@ class CacheKeys {
   static const String firstTime = "first_time_key";
   static const String launchCount = "launch_count_key";
   static const String location = "location_key";
+
+  ///Bus Management keys
+
+  static const String allBuses = "all_buses_key";
+  static const String allRoutes = "all_routes_key";
+  static const String lastBusSync = "last_bus_sync_key";
+  static const String lastRouteSync = "last_route_sync_key";
 }

@@ -15,10 +15,12 @@ class BusRepositoryImpl implements BusRepository {
   BusRepositoryImpl(this._busRemoteDataSource, this._errorMessageHandler);
 
   @override
-  Future<Either<String, List<BusEntity>>> getBuses({bool? isActive}) async {
+  Future<Either<String, List<BusEntity>>> getAllActiveBuses({
+    bool? isActive,
+  }) async {
     try {
       final List<Map<String, dynamic>> busesData = await _busRemoteDataSource
-          .getBuses();
+          .getAllActiveBuses();
 
       final List<BusEntity> buses = busesData
           .map((busData) => _mapToBusEntity(busData))
@@ -31,86 +33,6 @@ class BusRepositoryImpl implements BusRepository {
           : 'getting ${isActive ? "active" : "inactive"} buses';
 
       logError('BusRepository: Error $errorContext - $error');
-      final String errorMessage = _errorMessageHandler.generateErrorMessage(
-        error,
-      );
-      return left<String, List<BusEntity>>(errorMessage);
-    }
-  }
-
-  @override
-  Future<Either<String, BusEntity?>> getBusById(String busId) async {
-    try {
-      if (busId.trim().isEmpty) {
-        return right<String, BusEntity?>(null);
-      }
-
-      final Map<String, dynamic>? busData = await _busRemoteDataSource
-          .getBusById(busId);
-
-      if (busData == null) {
-        return right<String, BusEntity?>(null);
-      }
-
-      final BusEntity bus = _mapToBusEntity(busData);
-
-      return right<String, BusEntity?>(bus);
-    } catch (error) {
-      logError('BusRepository: Error getting bus by ID ($busId) - $error');
-      final String errorMessage = _errorMessageHandler.generateErrorMessage(
-        error,
-      );
-      return left<String, BusEntity?>(errorMessage);
-    }
-  }
-
-  @override
-  Future<Either<String, List<BusEntity>>> searchBusByName(
-    String searchQuery,
-  ) async {
-    try {
-      if (searchQuery.trim().isEmpty) {
-        return right<String, List<BusEntity>>([]);
-      }
-
-      final List<Map<String, dynamic>> busesData = await _busRemoteDataSource
-          .searchBusByName(searchQuery);
-
-      final List<BusEntity> buses = busesData
-          .map((busData) => _mapToBusEntity(busData))
-          .toList();
-
-      return right<String, List<BusEntity>>(buses);
-    } catch (error) {
-      logError('BusRepository: Error searching buses ($searchQuery) - $error');
-      final String errorMessage = _errorMessageHandler.generateErrorMessage(
-        error,
-      );
-      return left<String, List<BusEntity>>(errorMessage);
-    }
-  }
-
-  @override
-  Future<Either<String, List<BusEntity>>> getBusesByServiceType(
-    String serviceType,
-  ) async {
-    try {
-      if (serviceType.trim().isEmpty) {
-        return right<String, List<BusEntity>>([]);
-      }
-
-      final List<Map<String, dynamic>> busesData = await _busRemoteDataSource
-          .getBusesByServiceType(serviceType);
-
-      final List<BusEntity> buses = busesData
-          .map((busData) => _mapToBusEntity(busData))
-          .toList();
-
-      return right<String, List<BusEntity>>(buses);
-    } catch (error) {
-      logError(
-        'BusRepository: Error getting buses by service type ($serviceType) - $error',
-      );
       final String errorMessage = _errorMessageHandler.generateErrorMessage(
         error,
       );

@@ -2,7 +2,7 @@
 
 import 'package:dhaka_bus/core/di/service_locator.dart';
 import 'package:dhaka_bus/core/widgets/presentable_widget_builder.dart';
-import 'package:dhaka_bus/features/bus_management/presentation/presenter/bus_presenter.dart';
+import 'package:dhaka_bus/features/bus_management/bus_management_export.dart';
 import 'package:flutter/material.dart';
 
 class BusDemoPage extends StatelessWidget {

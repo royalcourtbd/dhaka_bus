@@ -1,10 +1,7 @@
-// File: bus_management/data/datasource/bus_local_datasource.dart
-
 import 'dart:convert';
 import 'package:dhaka_bus/core/services/local_cache_service.dart';
 import 'package:dhaka_bus/core/utility/trial_utility.dart';
-import 'package:dhaka_bus/features/bus_management/data/models/bus_model.dart';
-import 'package:dhaka_bus/features/bus_management/domain/entities/bus_entity.dart';
+import 'package:dhaka_bus/features/bus_management/bus_management_export.dart';
 
 abstract class BusLocalDataSource {
   Future<List<BusEntity>> getCachedBuses();
@@ -85,20 +82,5 @@ class BusLocalDataSourceImpl implements BusLocalDataSource {
         value: currentTime,
       );
     });
-  }
-}
-
-// BusModel এ fromEntity method add করতে হবে
-extension BusModelExtension on BusModel {
-  static BusModel fromEntity(BusEntity entity) {
-    return BusModel(
-      busId: entity.busId,
-      busNameEn: entity.busNameEn,
-      busNameBn: entity.busNameBn,
-      busImageUrl: entity.busImageUrl,
-      serviceType: entity.serviceType,
-      isActive: entity.isActive,
-      createdAt: entity.createdAt,
-    );
   }
 }

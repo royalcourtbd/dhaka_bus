@@ -3,8 +3,7 @@
 import 'dart:convert';
 import 'package:dhaka_bus/core/services/local_cache_service.dart';
 import 'package:dhaka_bus/core/utility/trial_utility.dart';
-import 'package:dhaka_bus/features/bus_management/data/models/route_model.dart';
-import 'package:dhaka_bus/features/bus_management/domain/entities/route_entity.dart';
+import 'package:dhaka_bus/features/bus_management/bus_management_export.dart';
 
 abstract class RouteLocalDataSource {
   Future<List<RouteEntity>> getCachedRoutes();
@@ -105,19 +104,5 @@ class RouteLocalDataSourceImpl implements RouteLocalDataSource {
           return filteredRoutes;
         }) ??
         <RouteEntity>[];
-  }
-}
-
-// RouteModel এ fromEntity method add করতে হবে
-extension RouteModelExtension on RouteModel {
-  static RouteModel fromEntity(RouteEntity entity) {
-    return RouteModel(
-      routeId: entity.routeId,
-      busId: entity.busId,
-      stops: entity.stops,
-      routeDistance: entity.routeDistance,
-      totalStops: entity.totalStops,
-      createdAt: entity.createdAt,
-    );
   }
 }

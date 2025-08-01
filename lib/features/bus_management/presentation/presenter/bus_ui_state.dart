@@ -1,8 +1,7 @@
 // lib/presentation/bus/presenter/bus_ui_state.dart
 
 import 'package:dhaka_bus/core/base/base_ui_state.dart';
-import 'package:dhaka_bus/features/bus_management/domain/entities/bus_entity.dart';
-import 'package:dhaka_bus/features/bus_management/domain/entities/route_entity.dart';
+import 'package:dhaka_bus/features/bus_management/bus_management_export.dart';
 
 class BusUiState extends BaseUiState {
   const BusUiState({

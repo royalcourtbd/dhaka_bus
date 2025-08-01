@@ -1,5 +1,5 @@
 import 'package:cloud_firestore/cloud_firestore.dart';
-import 'package:dhaka_bus/features/bus_management/domain/entities/bus_entity.dart';
+import 'package:dhaka_bus/features/bus_management/bus_management_export.dart';
 
 class BusModel extends BusEntity {
   const BusModel({

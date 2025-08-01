@@ -31,7 +31,7 @@ class InitialApp extends StatelessWidget {
           onReady: () => AppScreen.setUp(context),
           debugShowCheckedModeBanner: false,
           theme: AappTheme.lightTheme,
-          title: 'Initial Project',
+          title: 'Dhaka Bus',
           // home: isFirstRun ? OnboardingPage() : MainPage(),
           home: BusRoutesDisplayPage(),
         );

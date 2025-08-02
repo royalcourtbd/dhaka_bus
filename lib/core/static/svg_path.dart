@@ -8,4 +8,5 @@ class SvgPath {
   static const String icHomeOutline = 'assets/svg/ic_home_outline.svg';
   static const String icBack = 'assets/svg/ic_back.svg';
   static const String icSearch = 'assets/svg/ic_search.svg';
+  static const String icCross = 'assets/svg/ic_cross.svg';
 }

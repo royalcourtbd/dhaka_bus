@@ -1,7 +1,10 @@
+import 'package:dhaka_bus/core/config/app_screen.dart';
 import 'package:dhaka_bus/core/external_libs/user_input_field/user_input_field.dart';
 import 'package:dhaka_bus/core/static/svg_path.dart';
 import 'package:dhaka_bus/core/static/ui_const.dart';
+import 'package:dhaka_bus/core/utility/number_utility.dart';
 import 'package:dhaka_bus/features/bus_management/bus_management_export.dart';
+import 'package:dhaka_bus/shared/components/ontap_widget.dart';
 import 'package:dhaka_bus/shared/components/submit_button.dart';
 import 'package:flutter/material.dart';
 
@@ -96,42 +99,15 @@ class SearchSection extends StatelessWidget {
               focusNode: fieldFocusNode,
               prefixIconPath: SvgPath.icSearch,
               fillColor: _inputFieldColor,
+              onTapSuffixIcon: () {
+                fieldController.clear();
+                controller.clear();
+                busPresenter.clearSearch();
+              },
               suffixIconPath: fieldController.text.isNotEmpty
-                  ? SvgPath.icSearch
+                  ? SvgPath.icCross
                   : null,
             );
-
-            // return TextField(
-            //   controller: fieldController,
-            //   focusNode: fieldFocusNode,
-            //   decoration: InputDecoration(
-            //     contentPadding: const EdgeInsets.symmetric(
-            //       vertical: 10,
-            //       horizontal: 15,
-            //     ),
-            //     hintText: hintText,
-            //     filled: true,
-            //     fillColor: _inputFieldColor,
-            //     prefixIcon: Padding(
-            //       padding: const EdgeInsets.all(12.0),
-            //       child: Icon(Icons.search),
-            //     ),
-            //     border: OutlineInputBorder(
-            //       borderRadius: BorderRadius.circular(twelvePx),
-            //       borderSide: BorderSide.none,
-            //     ),
-            //     suffixIcon: fieldController.text.isNotEmpty
-            //         ? IconButton(
-            //             icon: const Icon(Icons.clear),
-            //             onPressed: () {
-            //               fieldController.clear();
-            //               controller.clear();
-            //               busPresenter.clearSearch();
-            //             },
-            //           )
-            //         : null,
-            //   ),
-            // );
           },
       optionsViewBuilder:
           (
@@ -142,21 +118,49 @@ class SearchSection extends StatelessWidget {
             return Align(
               alignment: Alignment.topLeft,
               child: Material(
-                elevation: 4.0,
+                elevation: 4,
+                animationDuration: 300.inMilliseconds,
+                borderOnForeground: true,
+                borderRadius: radius15,
+                shadowColor: Color(0xff888888).withValues(alpha: .15),
+
                 child: ConstrainedBox(
-                  constraints: const BoxConstraints(maxHeight: 250),
+                  constraints: BoxConstraints(maxHeight: 40.percentHeight),
                   child: ListView.builder(
                     padding: EdgeInsets.zero,
                     itemCount: options.length,
                     itemBuilder: (BuildContext context, int index) {
                       final String option = options.elementAt(index);
-                      return InkWell(
+                      final bool isLastItem = index == options.length - 1;
+
+                      return OnTapWidget(
                         onTap: () {
                           onSelected(option);
                         },
-                        child: Padding(
-                          padding: const EdgeInsets.all(16.0),
-                          child: Text(option),
+                        child: Container(
+                          decoration: BoxDecoration(
+                            border: isLastItem
+                                ? null
+                                : Border(
+                                    bottom: BorderSide(
+                                      color: Color(0xffDEDEDE),
+                                      width: 0.5,
+                                    ),
+                                  ),
+                          ),
+                          child: Padding(
+                            padding: const EdgeInsets.all(16),
+                            child: Row(
+                              children: [
+                                Icon(
+                                  Icons.location_on_outlined,
+                                  color: Theme.of(context).primaryColor,
+                                ),
+                                const SizedBox(width: 10),
+                                Text(option),
+                              ],
+                            ),
+                          ),
                         ),
                       );
                     },

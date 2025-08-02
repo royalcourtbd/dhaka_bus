@@ -25,10 +25,29 @@ class DataSyncService {
 
   /// Load buses - First from cache, then sync if internet available
   Future<List<BusEntity>> loadBuses({bool forceSync = false}) async {
-    logInfo('🚌 DataSyncService: Loading buses...');
+    final DateTime? lastBusSync = await _busLocalDataSource
+        .getLastBusSyncTime();
+    final bool isFirstTimeLoad = lastBusSync == null;
+
+    logInfo(
+      '🚌 DataSyncService: Loading buses... (forceSync: $forceSync, isFirstTime: $isFirstTimeLoad)',
+    );
+
+    if (isFirstTimeLoad) {
+      logInfo(
+        '🆕 FIRST TIME LOAD: No previous bus data found in local storage',
+      );
+    } else {
+      logInfo(
+        '🔄 SUBSEQUENT LOAD: Last sync was at ${lastBusSync.toIso8601String()}',
+      );
+    }
 
     // Always try to load from cache first (instant loading)
     List<BusEntity> cachedBuses = await _busLocalDataSource.getCachedBuses();
+    logInfo(
+      '📱 DataSyncService: Loaded ${cachedBuses.length} buses from LOCAL STORAGE (Hive)',
+    );
 
     // If no cached data and no internet, return empty list
     final bool hasInternet = await isInternetAvailable();
@@ -40,33 +59,84 @@ class DataSyncService {
     // If we have cached data and don't need to force sync, return cached data
     // But still sync in background if internet is available
     if (cachedBuses.isNotEmpty && !forceSync && hasInternet) {
-      logInfo('🚌 Returning cached buses and syncing in background');
+      if (isFirstTimeLoad) {
+        logInfo(
+          '🚌 ✅ DATA SOURCE: LOCAL STORAGE (Hive) - FIRST TIME using ${cachedBuses.length} cached buses',
+        );
+      } else {
+        logInfo(
+          '🚌 ✅ DATA SOURCE: LOCAL STORAGE (Hive) - SUBSEQUENT load with ${cachedBuses.length} cached buses',
+        );
+      }
+      logInfo('🚌 Background sync from Firebase will run in background...');
       _syncBusesInBackground();
       return cachedBuses;
     }
 
     // If we need fresh data or no cached data, fetch from remote
     if (hasInternet) {
+      if (isFirstTimeLoad) {
+        logInfo(
+          '🔄 DataSyncService: FIRST TIME fetching buses from FIREBASE (Remote)...',
+        );
+      } else {
+        logInfo(
+          '🔄 DataSyncService: FORCE SYNC fetching buses from FIREBASE (Remote)...',
+        );
+      }
       final List<BusEntity> remoteBuses = await _fetchBusesFromRemote();
       if (remoteBuses.isNotEmpty) {
+        if (isFirstTimeLoad) {
+          logInfo(
+            '🔥 DataSyncService: ✅ DATA SOURCE: FIREBASE - FIRST TIME loaded ${remoteBuses.length} buses',
+          );
+        } else {
+          logInfo(
+            '🔥 DataSyncService: ✅ DATA SOURCE: FIREBASE - FORCE SYNC loaded ${remoteBuses.length} buses',
+          );
+        }
         await _busLocalDataSource.cacheBuses(remoteBuses);
         await _busLocalDataSource.updateLastBusSyncTime();
-        logInfo('🚌 Buses synced and cached successfully');
+        logInfo(
+          '🚌 Buses synced from Firebase and cached to Hive successfully',
+        );
         return remoteBuses;
       }
     }
 
     // Fallback to cached data if available
+    logInfo(
+      '🚌 ⚠️ FALLBACK: Using LOCAL STORAGE (Hive) - ${cachedBuses.length} buses',
+    );
     return cachedBuses;
   }
 
   /// Load routes - First from cache, then sync if internet available
   Future<List<RouteEntity>> loadRoutes({bool forceSync = false}) async {
-    logInfo('🛣️ DataSyncService: Loading routes...');
+    final DateTime? lastRouteSync = await _routeLocalDataSource
+        .getLastRouteSyncTime();
+    final bool isFirstTimeLoad = lastRouteSync == null;
+
+    logInfo(
+      '🛣️ DataSyncService: Loading routes... (forceSync: $forceSync, isFirstTime: $isFirstTimeLoad)',
+    );
+
+    if (isFirstTimeLoad) {
+      logInfo(
+        '🆕 FIRST TIME LOAD: No previous route data found in local storage',
+      );
+    } else {
+      logInfo(
+        '🔄 SUBSEQUENT LOAD: Last sync was at ${lastRouteSync.toIso8601String()}',
+      );
+    }
 
     // Always try to load from cache first (instant loading)
     List<RouteEntity> cachedRoutes = await _routeLocalDataSource
         .getCachedRoutes();
+    logInfo(
+      '📱 DataSyncService: Loaded ${cachedRoutes.length} routes from LOCAL STORAGE (Hive)',
+    );
 
     // If no cached data and no internet, return empty list
     final bool hasInternet = await isInternetAvailable();
@@ -78,29 +148,68 @@ class DataSyncService {
     // If we have cached data and don't need to force sync, return cached data
     // But still sync in background if internet is available
     if (cachedRoutes.isNotEmpty && !forceSync && hasInternet) {
-      logInfo('🛣️ Returning cached routes and syncing in background');
+      if (isFirstTimeLoad) {
+        logInfo(
+          '🛣️ ✅ DATA SOURCE: LOCAL STORAGE (Hive) - FIRST TIME using ${cachedRoutes.length} cached routes',
+        );
+      } else {
+        logInfo(
+          '🛣️ ✅ DATA SOURCE: LOCAL STORAGE (Hive) - SUBSEQUENT load with ${cachedRoutes.length} cached routes',
+        );
+      }
+      logInfo('🛣️ Background sync from Firebase will run in background...');
       _syncRoutesInBackground();
       return cachedRoutes;
     }
 
     // If we need fresh data or no cached data, fetch from remote
     if (hasInternet) {
+      if (isFirstTimeLoad) {
+        logInfo(
+          '🔄 DataSyncService: FIRST TIME fetching routes from FIREBASE (Remote)...',
+        );
+      } else {
+        logInfo(
+          '🔄 DataSyncService: FORCE SYNC fetching routes from FIREBASE (Remote)...',
+        );
+      }
       final List<RouteEntity> remoteRoutes = await _fetchRoutesFromRemote();
       if (remoteRoutes.isNotEmpty) {
+        if (isFirstTimeLoad) {
+          logInfo(
+            '🔥 DataSyncService: ✅ DATA SOURCE: FIREBASE - FIRST TIME loaded ${remoteRoutes.length} routes',
+          );
+        } else {
+          logInfo(
+            '🔥 DataSyncService: ✅ DATA SOURCE: FIREBASE - FORCE SYNC loaded ${remoteRoutes.length} routes',
+          );
+        }
         await _routeLocalDataSource.cacheRoutes(remoteRoutes);
         await _routeLocalDataSource.updateLastRouteSyncTime();
-        logInfo('🛣️ Routes synced and cached successfully');
+        logInfo(
+          '🛣️ Routes synced from Firebase and cached to Hive successfully',
+        );
         return remoteRoutes;
       }
     }
 
     // Fallback to cached data if available
+    logInfo(
+      '🛣️ ⚠️ FALLBACK: Using LOCAL STORAGE (Hive) - ${cachedRoutes.length} routes',
+    );
     return cachedRoutes;
   }
 
   /// Get routes for specific bus ID from cache
   Future<List<RouteEntity>> getRoutesByBusId(String busId) async {
-    return await _routeLocalDataSource.getCachedRoutesByBusId(busId);
+    logInfo(
+      '🛣️ DataSyncService: Loading routes for busId: $busId from LOCAL STORAGE (Hive)',
+    );
+    final routes = await _routeLocalDataSource.getCachedRoutesByBusId(busId);
+    logInfo(
+      '📱 DataSyncService: ✅ DATA SOURCE: LOCAL STORAGE (Hive) - Found ${routes.length} routes for bus: $busId',
+    );
+    return routes;
   }
 
   /// Force sync all data
@@ -142,12 +251,17 @@ class DataSyncService {
   /// Background sync for buses
   Future<void> _syncBusesInBackground() async {
     catchFutureOrVoid(() async {
-      logInfo('🚌 Background syncing buses...');
+      logInfo('🚌 🔄 Background syncing buses from FIREBASE...');
       final List<BusEntity> remoteBuses = await _fetchBusesFromRemote();
       if (remoteBuses.isNotEmpty) {
+        logInfo(
+          '🔥 Background sync: ✅ DATA SOURCE: FIREBASE - Fetched ${remoteBuses.length} buses',
+        );
         await _busLocalDataSource.cacheBuses(remoteBuses);
         await _busLocalDataSource.updateLastBusSyncTime();
-        logInfo('🚌 Background bus sync completed');
+        logInfo('🚌 Background bus sync completed - Cached to Hive');
+      } else {
+        logWarning('🚌 Background sync: ⚠️ No buses fetched from Firebase');
       }
     });
   }
@@ -155,12 +269,17 @@ class DataSyncService {
   /// Background sync for routes
   Future<void> _syncRoutesInBackground() async {
     catchFutureOrVoid(() async {
-      logInfo('🛣️ Background syncing routes...');
+      logInfo('🛣️ 🔄 Background syncing routes from FIREBASE...');
       final List<RouteEntity> remoteRoutes = await _fetchRoutesFromRemote();
       if (remoteRoutes.isNotEmpty) {
+        logInfo(
+          '🔥 Background sync: ✅ DATA SOURCE: FIREBASE - Fetched ${remoteRoutes.length} routes',
+        );
         await _routeLocalDataSource.cacheRoutes(remoteRoutes);
         await _routeLocalDataSource.updateLastRouteSyncTime();
-        logInfo('🛣️ Background route sync completed');
+        logInfo('🛣️ Background route sync completed - Cached to Hive');
+      } else {
+        logWarning('🛣️ Background sync: ⚠️ No routes fetched from Firebase');
       }
     });
   }

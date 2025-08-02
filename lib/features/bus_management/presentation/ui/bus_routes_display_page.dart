@@ -4,6 +4,8 @@ import 'package:dhaka_bus/core/widgets/presentable_widget_builder.dart';
 import 'package:dhaka_bus/features/bus_management/bus_management_export.dart';
 import 'package:dhaka_bus/features/bus_management/presentation/widgets/search_section.dart';
 import 'package:dhaka_bus/shared/components/custom_app_bar_widget.dart';
+import 'package:dhaka_bus/shared/components/skeleton_widgets/bus_route_card_skeleton.dart';
+import 'package:dhaka_bus/shared/components/data_source_indicator.dart';
 import 'package:flutter/material.dart';
 
 class BusRoutesDisplayPage extends StatelessWidget {
@@ -29,6 +31,10 @@ class BusRoutesDisplayPage extends StatelessWidget {
         body: Column(
           children: [
             SearchSection(busPresenter: busPresenter),
+            // Data source indicator
+            if (!busPresenter.currentUiState.isLoading &&
+                busPresenter.currentUiState.lastDataSource != null)
+              _buildDataSourceIndicator(),
             _buildBusRoutesList(),
           ],
         ),
@@ -36,12 +42,95 @@ class BusRoutesDisplayPage extends StatelessWidget {
     );
   }
 
+  Widget _buildDataSourceIndicator() {
+    final dataSource = busPresenter.currentUiState.lastDataSource;
+    final isFirstTime = busPresenter.currentUiState.isFirstTimeLoad;
+
+    DataSource sourceType;
+    String? customMessage;
+
+    switch (dataSource) {
+      case 'firebase':
+        sourceType = DataSource.firebase;
+        customMessage = isFirstTime
+            ? '🔥 প্রথমবার Firebase থেকে ডেটা লোড হয়েছে'
+            : '🔄 Firebase থেকে আপডেট করা হয়েছে';
+        break;
+      case 'localStorage':
+        sourceType = DataSource.localStorage;
+        customMessage = '⚡ Local Storage থেকে দ্রুত লোড হয়েছে';
+        break;
+      case 'loading':
+        sourceType = DataSource.loading;
+        break;
+      default:
+        return const SizedBox.shrink();
+    }
+
+    return DataSourceIndicator(
+      dataSource: sourceType,
+      customMessage: customMessage,
+      margin: const EdgeInsets.symmetric(horizontal: 20, vertical: 8),
+    );
+  }
+
   Widget _buildBusRoutesList() {
+    final bool isLoading = busPresenter.currentUiState.isLoading;
     final bool isSearchActive =
         busPresenter.currentUiState.searchQuery.isNotEmpty;
     final List<BusEntity> busesToDisplay = isSearchActive
         ? busPresenter.currentUiState.searchResults
         : busPresenter.currentUiState.allBuses;
+
+    // Show skeleton loading when data is being loaded
+    if (isLoading && busesToDisplay.isEmpty) {
+      return Expanded(
+        child: Column(
+          children: [
+            // Loading status indicator
+            Container(
+              margin: const EdgeInsets.symmetric(horizontal: 20, vertical: 16),
+              padding: const EdgeInsets.all(16),
+              decoration: BoxDecoration(
+                color: Colors.blue.shade50,
+                borderRadius: BorderRadius.circular(12),
+                border: Border.all(color: Colors.blue.shade200),
+              ),
+              child: Row(
+                children: [
+                  SizedBox(
+                    width: 20,
+                    height: 20,
+                    child: CircularProgressIndicator(
+                      strokeWidth: 2,
+                      valueColor: AlwaysStoppedAnimation<Color>(
+                        Colors.blue.shade600,
+                      ),
+                    ),
+                  ),
+                  const SizedBox(width: 12),
+                  Text(
+                    'ডেটা লোড হচ্ছে... (Firebase/Local Storage থেকে)',
+                    style: TextStyle(
+                      color: Colors.blue.shade800,
+                      fontWeight: FontWeight.w500,
+                    ),
+                  ),
+                ],
+              ),
+            ),
+            // Skeleton cards
+            Expanded(
+              child: ListView.builder(
+                padding: _horizontalPadding,
+                itemCount: 8, // Show 8 skeleton cards while loading
+                itemBuilder: (context, index) => const BusRouteCardSkeleton(),
+              ),
+            ),
+          ],
+        ),
+      );
+    }
 
     if (busesToDisplay.isEmpty && isSearchActive) {
       return const Expanded(

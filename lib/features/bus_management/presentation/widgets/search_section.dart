@@ -31,26 +31,68 @@ class SearchSection extends StatelessWidget {
             child: Column(
               mainAxisSize: MainAxisSize.min,
               children: [
+                // Show loading message if stops are not loaded yet
+                if (busPresenter.currentUiState.uniqueStops.isEmpty &&
+                    busPresenter.currentUiState.isLoading)
+                  Container(
+                    padding: const EdgeInsets.all(12),
+                    margin: const EdgeInsets.only(bottom: 16),
+                    decoration: BoxDecoration(
+                      color: Colors.orange.shade50,
+                      borderRadius: BorderRadius.circular(8),
+                      border: Border.all(color: Colors.orange.shade200),
+                    ),
+                    child: Row(
+                      children: [
+                        SizedBox(
+                          width: 16,
+                          height: 16,
+                          child: CircularProgressIndicator(
+                            strokeWidth: 2,
+                            valueColor: AlwaysStoppedAnimation<Color>(
+                              Colors.orange.shade600,
+                            ),
+                          ),
+                        ),
+                        const SizedBox(width: 8),
+                        Text(
+                          'স্টপের তালিকা লোড হচ্ছে...',
+                          style: TextStyle(
+                            color: Colors.orange.shade800,
+                            fontSize: 12,
+                            fontWeight: FontWeight.w500,
+                          ),
+                        ),
+                      ],
+                    ),
+                  ),
                 _buildAutocompleteField(
                   hintText: 'Enter starting station name',
                   controller: busPresenter.startingStationNameController,
                   options: busPresenter.currentUiState.uniqueStops,
+                  isEnabled: busPresenter.currentUiState.uniqueStops.isNotEmpty,
                 ),
                 gapH16,
                 _buildAutocompleteField(
                   hintText: 'Enter destination station name',
                   controller: busPresenter.destinationStationNameController,
                   options: busPresenter.currentUiState.uniqueStops,
+                  isEnabled: busPresenter.currentUiState.uniqueStops.isNotEmpty,
                 ),
                 gapH16,
                 SubmitButton(
                   title: 'Search',
-                  buttonColor: Theme.of(context).primaryColor,
+                  buttonColor:
+                      busPresenter.currentUiState.uniqueStops.isNotEmpty
+                      ? Theme.of(context).primaryColor
+                      : Colors.grey,
                   textColor: Colors.white,
                   theme: Theme.of(context),
-                  onTap: () {
-                    busPresenter.findBusesByRoute();
-                  },
+                  onTap: busPresenter.currentUiState.uniqueStops.isNotEmpty
+                      ? () {
+                          busPresenter.findBusesByRoute();
+                        }
+                      : null,
                 ),
               ],
             ),
@@ -65,10 +107,11 @@ class SearchSection extends StatelessWidget {
     required String hintText,
     required TextEditingController controller,
     required List<String> options,
+    bool isEnabled = true,
   }) {
     return Autocomplete<String>(
       optionsBuilder: (TextEditingValue textEditingValue) {
-        if (textEditingValue.text.isEmpty) {
+        if (textEditingValue.text.isEmpty || !isEnabled) {
           return const Iterable<String>.empty();
         }
         return options.where((String option) {
@@ -78,7 +121,9 @@ class SearchSection extends StatelessWidget {
         });
       },
       onSelected: (String selection) {
-        controller.text = selection;
+        if (isEnabled) {
+          controller.text = selection;
+        }
       },
       fieldViewBuilder:
           (
@@ -95,16 +140,18 @@ class SearchSection extends StatelessWidget {
 
             return UserInputField(
               textEditingController: fieldController,
-              hintText: hintText,
+              hintText: isEnabled ? hintText : 'স্টপের তালিকা লোড হচ্ছে...',
               focusNode: fieldFocusNode,
               prefixIconPath: SvgPath.icSearch,
-              fillColor: _inputFieldColor,
-              onTapSuffixIcon: () {
-                fieldController.clear();
-                controller.clear();
-                busPresenter.clearSearch();
-              },
-              suffixIconPath: fieldController.text.isNotEmpty
+              fillColor: isEnabled ? _inputFieldColor : Colors.grey.shade200,
+              onTapSuffixIcon: isEnabled
+                  ? () {
+                      fieldController.clear();
+                      controller.clear();
+                      busPresenter.clearSearch();
+                    }
+                  : null,
+              suffixIconPath: (fieldController.text.isNotEmpty && isEnabled)
                   ? SvgPath.icCross
                   : null,
             );

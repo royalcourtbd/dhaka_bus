@@ -15,6 +15,8 @@ class BusUiState extends BaseUiState {
     required this.busRoutes, // Routes for selected bus
     required this.expandedCardId, // Track which card is currently expanded
     required this.uniqueStops,
+    this.lastDataSource,
+    this.isFirstTimeLoad = false,
   });
 
   factory BusUiState.empty() {
@@ -29,6 +31,8 @@ class BusUiState extends BaseUiState {
       busRoutes: {},
       expandedCardId: null,
       uniqueStops: [],
+      lastDataSource: null,
+      isFirstTimeLoad: false,
     );
   }
 
@@ -41,6 +45,8 @@ class BusUiState extends BaseUiState {
   final String?
   expandedCardId; // Track which card is currently expanded (null means none)
   final List<String> uniqueStops;
+  final String? lastDataSource; // Track where data was loaded from
+  final bool isFirstTimeLoad; // Track if this is first time loading
 
   @override
   List<Object?> get props => [
@@ -54,8 +60,9 @@ class BusUiState extends BaseUiState {
     busRoutes,
     expandedCardId,
     uniqueStops,
+    lastDataSource,
+    isFirstTimeLoad,
   ];
-
   BusUiState copyWith({
     bool? isLoading,
     String? userMessage,
@@ -69,6 +76,8 @@ class BusUiState extends BaseUiState {
     bool clearExpandedCardId =
         false, // Flag to explicitly set expandedCardId to null
     List<String>? uniqueStops,
+    String? lastDataSource,
+    bool? isFirstTimeLoad,
   }) {
     return BusUiState(
       isLoading: isLoading ?? this.isLoading,
@@ -83,6 +92,8 @@ class BusUiState extends BaseUiState {
           ? null
           : (expandedCardId ?? this.expandedCardId),
       uniqueStops: uniqueStops ?? this.uniqueStops,
+      lastDataSource: lastDataSource ?? this.lastDataSource,
+      isFirstTimeLoad: isFirstTimeLoad ?? this.isFirstTimeLoad,
     );
   }
 }

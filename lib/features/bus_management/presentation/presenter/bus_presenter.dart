@@ -30,20 +30,52 @@ class BusPresenter extends BasePresenter<BusUiState> {
   @override
   void onInit() {
     super.onInit();
-    loadBusesAndRoutes(forceSync: true);
+    loadBusesAndRoutes(
+      forceSync: false,
+    ); // Changed from true to false for normal cache-first behavior
   }
 
   /// Load all buses and routes together (cache-first strategy)
   Future<void> loadBusesAndRoutes({bool forceSync = false}) async {
-    log('🚌 BusPresenter: Loading buses and routes... (forceSync: $forceSync)');
+    final syncType = forceSync ? 'FORCE SYNC' : 'CACHE-FIRST';
+    log('🚌 BusPresenter: Loading buses and routes... (strategy: $syncType)');
+
+    // Check if this is first time load
+    final busSync = await _dataSyncService.getSyncStatus();
+    final isFirstTime = busSync['needsSync'] == true;
 
     await executeTaskWithLoading(() async {
+      // Update UI state to indicate first time load
+      uiState.value = currentUiState.copyWith(
+        isFirstTimeLoad: isFirstTime,
+        lastDataSource: 'loading',
+      );
+
       // Load buses first (from cache, then sync if needed)
       await parseDataFromEitherWithUserMessage<List<BusEntity>>(
         task: () => _getAllActiveBusesUseCase.execute(forceSync: forceSync),
         onDataLoaded: (List<BusEntity> buses) {
-          log('🚌 BusPresenter: Loaded ${buses.length} buses');
-          uiState.value = currentUiState.copyWith(allBuses: buses);
+          log(
+            '🚌 BusPresenter: ✅ Successfully loaded ${buses.length} buses in UI State',
+          );
+
+          // Determine data source based on DataSyncService behavior:
+          // - forceSync=true: Always tries Firebase first
+          // - forceSync=false + isFirstTime=true: Cache empty, goes to Firebase
+          // - forceSync=false + isFirstTime=false: Uses cache (localStorage)
+          String dataSource;
+          if (forceSync) {
+            dataSource = 'firebase';
+          } else if (isFirstTime) {
+            dataSource = 'firebase'; // First time always fetches from Firebase
+          } else {
+            dataSource = 'localStorage'; // Subsequent loads use cache
+          }
+
+          uiState.value = currentUiState.copyWith(
+            allBuses: buses,
+            lastDataSource: dataSource,
+          );
         },
       );
 
@@ -51,7 +83,9 @@ class BusPresenter extends BasePresenter<BusUiState> {
       await parseDataFromEitherWithUserMessage<List<RouteEntity>>(
         task: () => _getRoutesUseCase.execute(forceSync: forceSync),
         onDataLoaded: (List<RouteEntity> routes) {
-          log('🛣️ BusPresenter: Loaded ${routes.length} routes');
+          log(
+            '🛣️ BusPresenter: ✅ Successfully loaded ${routes.length} routes in UI State',
+          );
 
           // Group routes by bus_id for quick lookup
           final Map<String, List<RouteEntity>> busRoutesMap = {};
@@ -79,6 +113,10 @@ class BusPresenter extends BasePresenter<BusUiState> {
             allRoutes: routes,
             busRoutes: busRoutesMap,
             uniqueStops: uniqueStopsList,
+          );
+
+          log(
+            '🎯 BusPresenter: ✅ DATA LOADING COMPLETE - UI State updated with all data',
           );
         },
       );

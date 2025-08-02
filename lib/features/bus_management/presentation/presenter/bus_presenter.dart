@@ -66,13 +66,64 @@ class BusPresenter extends BasePresenter<BusUiState> {
             '🛣️ BusPresenter: Grouped routes for ${busRoutesMap.keys.length} unique buses',
           );
 
+          //Create a unique stops list
+
+          final Set<String> uniqueStopsSet = {};
+          for (final route in routes) {
+            uniqueStopsSet.addAll(route.stops);
+          }
+
+          final List<String> uniqueStopsList = uniqueStopsSet.toList()..sort();
+
           uiState.value = currentUiState.copyWith(
             allRoutes: routes,
             busRoutes: busRoutesMap,
+            uniqueStops: uniqueStopsList,
           );
         },
       );
     });
+  }
+
+  /// Search for buses that travel between the selected origin and destination
+  void findBusesByRoute() {
+    final String origin = startingStationNameController.text.trim();
+    final String destination = destinationStationNameController.text.trim();
+
+    if (origin.isEmpty || destination.isEmpty) {
+      clearSearch();
+      addUserMessage('Please select both origin and destination.');
+      return;
+    }
+
+    final List<BusEntity> allBuses = currentUiState.allBuses;
+    final Map<String, List<RouteEntity>> allBusRoutes =
+        currentUiState.busRoutes;
+    final List<BusEntity> filteredBuses = [];
+
+    for (final bus in allBuses) {
+      final List<RouteEntity>? routesForBus = allBusRoutes[bus.busId];
+      if (routesForBus != null) {
+        for (final route in routesForBus) {
+          final int originIndex = route.stops.indexOf(origin);
+          final int destinationIndex = route.stops.indexOf(destination);
+
+          // Check if both stops exist and origin comes before destination
+          if (originIndex != -1 &&
+              destinationIndex != -1 &&
+              originIndex < destinationIndex) {
+            filteredBuses.add(bus);
+            break; // Bus found, move to the next bus
+          }
+        }
+      }
+    }
+
+    log('Found ${filteredBuses.length} buses for route $origin → $destination');
+    uiState.value = currentUiState.copyWith(
+      searchResults: filteredBuses,
+      searchQuery: '$origin-$destination',
+    );
   }
 
   /// Load all buses (cache-first strategy)

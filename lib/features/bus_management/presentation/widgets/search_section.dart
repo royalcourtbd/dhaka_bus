@@ -1,4 +1,4 @@
-import 'package:dhaka_bus/core/external_libs/user_input_field/src/user_input_field_widget.dart';
+import 'package:dhaka_bus/core/external_libs/user_input_field/user_input_field.dart';
 import 'package:dhaka_bus/core/static/svg_path.dart';
 import 'package:dhaka_bus/core/static/ui_const.dart';
 import 'package:dhaka_bus/features/bus_management/bus_management_export.dart';
@@ -28,25 +28,26 @@ class SearchSection extends StatelessWidget {
             child: Column(
               mainAxisSize: MainAxisSize.min,
               children: [
-                _buildInputField(
+                _buildAutocompleteField(
                   hintText: 'Enter starting station name',
-                  textEditingController:
-                      busPresenter.startingStationNameController,
+                  controller: busPresenter.startingStationNameController,
+                  options: busPresenter.currentUiState.uniqueStops,
                 ),
                 gapH16,
-                _buildInputField(
+                _buildAutocompleteField(
                   hintText: 'Enter destination station name',
-                  textEditingController:
-                      busPresenter.destinationStationNameController,
+                  controller: busPresenter.destinationStationNameController,
+                  options: busPresenter.currentUiState.uniqueStops,
                 ),
-
                 gapH16,
                 SubmitButton(
                   title: 'Search',
                   buttonColor: Theme.of(context).primaryColor,
                   textColor: Colors.white,
                   theme: Theme.of(context),
-                  onTap: () {},
+                  onTap: () {
+                    busPresenter.findBusesByRoute();
+                  },
                 ),
               ],
             ),
@@ -57,16 +58,113 @@ class SearchSection extends StatelessWidget {
     );
   }
 
-  UserInputField _buildInputField({
+  Widget _buildAutocompleteField({
     required String hintText,
-    required TextEditingController textEditingController,
+    required TextEditingController controller,
+    required List<String> options,
   }) {
-    return UserInputField(
-      contentPadding: const EdgeInsets.symmetric(vertical: 10),
-      hintText: hintText,
-      fillColor: _inputFieldColor,
-      prefixIconPath: SvgPath.icSearch,
-      textEditingController: textEditingController,
+    return Autocomplete<String>(
+      optionsBuilder: (TextEditingValue textEditingValue) {
+        if (textEditingValue.text.isEmpty) {
+          return const Iterable<String>.empty();
+        }
+        return options.where((String option) {
+          return option.toLowerCase().contains(
+            textEditingValue.text.toLowerCase(),
+          );
+        });
+      },
+      onSelected: (String selection) {
+        controller.text = selection;
+      },
+      fieldViewBuilder:
+          (
+            BuildContext context,
+            TextEditingController fieldController,
+            FocusNode fieldFocusNode,
+            VoidCallback onFieldSubmitted,
+          ) {
+            // Sync presenter's controller with field's controller
+            fieldController.text = controller.text;
+            fieldController.addListener(() {
+              controller.text = fieldController.text;
+            });
+
+            return UserInputField(
+              textEditingController: fieldController,
+              hintText: hintText,
+              focusNode: fieldFocusNode,
+              prefixIconPath: SvgPath.icSearch,
+              fillColor: _inputFieldColor,
+              suffixIconPath: fieldController.text.isNotEmpty
+                  ? SvgPath.icSearch
+                  : null,
+            );
+
+            // return TextField(
+            //   controller: fieldController,
+            //   focusNode: fieldFocusNode,
+            //   decoration: InputDecoration(
+            //     contentPadding: const EdgeInsets.symmetric(
+            //       vertical: 10,
+            //       horizontal: 15,
+            //     ),
+            //     hintText: hintText,
+            //     filled: true,
+            //     fillColor: _inputFieldColor,
+            //     prefixIcon: Padding(
+            //       padding: const EdgeInsets.all(12.0),
+            //       child: Icon(Icons.search),
+            //     ),
+            //     border: OutlineInputBorder(
+            //       borderRadius: BorderRadius.circular(twelvePx),
+            //       borderSide: BorderSide.none,
+            //     ),
+            //     suffixIcon: fieldController.text.isNotEmpty
+            //         ? IconButton(
+            //             icon: const Icon(Icons.clear),
+            //             onPressed: () {
+            //               fieldController.clear();
+            //               controller.clear();
+            //               busPresenter.clearSearch();
+            //             },
+            //           )
+            //         : null,
+            //   ),
+            // );
+          },
+      optionsViewBuilder:
+          (
+            BuildContext context,
+            AutocompleteOnSelected<String> onSelected,
+            Iterable<String> options,
+          ) {
+            return Align(
+              alignment: Alignment.topLeft,
+              child: Material(
+                elevation: 4.0,
+                child: ConstrainedBox(
+                  constraints: const BoxConstraints(maxHeight: 250),
+                  child: ListView.builder(
+                    padding: EdgeInsets.zero,
+                    itemCount: options.length,
+                    itemBuilder: (BuildContext context, int index) {
+                      final String option = options.elementAt(index);
+                      return InkWell(
+                        onTap: () {
+                          onSelected(option);
+                        },
+                        child: Padding(
+                          padding: const EdgeInsets.all(16.0),
+                          child: Text(option),
+                        ),
+                      );
+                    },
+                  ),
+                ),
+              ),
+            );
+          },
     );
   }
 }

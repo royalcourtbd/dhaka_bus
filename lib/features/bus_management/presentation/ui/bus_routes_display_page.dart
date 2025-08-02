@@ -37,19 +37,32 @@ class BusRoutesDisplayPage extends StatelessWidget {
   }
 
   Widget _buildBusRoutesList() {
+    final bool isSearchActive =
+        busPresenter.currentUiState.searchQuery.isNotEmpty;
+    final List<BusEntity> busesToDisplay = isSearchActive
+        ? busPresenter.currentUiState.searchResults
+        : busPresenter.currentUiState.allBuses;
+
+    if (busesToDisplay.isEmpty && isSearchActive) {
+      return const Expanded(
+        child: Center(child: Text('No buses found for the selected route.')),
+      );
+    }
+
     return Expanded(
       child: ListView.builder(
         padding: _horizontalPadding,
-        itemCount: busPresenter.currentUiState.allBuses.length,
-        itemBuilder: (context, index) => _buildBusRouteCard(index),
+        itemCount: busesToDisplay.length,
+        itemBuilder: (context, index) =>
+            _buildBusRouteCard(index, busesToDisplay),
       ),
     );
   }
 
-  Widget _buildBusRouteCard(int index) {
-    final bus = busPresenter.currentUiState.allBuses[index];
+  Widget _buildBusRouteCard(int index, List<BusEntity> buses) {
+    final bus = buses[index];
     final routes = busPresenter.currentUiState.busRoutes[bus.busId] ?? [];
-    final cardId = 'route_$index';
+    final cardId = 'route_${bus.busId}_$index';
 
     // Calculate route data once and cache it
     final routeData = _calculateRouteData(routes);

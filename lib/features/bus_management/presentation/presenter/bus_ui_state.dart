@@ -14,6 +14,7 @@ class BusUiState extends BaseUiState {
     required this.allRoutes,
     required this.busRoutes, // Routes for selected bus
     required this.expandedCardId, // Track which card is currently expanded
+    required this.uniqueStops,
   });
 
   factory BusUiState.empty() {
@@ -27,6 +28,7 @@ class BusUiState extends BaseUiState {
       allRoutes: [],
       busRoutes: {},
       expandedCardId: null,
+      uniqueStops: [],
     );
   }
 
@@ -38,6 +40,7 @@ class BusUiState extends BaseUiState {
   final Map<String, List<RouteEntity>> busRoutes; // bus_id -> routes mapping
   final String?
   expandedCardId; // Track which card is currently expanded (null means none)
+  final List<String> uniqueStops;
 
   @override
   List<Object?> get props => [
@@ -50,6 +53,7 @@ class BusUiState extends BaseUiState {
     allRoutes,
     busRoutes,
     expandedCardId,
+    uniqueStops,
   ];
 
   BusUiState copyWith({
@@ -64,6 +68,7 @@ class BusUiState extends BaseUiState {
     String? expandedCardId,
     bool clearExpandedCardId =
         false, // Flag to explicitly set expandedCardId to null
+    List<String>? uniqueStops,
   }) {
     return BusUiState(
       isLoading: isLoading ?? this.isLoading,
@@ -77,6 +82,7 @@ class BusUiState extends BaseUiState {
       expandedCardId: clearExpandedCardId
           ? null
           : (expandedCardId ?? this.expandedCardId),
+      uniqueStops: uniqueStops ?? this.uniqueStops,
     );
   }
 }

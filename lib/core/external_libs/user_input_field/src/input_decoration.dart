@@ -13,6 +13,7 @@ InputDecoration userInputDecoration({
   EdgeInsetsGeometry? contentPadding,
   VoidCallback? onTapSuffixIcon,
   Color? prefixIconColor,
+  bool showPrefixIcon = true,
   double? borderWidth,
   Color? borderColor,
   Color? focusedBorderColor,
@@ -25,11 +26,16 @@ InputDecoration userInputDecoration({
   final TextTheme textTheme = theme.textTheme;
 
   return InputDecoration(
+    counterText: '',
+    errorStyle: TextStyle(height: 0, fontSize: 0),
+    counterStyle: TextStyle(height: 0, fontSize: 0),
+
     enabled: enabled,
     border: outlineInputBorder(
       context: context,
       borderRadius: borderRadius,
       borderWidth: borderWidth ?? 0.8,
+
       borderColor:
           errorText != null ? Colors.red : (borderColor ?? Colors.transparent),
     ),
@@ -42,6 +48,7 @@ InputDecoration userInputDecoration({
               ? Colors.red
               : (focusedBorderColor ?? borderColor ?? Colors.transparent),
     ),
+
     enabledBorder: outlineInputBorder(
       context: context,
       borderRadius: borderRadius,
@@ -92,28 +99,30 @@ InputDecoration userInputDecoration({
             )
             : null,
     prefixIcon:
-        prefixIconPath != null && prefixIconPath.isNotEmpty
-            ? Padding(
-              padding: const EdgeInsets.all(5),
-              child: SvgPicture.asset(
-                prefixIconPath,
-                fit: BoxFit.scaleDown,
-                height: 22,
-                width: 22,
-                colorFilter: ColorFilter.mode(
-                  prefixIconColor ?? theme.colorScheme.primary,
-                  BlendMode.srcIn,
-                ),
-              ),
-            )
-            : Padding(
-              padding: const EdgeInsets.all(5),
-              child: Icon(
-                Icons.search,
-                size: 22,
-                color: prefixIconColor ?? theme.colorScheme.primary,
-              ),
-            ),
+        showPrefixIcon
+            ? (prefixIconPath != null && prefixIconPath.isNotEmpty
+                ? Padding(
+                  padding: const EdgeInsets.all(5),
+                  child: SvgPicture.asset(
+                    prefixIconPath,
+                    fit: BoxFit.scaleDown,
+                    height: 22,
+                    width: 22,
+                    colorFilter: ColorFilter.mode(
+                      prefixIconColor ?? theme.colorScheme.primary,
+                      BlendMode.srcIn,
+                    ),
+                  ),
+                )
+                : Padding(
+                  padding: const EdgeInsets.all(5),
+                  child: Icon(
+                    Icons.search,
+                    size: 22,
+                    color: prefixIconColor ?? theme.colorScheme.primary,
+                  ),
+                ))
+            : null,
   );
 }
 

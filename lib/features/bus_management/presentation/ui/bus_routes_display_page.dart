@@ -14,7 +14,7 @@ class BusRoutesDisplayPage extends StatelessWidget {
   final BusPresenter busPresenter = locate<BusPresenter>();
 
   // Cache commonly used values
-  static const String _defaultRouteText = 'রুট তথ্য নেই';
+  static const String _defaultRouteText = 'Route Information Not Available';
   static const EdgeInsets _horizontalPadding = EdgeInsets.symmetric(
     horizontal: 20.0,
   );
@@ -53,12 +53,12 @@ class BusRoutesDisplayPage extends StatelessWidget {
       case 'firebase':
         sourceType = DataSource.firebase;
         customMessage = isFirstTime
-            ? '🔥 প্রথমবার Firebase থেকে ডেটা লোড হয়েছে'
-            : '🔄 Firebase থেকে আপডেট করা হয়েছে';
+            ? '🔥 First time loading from Firebase'
+            : '🔄 Updated from Firebase';
         break;
       case 'localStorage':
         sourceType = DataSource.localStorage;
-        customMessage = '⚡ Local Storage থেকে দ্রুত লোড হয়েছে';
+        customMessage = '⚡ Quickly loaded from Local Storage';
         break;
       case 'loading':
         sourceType = DataSource.loading;
@@ -97,6 +97,7 @@ class BusRoutesDisplayPage extends StatelessWidget {
                 border: Border.all(color: Colors.blue.shade200),
               ),
               child: Row(
+                mainAxisAlignment: MainAxisAlignment.center,
                 children: [
                   SizedBox(
                     width: 20,
@@ -110,7 +111,7 @@ class BusRoutesDisplayPage extends StatelessWidget {
                   ),
                   const SizedBox(width: 12),
                   Text(
-                    'ডেটা লোড হচ্ছে... (Firebase/Local Storage থেকে)',
+                    'Data Loading...',
                     style: TextStyle(
                       color: Colors.blue.shade800,
                       fontWeight: FontWeight.w500,

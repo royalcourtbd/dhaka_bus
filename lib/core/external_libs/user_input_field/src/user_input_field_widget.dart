@@ -1,5 +1,6 @@
-import 'package:dhaka_bus/core/external_libs/user_input_field/src/custom_text_selection_toolbar.dart';
-import 'package:dhaka_bus/core/external_libs/user_input_field/src/input_decoration.dart';
+import 'package:dua/core/external_libs/custom_library/user_input_field/src/custom_text_selection_toolbar.dart';
+import 'package:dua/core/external_libs/custom_library/user_input_field/src/input_decoration.dart';
+import 'package:dua/core/utility/utility.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 
@@ -10,6 +11,9 @@ class UserInputField extends StatelessWidget {
     required this.hintText,
     this.onTapSuffixIcon,
     this.maxLength = 50,
+    this.textAlign = TextAlign.start,
+    this.showPrefixIcon = true,
+    this.validator,
     this.onChanged,
     this.borderRadius,
     this.prefixIconPath,
@@ -78,7 +82,11 @@ class UserInputField extends StatelessWidget {
 
   final VoidCallback? onTapSuffixIcon;
 
+  final bool showPrefixIcon;
+
   final int maxLength;
+  final String? Function(String?)? validator;
+  final TextAlign textAlign;
 
   @override
   Widget build(BuildContext context) {
@@ -97,7 +105,10 @@ class UserInputField extends StatelessWidget {
 
     return TextFormField(
       style: theme.textTheme.titleMedium!.copyWith(fontWeight: FontWeight.w400),
+
       focusNode: focusNode,
+      textAlign: textAlign,
+      validator: validator,
       onTapOutside: (event) => FocusScope.of(context).unfocus(),
       cursorColor: theme.colorScheme.primary,
       keyboardType: keyboardType ?? TextInputType.text,
@@ -114,25 +125,36 @@ class UserInputField extends StatelessWidget {
       decoration: userInputDecoration(
         context: context,
         hintText: hintText,
-        contentPadding: contentPadding ?? const EdgeInsets.only(right: 15),
+        contentPadding:
+            contentPadding ??
+            (showPrefixIcon
+                ? const EdgeInsets.only(right: 15)
+                : const EdgeInsets.symmetric(horizontal: 15)),
         prefixIconColor: prefixIconColor ?? theme.colorScheme.primary,
         prefixIconPath: prefixIconPath ?? '',
+        showPrefixIcon: showPrefixIcon,
         suffixIconPath: suffixIconPath,
         suffixIconColor: suffixIconColor,
         onTapSuffixIcon: onTapSuffixIcon,
         fillColor: fillColor ?? theme.inputDecorationTheme.fillColor,
         borderRadius: borderRadius ?? BorderRadius.circular(25),
-        borderColor: isError ? (errorBorderColor ?? Colors.red) : borderColor,
+        borderColor:
+            isError
+                ? (errorBorderColor ?? Colors.red)
+                : borderColor ?? context.color.primaryColor20,
         borderWidth: borderWidth,
-        focusedBorderColor: isError
-            ? (errorBorderColor ?? Colors.red)
-            : (focusedBorderColor ?? borderColor),
-        enabledBorderColor: isError
-            ? (errorBorderColor ?? Colors.red)
-            : (enabledBorderColor ?? borderColor),
-        disabledBorderColor: isError
-            ? (errorBorderColor ?? Colors.red)
-            : (disabledBorderColor ?? borderColor),
+        focusedBorderColor:
+            isError
+                ? (errorBorderColor ?? Colors.red)
+                : (focusedBorderColor ?? borderColor),
+        enabledBorderColor:
+            isError
+                ? (errorBorderColor ?? Colors.red)
+                : (enabledBorderColor ?? borderColor),
+        disabledBorderColor:
+            isError
+                ? (errorBorderColor ?? Colors.red)
+                : (disabledBorderColor ?? borderColor),
         hintStyle: hintStyle,
       ),
     );

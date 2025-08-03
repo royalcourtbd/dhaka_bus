@@ -55,8 +55,9 @@ class _BusRouteCardSkeletonState extends State<BusRouteCardSkeleton>
                   width: 50,
                   height: 50,
                   decoration: BoxDecoration(
-                    color: theme.colorScheme.surfaceContainerHighest
-                        .withOpacity(_animation.value),
+                    color: theme.colorScheme.surfaceContainerHighest.withAlpha(
+                      (_animation.value * 255).toInt(),
+                    ),
                     borderRadius: radius8,
                   ),
                 ),
@@ -74,7 +75,7 @@ class _BusRouteCardSkeletonState extends State<BusRouteCardSkeleton>
                         width: double.infinity,
                         decoration: BoxDecoration(
                           color: theme.colorScheme.surfaceContainerHighest
-                              .withOpacity(_animation.value),
+                              .withValues(alpha: _animation.value),
                           borderRadius: radius4,
                         ),
                       ),
@@ -87,7 +88,7 @@ class _BusRouteCardSkeletonState extends State<BusRouteCardSkeleton>
                         width: MediaQuery.of(context).size.width * 0.7,
                         decoration: BoxDecoration(
                           color: theme.colorScheme.surfaceContainerHighest
-                              .withOpacity(_animation.value * 0.7),
+                              .withValues(alpha: _animation.value * 0.7),
                           borderRadius: radius4,
                         ),
                       ),
@@ -100,8 +101,9 @@ class _BusRouteCardSkeletonState extends State<BusRouteCardSkeleton>
                   width: 24,
                   height: 24,
                   decoration: BoxDecoration(
-                    color: theme.colorScheme.surfaceContainerHighest
-                        .withOpacity(_animation.value * 0.5),
+                    color: theme.colorScheme.surfaceContainerHighest.withValues(
+                      alpha: _animation.value * 0.5,
+                    ),
                     borderRadius: radius12,
                   ),
                 ),

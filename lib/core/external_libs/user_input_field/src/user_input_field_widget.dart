@@ -1,6 +1,5 @@
-import 'package:dua/core/external_libs/custom_library/user_input_field/src/custom_text_selection_toolbar.dart';
-import 'package:dua/core/external_libs/custom_library/user_input_field/src/input_decoration.dart';
-import 'package:dua/core/utility/utility.dart';
+import 'package:dhaka_bus/core/external_libs/user_input_field/user_input_field.dart';
+import 'package:dhaka_bus/core/utility/extensions.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 
@@ -138,23 +137,19 @@ class UserInputField extends StatelessWidget {
         onTapSuffixIcon: onTapSuffixIcon,
         fillColor: fillColor ?? theme.inputDecorationTheme.fillColor,
         borderRadius: borderRadius ?? BorderRadius.circular(25),
-        borderColor:
-            isError
-                ? (errorBorderColor ?? Colors.red)
-                : borderColor ?? context.color.primaryColor20,
+        borderColor: isError
+            ? (errorBorderColor ?? Colors.red)
+            : borderColor ?? context.color.primaryColor,
         borderWidth: borderWidth,
-        focusedBorderColor:
-            isError
-                ? (errorBorderColor ?? Colors.red)
-                : (focusedBorderColor ?? borderColor),
-        enabledBorderColor:
-            isError
-                ? (errorBorderColor ?? Colors.red)
-                : (enabledBorderColor ?? borderColor),
-        disabledBorderColor:
-            isError
-                ? (errorBorderColor ?? Colors.red)
-                : (disabledBorderColor ?? borderColor),
+        focusedBorderColor: isError
+            ? (errorBorderColor ?? Colors.red)
+            : (focusedBorderColor ?? borderColor),
+        enabledBorderColor: isError
+            ? (errorBorderColor ?? Colors.red)
+            : (enabledBorderColor ?? borderColor),
+        disabledBorderColor: isError
+            ? (errorBorderColor ?? Colors.red)
+            : (disabledBorderColor ?? borderColor),
         hintStyle: hintStyle,
       ),
     );

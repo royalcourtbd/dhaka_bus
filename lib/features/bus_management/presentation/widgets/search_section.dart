@@ -21,6 +21,10 @@ class SearchSection extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    // Determine if the fields should be enabled based on whether stops are loaded.
+    final bool areStopsLoaded =
+        busPresenter.currentUiState.uniqueStops.isNotEmpty;
+
     return SizedBox(
       width: double.infinity,
       child: Stack(
@@ -31,64 +35,28 @@ class SearchSection extends StatelessWidget {
             child: Column(
               mainAxisSize: MainAxisSize.min,
               children: [
-                // Show loading message if stops are not loaded yet
-                if (busPresenter.currentUiState.uniqueStops.isEmpty &&
-                    busPresenter.currentUiState.isLoading)
-                  Container(
-                    padding: const EdgeInsets.all(12),
-                    margin: const EdgeInsets.only(bottom: 16),
-                    decoration: BoxDecoration(
-                      color: Colors.orange.shade50,
-                      borderRadius: BorderRadius.circular(8),
-                      border: Border.all(color: Colors.orange.shade200),
-                    ),
-                    child: Row(
-                      children: [
-                        SizedBox(
-                          width: 16,
-                          height: 16,
-                          child: CircularProgressIndicator(
-                            strokeWidth: 2,
-                            valueColor: AlwaysStoppedAnimation<Color>(
-                              Colors.orange.shade600,
-                            ),
-                          ),
-                        ),
-                        const SizedBox(width: 8),
-                        Text(
-                          'স্টপের তালিকা লোড হচ্ছে...',
-                          style: TextStyle(
-                            color: Colors.orange.shade800,
-                            fontSize: 12,
-                            fontWeight: FontWeight.w500,
-                          ),
-                        ),
-                      ],
-                    ),
-                  ),
                 _buildAutocompleteField(
                   hintText: 'Enter starting station name',
                   controller: busPresenter.startingStationNameController,
                   options: busPresenter.currentUiState.uniqueStops,
-                  isEnabled: busPresenter.currentUiState.uniqueStops.isNotEmpty,
+                  isEnabled: areStopsLoaded,
                 ),
                 gapH16,
                 _buildAutocompleteField(
                   hintText: 'Enter destination station name',
                   controller: busPresenter.destinationStationNameController,
                   options: busPresenter.currentUiState.uniqueStops,
-                  isEnabled: busPresenter.currentUiState.uniqueStops.isNotEmpty,
+                  isEnabled: areStopsLoaded,
                 ),
                 gapH16,
                 SubmitButton(
                   title: 'Search',
-                  buttonColor:
-                      busPresenter.currentUiState.uniqueStops.isNotEmpty
+                  buttonColor: areStopsLoaded
                       ? Theme.of(context).primaryColor
                       : Colors.grey,
                   textColor: Colors.white,
                   theme: Theme.of(context),
-                  onTap: busPresenter.currentUiState.uniqueStops.isNotEmpty
+                  onTap: areStopsLoaded
                       ? () {
                           busPresenter.findBusesByRoute();
                         }
@@ -109,18 +77,31 @@ class SearchSection extends StatelessWidget {
     required List<String> options,
     bool isEnabled = true,
   }) {
+    // Special identifier for the "no data found" case
+    const String noDataFound = 'No data found';
+
     return Autocomplete<String>(
       optionsBuilder: (TextEditingValue textEditingValue) {
         if (textEditingValue.text.isEmpty || !isEnabled) {
           return const Iterable<String>.empty();
         }
-        return options.where((String option) {
+        final List<String> matches = options.where((String option) {
           return option.toLowerCase().contains(
             textEditingValue.text.toLowerCase(),
           );
-        });
+        }).toList();
+
+        if (matches.isEmpty) {
+          // If no matches are found, return a list with our special identifier.
+          return [noDataFound];
+        }
+        return matches;
       },
       onSelected: (String selection) {
+        // If the user selects the "No data found" item, do nothing.
+        if (selection == noDataFound) {
+          return;
+        }
         if (isEnabled) {
           controller.text = selection;
         }
@@ -140,7 +121,7 @@ class SearchSection extends StatelessWidget {
 
             return UserInputField(
               textEditingController: fieldController,
-              hintText: isEnabled ? hintText : 'স্টপের তালিকা লোড হচ্ছে...',
+              hintText: isEnabled ? hintText : 'Loading stops...',
               focusNode: fieldFocusNode,
               prefixIconPath: SvgPath.icSearch,
               fillColor: isEnabled ? _inputFieldColor : Colors.grey.shade200,
@@ -162,6 +143,9 @@ class SearchSection extends StatelessWidget {
             AutocompleteOnSelected<String> onSelected,
             Iterable<String> options,
           ) {
+            final bool isNoDataFound =
+                options.length == 1 && options.first == noDataFound;
+
             return Align(
               alignment: Alignment.topLeft,
               child: Material(
@@ -169,49 +153,58 @@ class SearchSection extends StatelessWidget {
                 animationDuration: 300.inMilliseconds,
                 borderOnForeground: true,
                 borderRadius: radius15,
-                shadowColor: Color(0xff888888).withValues(alpha: .15),
-
+                shadowColor: const Color(0xff888888).withAlpha(38),
                 child: ConstrainedBox(
                   constraints: BoxConstraints(maxHeight: 40.percentHeight),
-                  child: ListView.builder(
-                    padding: EdgeInsets.zero,
-                    itemCount: options.length,
-                    itemBuilder: (BuildContext context, int index) {
-                      final String option = options.elementAt(index);
-                      final bool isLastItem = index == options.length - 1;
+                  child: isNoDataFound
+                      ? // If no data is found, show a simple message container
+                        Container(
+                          width: double.infinity,
+                          padding: const EdgeInsets.all(16),
+                          child: Text(noDataFound),
+                        )
+                      : // Otherwise, build the dynamic-height list
+                        ListView.builder(
+                          padding: EdgeInsets.zero,
+                          shrinkWrap:
+                              true, // This makes the list height dynamic
+                          itemCount: options.length,
+                          itemBuilder: (BuildContext context, int index) {
+                            final String option = options.elementAt(index);
+                            final bool isLastItem = index == options.length - 1;
 
-                      return OnTapWidget(
-                        onTap: () {
-                          onSelected(option);
-                        },
-                        child: Container(
-                          decoration: BoxDecoration(
-                            border: isLastItem
-                                ? null
-                                : Border(
-                                    bottom: BorderSide(
-                                      color: Color(0xffDEDEDE),
-                                      width: 0.5,
-                                    ),
-                                  ),
-                          ),
-                          child: Padding(
-                            padding: const EdgeInsets.all(16),
-                            child: Row(
-                              children: [
-                                Icon(
-                                  Icons.location_on_outlined,
-                                  color: Theme.of(context).primaryColor,
+                            return OnTapWidget(
+                              onTap: () {
+                                onSelected(option);
+                              },
+                              child: Container(
+                                decoration: BoxDecoration(
+                                  border: isLastItem
+                                      ? null
+                                      : const Border(
+                                          bottom: BorderSide(
+                                            color: Color(0xffDEDEDE),
+                                            width: 0.5,
+                                          ),
+                                        ),
                                 ),
-                                const SizedBox(width: 10),
-                                Text(option),
-                              ],
-                            ),
-                          ),
+                                child: Padding(
+                                  padding: const EdgeInsets.all(16),
+                                  child: Row(
+                                    children: [
+                                      Icon(
+                                        Icons.location_on_outlined,
+                                        color: Theme.of(context).primaryColor,
+                                      ),
+                                      const SizedBox(width: 10),
+                                      Text(option),
+                                    ],
+                                  ),
+                                ),
+                              ),
+                            );
+                          },
                         ),
-                      );
-                    },
-                  ),
                 ),
               ),
             );

@@ -17,7 +17,6 @@ class MainPage extends StatelessWidget {
     BusRoutesDisplayPage(),
     BusRoutesDisplayPage(),
     BusRoutesDisplayPage(),
-    BusRoutesDisplayPage(),
   ];
 
   @override

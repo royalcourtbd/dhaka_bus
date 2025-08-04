@@ -124,6 +124,7 @@ class BusPresenter extends BasePresenter<BusUiState> {
   }
 
   /// Search for buses that travel between the selected origin and destination
+  /// Supports bidirectional route search (both forward and reverse directions)
   void findBusesByRoute() {
     final String origin = startingStationNameController.text.trim();
     final String destination = destinationStationNameController.text.trim();
@@ -146,12 +147,21 @@ class BusPresenter extends BasePresenter<BusUiState> {
           final int originIndex = route.stops.indexOf(origin);
           final int destinationIndex = route.stops.indexOf(destination);
 
-          // Check if both stops exist and origin comes before destination
-          if (originIndex != -1 &&
-              destinationIndex != -1 &&
-              originIndex < destinationIndex) {
-            filteredBuses.add(bus);
-            break; // Bus found, move to the next bus
+          // Check if both stops exist in the route
+          if (originIndex != -1 && destinationIndex != -1) {
+            // Support bidirectional search:
+            // Forward: origin comes before destination (originIndex < destinationIndex)
+            // Reverse: origin comes after destination (originIndex > destinationIndex)
+            final bool isForwardRoute = originIndex < destinationIndex;
+            final bool isReverseRoute = originIndex > destinationIndex;
+
+            if (isForwardRoute || isReverseRoute) {
+              filteredBuses.add(bus);
+              log(
+                '🚌 Bus ${bus.busNameEn} matches route: ${isForwardRoute ? 'Forward' : 'Reverse'} direction',
+              );
+              break; // Bus found, move to the next bus
+            }
           }
         }
       }

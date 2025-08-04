@@ -94,7 +94,7 @@ class BusRouteCard extends StatelessWidget {
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [
           Text(
-            bus.busNameBn,
+            bus.busNameEn,
             maxLines: _maxTitleLines,
             overflow: TextOverflow.ellipsis,
             style: theme.textTheme.titleMedium?.copyWith(

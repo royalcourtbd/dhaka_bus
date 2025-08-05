@@ -11,6 +11,8 @@ class BusRouteCard extends StatelessWidget {
   final bool isExpanded;
   final VoidCallback onTap;
   final BusEntity bus;
+  final String? originStop;
+  final String? destinationStop;
 
   const BusRouteCard({
     super.key,
@@ -20,6 +22,8 @@ class BusRouteCard extends StatelessWidget {
     required this.isExpanded,
     required this.onTap,
     required this.bus,
+    this.originStop,
+    this.destinationStop,
   });
 
   // Cache commonly used values and colors for better performance
@@ -148,13 +152,9 @@ class BusRouteCard extends StatelessWidget {
                     padding: paddingTop20,
                     child: Align(
                       alignment: Alignment.centerLeft,
-                      child: Text(
-                        route,
-                        style: theme.textTheme.bodyMedium?.copyWith(
-                          fontSize: twelvePx,
-                          color: _expandedTextColor,
-                          height: _expandedTextHeight,
-                        ),
+                      child: RichText(
+                        textAlign: TextAlign.left,
+                        text: _buildHighlightedRouteText(theme),
                       ),
                     ),
                   )
@@ -163,5 +163,63 @@ class BusRouteCard extends StatelessWidget {
         ),
       ),
     );
+  }
+
+  /// Builds the text for the expanded route view, highlighting the
+  /// origin and destination stops if a search is active.
+  InlineSpan _buildHighlightedRouteText(ThemeData theme) {
+    final bool hasHighlight =
+        originStop != null &&
+        originStop!.isNotEmpty &&
+        destinationStop != null &&
+        destinationStop!.isNotEmpty;
+
+    // Return plain text if no highlighting is needed or route is unavailable
+    if (!hasHighlight || route.contains('Not Available')) {
+      return TextSpan(
+        text: route,
+        style: theme.textTheme.bodyMedium?.copyWith(
+          fontSize: twelvePx,
+          color: _expandedTextColor,
+          height: _expandedTextHeight,
+        ),
+      );
+    }
+
+    final List<String> stops = route.split(' → ');
+    final List<InlineSpan> textSpans = [];
+
+    final TextStyle normalStyle = theme.textTheme.bodyMedium!.copyWith(
+      fontSize: twelvePx,
+      color: _expandedTextColor,
+      height: _expandedTextHeight,
+    );
+
+    final TextStyle highlightStyle = normalStyle.copyWith(
+      fontWeight: FontWeight.w900,
+      color: cardColor,
+    );
+
+    for (int i = 0; i < stops.length; i++) {
+      final String stop = stops[i];
+      // Case-insensitive check for highlighting
+      final bool isHighlighted =
+          stop.toLowerCase() == originStop!.toLowerCase() ||
+          stop.toLowerCase() == destinationStop!.toLowerCase();
+
+      textSpans.add(
+        TextSpan(
+          text: stop,
+          style: isHighlighted ? highlightStyle : normalStyle,
+        ),
+      );
+
+      // Add the arrow separator if it's not the last stop
+      if (i < stops.length - 1) {
+        textSpans.add(TextSpan(text: ' → ', style: normalStyle));
+      }
+    }
+
+    return TextSpan(children: textSpans);
   }
 }

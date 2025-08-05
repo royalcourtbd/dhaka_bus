@@ -227,6 +227,7 @@ class BusPresenter extends BasePresenter<BusUiState> {
   /// Clear search results
   void clearSearch() {
     log('🚌 BusPresenter: Clearing search results');
+    // Reset search-related UI state
     uiState.value = currentUiState.copyWith(searchResults: [], searchQuery: '');
   }
 
@@ -278,6 +279,8 @@ class BusPresenter extends BasePresenter<BusUiState> {
     final temp = startingStationNameController.text;
     startingStationNameController.text = destinationStationNameController.text;
     destinationStationNameController.text = temp;
+
+    uiState.value = currentUiState.copyWith();
   }
 
   @override
@@ -294,6 +297,8 @@ class BusPresenter extends BasePresenter<BusUiState> {
   @override
   void onClose() {
     log('🚌 BusPresenter: Presenter is being disposed');
+    startingStationNameController.dispose();
+    destinationStationNameController.dispose();
     super.onClose();
   }
 }

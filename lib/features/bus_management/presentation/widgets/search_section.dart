@@ -36,6 +36,7 @@ class SearchSection extends StatelessWidget {
               mainAxisSize: MainAxisSize.min,
               children: [
                 _buildAutocompleteField(
+                  context: context,
                   hintText: 'Enter starting station name',
                   controller: busPresenter.startingStationNameController,
                   options: busPresenter.currentUiState.uniqueStops,
@@ -43,6 +44,7 @@ class SearchSection extends StatelessWidget {
                 ),
                 gapH16,
                 _buildAutocompleteField(
+                  context: context,
                   hintText: 'Enter destination station name',
                   controller: busPresenter.destinationStationNameController,
                   options: busPresenter.currentUiState.uniqueStops,
@@ -58,6 +60,7 @@ class SearchSection extends StatelessWidget {
                   theme: Theme.of(context),
                   onTap: areStopsLoaded
                       ? () {
+                          FocusScope.of(context).unfocus();
                           busPresenter.findBusesByRoute();
                         }
                       : null,
@@ -72,6 +75,7 @@ class SearchSection extends StatelessWidget {
   }
 
   Widget _buildAutocompleteField({
+    required BuildContext context,
     required String hintText,
     required TextEditingController controller,
     required List<String> options,

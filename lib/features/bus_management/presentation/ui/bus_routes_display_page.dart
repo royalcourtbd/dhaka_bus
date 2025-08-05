@@ -157,6 +157,15 @@ class BusRoutesDisplayPage extends StatelessWidget {
     // Calculate route data once and cache it
     final routeData = _calculateRouteData(routes);
 
+    // Get search status and terms for highlighting
+    final isSearchActive = busPresenter.currentUiState.searchQuery.isNotEmpty;
+    final String? origin = isSearchActive
+        ? busPresenter.startingStationNameController.text.trim()
+        : null;
+    final String? destination = isSearchActive
+        ? busPresenter.destinationStationNameController.text.trim()
+        : null;
+
     return BusRouteCard(
       key: Key('bus_route_card_$index'),
       bus: bus,
@@ -164,6 +173,8 @@ class BusRoutesDisplayPage extends StatelessWidget {
       description: routeData.shortRoute,
       isExpanded: busPresenter.isCardExpanded(cardId),
       onTap: () => busPresenter.toggleCardExpansion(cardId),
+      originStop: origin,
+      destinationStop: destination,
     );
   }
 

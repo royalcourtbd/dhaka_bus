@@ -1,3 +1,5 @@
+// File: bus_management/presentation/presenter/bus_presenter.dart
+
 // lib/presentation/bus/presenter/bus_presenter.dart
 
 import 'dart:developer';
@@ -58,6 +60,10 @@ class BusPresenter extends BasePresenter<BusUiState> {
           log(
             '🚌 BusPresenter: ✅ Successfully loaded ${buses.length} buses in UI State',
           );
+
+          // Sort the bus list alphabetically by name
+          buses.sort((a, b) => a.busNameEn.compareTo(b.busNameEn));
+          log('🚌 BusPresenter: Sorted bus list alphabetically.');
 
           // Determine data source based on DataSyncService behavior:
           // - forceSync=true: Always tries Firebase first
@@ -180,6 +186,8 @@ class BusPresenter extends BasePresenter<BusUiState> {
       await parseDataFromEitherWithUserMessage<List<BusEntity>>(
         task: () => _getAllActiveBusesUseCase.execute(forceSync: forceSync),
         onDataLoaded: (List<BusEntity> buses) {
+          // Sort the bus list alphabetically by name
+          buses.sort((a, b) => a.busNameEn.compareTo(b.busNameEn));
           uiState.value = currentUiState.copyWith(allBuses: buses);
         },
       );

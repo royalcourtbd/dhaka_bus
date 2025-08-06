@@ -1,4 +1,5 @@
 import 'package:dhaka_bus/features/bus_management/presentation/ui/bus_routes_display_page.dart';
+import 'package:dhaka_bus/features/settings/presentation/ui/settings_page.dart';
 import 'package:flutter/material.dart';
 import 'package:dhaka_bus/core/di/service_locator.dart';
 import 'package:dhaka_bus/core/widgets/presentable_widget_builder.dart';
@@ -16,7 +17,7 @@ class MainPage extends StatelessWidget {
     BusRoutesDisplayPage(),
     BusRoutesDisplayPage(),
     BusRoutesDisplayPage(),
-    BusRoutesDisplayPage(),
+    SettingsPage(),
   ];
 
   @override
@@ -34,10 +35,6 @@ class MainPage extends StatelessWidget {
             bottomNavigationBar: MainNavigationBar(
               selectedIndex: state.selectedBottomNavIndex,
               onDestinationSelected: (index) {
-                if (index == 3) {
-                  showMessage(message: 'Coming soon');
-                  return;
-                }
                 _mainPresenter.changeNavigationIndex(index);
               },
             ),

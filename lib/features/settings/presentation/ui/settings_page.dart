@@ -25,69 +25,71 @@ class SettingsPage extends StatelessWidget {
           ),
         ),
       ),
-      body: Column(
-        children: [
-          SizedBox(height: 15),
-          MenuItem(
-            itemAssetPath: 'assets/svg/notification.svg',
-            itemTitle: 'Notification Settings',
-          ),
-          SizedBox(height: 10),
-          MenuItem(
-            itemAssetPath: 'assets/svg/mail.svg',
-            itemTitle: 'Email us for Queries.',
-          ),
-          SizedBox(height: 10),
-          MenuItem(
-            itemAssetPath: 'assets/svg/facebook_icon.svg',
-            itemTitle: 'Join our Facebook page',
-          ),
-          SizedBox(height: 10),
-          MenuItem(
-            itemAssetPath: 'assets/svg/star.svg',
-            itemTitle: 'Rate the app',
-          ),
-          SizedBox(height: 10),
-          MenuItem(
-            itemAssetPath: 'assets/svg/feedback_icon.svg',
-            itemTitle: 'Submit Feedback',
-          ),
-          SizedBox(height: 10),
-          MenuItem(
-            itemAssetPath: 'assets/svg/share_icon.svg',
-            itemTitle: 'Share the app',
-          ),
-          SizedBox(height: 10),
-          MenuItem(
-            itemAssetPath: 'assets/svg/store.svg',
-            itemTitle: 'Check out our other apps',
-          ),
+      body: SingleChildScrollView(
+        child: Column(
+          children: [
+            SizedBox(height: 15),
+            MenuItem(
+              itemAssetPath: 'assets/svg/notification.svg',
+              itemTitle: 'Notification Settings',
+            ),
+            SizedBox(height: 10),
+            MenuItem(
+              itemAssetPath: 'assets/svg/mail.svg',
+              itemTitle: 'Email us for Queries.',
+            ),
+            SizedBox(height: 10),
+            MenuItem(
+              itemAssetPath: 'assets/svg/facebook_icon.svg',
+              itemTitle: 'Join our Facebook page',
+            ),
+            SizedBox(height: 10),
+            MenuItem(
+              itemAssetPath: 'assets/svg/star.svg',
+              itemTitle: 'Rate the app',
+            ),
+            SizedBox(height: 10),
+            MenuItem(
+              itemAssetPath: 'assets/svg/feedback_icon.svg',
+              itemTitle: 'Submit Feedback',
+            ),
+            SizedBox(height: 10),
+            MenuItem(
+              itemAssetPath: 'assets/svg/share_icon.svg',
+              itemTitle: 'Share the app',
+            ),
+            SizedBox(height: 10),
+            MenuItem(
+              itemAssetPath: 'assets/svg/store.svg',
+              itemTitle: 'Check out our other apps',
+            ),
 
-          SizedBox(height: 20),
-          Padding(
-            padding: const EdgeInsets.only(right: 200),
-            child: Text(
-              'Our Services',
-              style: TextStyle(
-                color: Color(0xFFBC4377),
-                fontSize: 28,
-                fontWeight: FontWeight.normal,
+            SizedBox(height: 20),
+            Padding(
+              padding: const EdgeInsets.only(right: 200),
+              child: Text(
+                'Our Services',
+                style: TextStyle(
+                  color: Color(0xFFBC4377),
+                  fontSize: 28,
+                  fontWeight: FontWeight.normal,
+                ),
               ),
             ),
-          ),
-          SizedBox(height: 10),
-          MenuItem(
-            itemAssetPath: 'assets/svg/dev_icon.svg',
-            itemTitle: 'App Design & Development',
-          ),
-          SizedBox(height: 10),
-          MenuItem(
-            itemAssetPath: 'assets/svg/web_icon.svg',
-            itemTitle: 'Web Design & Development',
-          ),
-          SizedBox(height: 30),
-          Center(child: VisitPortfolio()),
-        ],
+            SizedBox(height: 10),
+            MenuItem(
+              itemAssetPath: 'assets/svg/dev_icon.svg',
+              itemTitle: 'App Design & Development',
+            ),
+            SizedBox(height: 10),
+            MenuItem(
+              itemAssetPath: 'assets/svg/web_icon.svg',
+              itemTitle: 'Web Design & Development',
+            ),
+            SizedBox(height: 30),
+            Center(child: VisitPortfolio()),
+          ],
+        ),
       ),
     );
   }

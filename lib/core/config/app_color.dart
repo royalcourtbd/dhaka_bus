@@ -30,19 +30,19 @@ class AppColor {
 
   // Primary Color Palette
 
-  static const Color primaryColor25 = Color(0xFFF0F5FE); // 50
-  static const Color primaryColor50 = Color(0xFFF0F5FE); // 50
-  static const Color primaryColor75 = Color(0xFFE7EDFC); // 75
-  static const Color primaryColor100 = Color(0xFFDDE7FC); // 100
-  static const Color primaryColor200 = Color(0xFFC3D6FA); // 200
-  static const Color primaryColor300 = Color(0xFF9ABCF6); // 300
-  static const Color primaryColor400 = Color(0xFF6A99F0); // 400
-  static const Color primaryColor500 = Color(0xFF4D7AEB); // 500 main color
-  static const Color primaryColor600 = Color(0xFF3157DF); // 600
-  static const Color primaryColor700 = Color(0xFF2945CC); // 700
-  static const Color primaryColor800 = Color(0xFF2739A6); // 800
-  static const Color primaryColor900 = Color(0xFF253483); // 900
-  static const Color primaryColor950 = Color(0xFF1B2250); // 950
+  static const Color primaryColor25 = Color(0xFFFDF2F7); // 25
+  static const Color primaryColor50 = Color(0xFFFBE7F0); // 50
+  static const Color primaryColor75 = Color(0xFFF8D7E4); // 75
+  static const Color primaryColor100 = Color(0xFFF4C2D7); // 100
+  static const Color primaryColor200 = Color(0xFFEE9CBE); // 200
+  static const Color primaryColor300 = Color(0xFFE570A0); // 300
+  static const Color primaryColor400 = Color(0xFFD14F87); // 400
+  static const Color primaryColor500 = Color(0xFFBC4377); // 500 main color
+  static const Color primaryColor600 = Color(0xFFA13865); // 600
+  static const Color primaryColor700 = Color(0xFF862F56); // 700
+  static const Color primaryColor800 = Color(0xFF6D274A); // 800
+  static const Color primaryColor900 = Color(0xFF5A2340); // 900
+  static const Color primaryColor950 = Color(0xFF321123); // 950
 
   // Existing Colors
   static const Color scaffoldBachgroundColor = Color(0xFFFFFFFF);

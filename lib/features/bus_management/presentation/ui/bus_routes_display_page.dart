@@ -1,5 +1,6 @@
 import 'package:dhaka_bus/core/di/service_locator.dart';
 import 'package:dhaka_bus/core/external_libs/feedback/customizable_feedback_widget.dart';
+import 'package:dhaka_bus/core/utility/extensions.dart';
 
 import 'package:dhaka_bus/core/widgets/presentable_widget_builder.dart';
 import 'package:dhaka_bus/features/bus_management/bus_management_export.dart';
@@ -20,14 +21,11 @@ class BusRoutesDisplayPage extends StatelessWidget {
     horizontal: 20.0,
   );
 
-  static const Color _backgroundColor = Color(0xfff5f5f5);
-
   @override
   Widget build(BuildContext context) {
     return PresentableWidgetBuilder(
       presenter: busPresenter,
       builder: () => Scaffold(
-        backgroundColor: _backgroundColor,
         appBar: const CustomAppBar(title: '🚌 Bus & Routes', isRoot: true),
         body: Column(
           children: [
@@ -36,7 +34,7 @@ class BusRoutesDisplayPage extends StatelessWidget {
             if (!busPresenter.currentUiState.isLoading &&
                 busPresenter.currentUiState.lastDataSource != null)
               _buildDataSourceIndicator(),
-            _buildBusRoutesList(),
+            _buildBusRoutesList(context),
           ],
         ),
       ),
@@ -75,7 +73,7 @@ class BusRoutesDisplayPage extends StatelessWidget {
     );
   }
 
-  Widget _buildBusRoutesList() {
+  Widget _buildBusRoutesList(BuildContext context) {
     final bool isLoading = busPresenter.currentUiState.isLoading;
     final bool isSearchActive =
         busPresenter.currentUiState.searchQuery.isNotEmpty;
@@ -93,9 +91,9 @@ class BusRoutesDisplayPage extends StatelessWidget {
               margin: const EdgeInsets.symmetric(horizontal: 20, vertical: 16),
               padding: const EdgeInsets.all(16),
               decoration: BoxDecoration(
-                color: Colors.blue.shade50,
+                color: context.color.primaryColor50,
                 borderRadius: BorderRadius.circular(12),
-                border: Border.all(color: Colors.blue.shade200),
+                border: Border.all(color: context.color.primaryColor200),
               ),
               child: Row(
                 mainAxisAlignment: MainAxisAlignment.center,
@@ -178,6 +176,7 @@ class BusRoutesDisplayPage extends StatelessWidget {
       route: routeData.fullRoute,
       description: routeData.shortRoute,
       isExpanded: busPresenter.isCardExpanded(cardId),
+
       onTap: () => busPresenter.toggleCardExpansion(cardId),
       originStop: origin,
       destinationStop: destination,

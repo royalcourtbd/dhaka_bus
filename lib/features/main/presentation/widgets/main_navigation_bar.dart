@@ -51,8 +51,8 @@ class MainNavigationBar extends StatelessWidget {
           NavDestinationItem(
             index: 3,
             selectedIndex: selectedIndex,
-            outlineIcon: SvgPath.icHomeOutline,
-            fillIcon: SvgPath.icHomeOutline,
+            outlineIcon: SvgPath.icCategoryOutline,
+            fillIcon: SvgPath.icCategoryFill,
             label: 'Audio',
           ),
         ],

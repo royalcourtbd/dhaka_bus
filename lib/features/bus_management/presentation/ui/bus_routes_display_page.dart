@@ -1,4 +1,5 @@
 import 'package:dhaka_bus/core/di/service_locator.dart';
+import 'package:dhaka_bus/core/external_libs/feedback/customizable_feedback_widget.dart';
 
 import 'package:dhaka_bus/core/widgets/presentable_widget_builder.dart';
 import 'package:dhaka_bus/features/bus_management/bus_management_export.dart';
@@ -134,8 +135,13 @@ class BusRoutesDisplayPage extends StatelessWidget {
     }
 
     if (busesToDisplay.isEmpty && isSearchActive) {
-      return const Expanded(
-        child: Center(child: Text('No buses found for the selected route.')),
+      return Expanded(
+        child: Padding(
+          padding: const EdgeInsets.all(8.0),
+          child: CustomizableFeedbackWidget(
+            messageTitle: 'No buses found for the selected route.',
+          ),
+        ),
       );
     }
 

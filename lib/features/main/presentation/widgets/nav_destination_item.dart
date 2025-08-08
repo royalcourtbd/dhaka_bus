@@ -1,3 +1,4 @@
+import 'package:dhaka_bus/core/utility/extensions.dart';
 import 'package:flutter/material.dart';
 import 'package:dhaka_bus/shared/components/svg_image.dart';
 
@@ -20,7 +21,10 @@ class NavDestinationItem extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return NavigationDestination(
-      icon: SvgImage(selectedIndex == index ? fillIcon : outlineIcon),
+      icon: SvgImage(
+        selectedIndex == index ? fillIcon : outlineIcon,
+        color: context.color.primaryColor500,
+      ),
       label: label,
       tooltip: '',
     );

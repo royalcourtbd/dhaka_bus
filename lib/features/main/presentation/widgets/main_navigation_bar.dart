@@ -32,6 +32,7 @@ class MainNavigationBar extends StatelessWidget {
             selectedIndex: selectedIndex,
             outlineIcon: SvgPath.icHomeOutline,
             fillIcon: SvgPath.icHomeFilled,
+
             label: 'Home',
           ),
           NavDestinationItem(

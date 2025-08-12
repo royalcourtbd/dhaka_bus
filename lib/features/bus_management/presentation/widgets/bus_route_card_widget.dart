@@ -7,7 +7,7 @@ import 'package:flutter/material.dart';
 class BusRouteCard extends StatelessWidget {
   final String route;
   final String description;
-  final Color cardColor;
+  final Color? cardColor; // Made nullable to use primary color as default
   final bool isExpanded;
   final VoidCallback onTap;
   final BusEntity bus;
@@ -18,7 +18,7 @@ class BusRouteCard extends StatelessWidget {
     super.key,
     required this.route,
     required this.description,
-    this.cardColor = Colors.blue,
+    this.cardColor, // No default value here
     required this.isExpanded,
     required this.onTap,
     required this.bus,
@@ -41,7 +41,9 @@ class BusRouteCard extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     final theme = Theme.of(context);
-    final cardBackgroundColor = cardColor.withValues(alpha: 0.1);
+    // Use primary color if cardColor is not provided
+    final Color effectiveCardColor = cardColor ?? theme.colorScheme.primary;
+    final cardBackgroundColor = effectiveCardColor.withValues(alpha: 0.1);
 
     return Container(
       margin: EdgeInsets.only(bottom: twelvePx),
@@ -61,8 +63,12 @@ class BusRouteCard extends StatelessWidget {
               padding: padding15,
               child: Column(
                 children: [
-                  _buildMainCardContent(theme, cardBackgroundColor),
-                  _buildExpandableContent(theme),
+                  _buildMainCardContent(
+                    theme,
+                    cardBackgroundColor,
+                    effectiveCardColor,
+                  ),
+                  _buildExpandableContent(theme, effectiveCardColor),
                 ],
               ),
             ),
@@ -72,27 +78,31 @@ class BusRouteCard extends StatelessWidget {
     );
   }
 
-  Widget _buildMainCardContent(ThemeData theme, Color cardBackgroundColor) {
+  Widget _buildMainCardContent(
+    ThemeData theme,
+    Color cardBackgroundColor,
+    Color effectiveCardColor,
+  ) {
     return Row(
       children: [
-        _buildBusIcon(cardBackgroundColor),
+        _buildBusIcon(cardBackgroundColor, effectiveCardColor),
         gapW16,
-        _buildContentSection(theme),
+        _buildContentSection(theme, effectiveCardColor),
         _buildArrowIcon(),
       ],
     );
   }
 
-  Widget _buildBusIcon(Color backgroundColor) {
+  Widget _buildBusIcon(Color backgroundColor, Color iconColor) {
     return Container(
       width: _iconContainerSize,
       height: _iconContainerSize,
       decoration: BoxDecoration(color: backgroundColor, borderRadius: radius8),
-      child: Icon(Icons.directions_bus, color: cardColor, size: twentyFourPx),
+      child: Icon(Icons.directions_bus, color: iconColor, size: twentyFourPx),
     );
   }
 
-  Widget _buildContentSection(ThemeData theme) {
+  Widget _buildContentSection(ThemeData theme, Color titleColor) {
     return Expanded(
       child: Column(
         crossAxisAlignment: CrossAxisAlignment.start,
@@ -103,7 +113,7 @@ class BusRouteCard extends StatelessWidget {
             overflow: TextOverflow.ellipsis,
             style: theme.textTheme.titleMedium?.copyWith(
               fontSize: sixteenPx,
-              color: cardColor,
+              color: titleColor,
               fontWeight: FontWeight.bold,
             ),
           ),
@@ -134,7 +144,7 @@ class BusRouteCard extends StatelessWidget {
     );
   }
 
-  Widget _buildExpandableContent(ThemeData theme) {
+  Widget _buildExpandableContent(ThemeData theme, Color highlightColor) {
     return ClipRect(
       child: AnimatedSize(
         duration: _rotationDuration,
@@ -154,7 +164,7 @@ class BusRouteCard extends StatelessWidget {
                       alignment: Alignment.centerLeft,
                       child: RichText(
                         textAlign: TextAlign.left,
-                        text: _buildHighlightedRouteText(theme),
+                        text: _buildHighlightedRouteText(theme, highlightColor),
                       ),
                     ),
                   )
@@ -167,7 +177,7 @@ class BusRouteCard extends StatelessWidget {
 
   /// Builds the text for the expanded route view, highlighting the
   /// origin and destination stops if a search is active.
-  InlineSpan _buildHighlightedRouteText(ThemeData theme) {
+  InlineSpan _buildHighlightedRouteText(ThemeData theme, Color highlightColor) {
     final bool hasHighlight =
         originStop != null &&
         originStop!.isNotEmpty &&
@@ -197,7 +207,7 @@ class BusRouteCard extends StatelessWidget {
 
     final TextStyle highlightStyle = normalStyle.copyWith(
       fontWeight: FontWeight.w900,
-      color: cardColor,
+      color: highlightColor,
     );
 
     for (int i = 0; i < stops.length; i++) {

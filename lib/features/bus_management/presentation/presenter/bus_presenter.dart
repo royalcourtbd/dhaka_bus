@@ -283,6 +283,15 @@ class BusPresenter extends BasePresenter<BusUiState> {
     uiState.value = currentUiState.copyWith();
   }
 
+  /// Clear text fields and unfocus when page changes
+  void clearAndUnfocusOnPageChange() {
+    log('🚌 BusPresenter: Clearing and unfocusing on page change');
+    startingStationNameController.clear();
+    destinationStationNameController.clear();
+    FocusManager.instance.primaryFocus?.unfocus();
+    clearSearch();
+  }
+
   @override
   Future<void> addUserMessage(String message) async {
     uiState.value = currentUiState.copyWith(userMessage: message);

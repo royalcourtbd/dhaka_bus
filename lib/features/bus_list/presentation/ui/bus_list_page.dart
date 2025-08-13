@@ -1,5 +1,6 @@
 import 'package:dhaka_bus/core/di/service_locator.dart';
 import 'package:dhaka_bus/core/external_libs/feedback/feedback.dart';
+import 'package:dhaka_bus/core/static/ui_const.dart';
 import 'package:dhaka_bus/core/widgets/presentable_widget_builder.dart';
 import 'package:dhaka_bus/features/bus_list/presentation/presenter/bus_list_presenter.dart';
 import 'package:dhaka_bus/features/bus_list/presentation/widgets/bus_empty_state_widget.dart';
@@ -13,25 +14,28 @@ class BusListPage extends StatelessWidget {
   BusListPage({super.key});
 
   final BusListPresenter busListPresenter = locate<BusListPresenter>();
-  final TextEditingController searchController = TextEditingController();
 
   @override
   Widget build(BuildContext context) {
     return PresentableWidgetBuilder(
       presenter: busListPresenter,
       builder: () => Scaffold(
-        appBar: const CustomAppBar(title: '🚌 Bus List', isRoot: true),
+        appBar: const CustomAppBar(
+          title: 'Bus List',
+          isRoot: true,
+          centerTitle: true,
+        ),
         body: Column(
           children: [
             BusSearchWidget(
-              controller: searchController,
+              controller: busListPresenter.searchController,
               hintText: 'Search buses by name...',
               onChanged: busListPresenter.searchBuses,
               onClear: () {
-                searchController.clear();
                 busListPresenter.clearSearch();
               },
             ),
+            gapH5,
             Expanded(child: _buildContent()),
           ],
         ),

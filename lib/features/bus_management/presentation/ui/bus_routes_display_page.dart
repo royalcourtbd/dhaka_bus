@@ -18,7 +18,11 @@ class BusRoutesDisplayPage extends StatelessWidget {
     return PresentableWidgetBuilder(
       presenter: busPresenter,
       builder: () => Scaffold(
-        appBar: const CustomAppBar(title: '🚌 Bus & Routes', isRoot: true),
+        appBar: const CustomAppBar(
+          title: 'Bus & Routes',
+          isRoot: true,
+          centerTitle: true,
+        ),
         body: Column(
           children: [
             SearchSection(busPresenter: busPresenter),

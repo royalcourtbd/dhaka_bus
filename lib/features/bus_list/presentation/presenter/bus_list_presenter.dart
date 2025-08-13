@@ -4,6 +4,7 @@ import 'package:dhaka_bus/core/base/base_presenter.dart';
 import 'package:dhaka_bus/core/utility/navigation_helpers.dart';
 import 'package:dhaka_bus/features/bus_list/presentation/presenter/bus_list_ui_state.dart';
 import 'package:dhaka_bus/features/bus_management/bus_management_export.dart';
+import 'package:flutter/widgets.dart';
 
 class RouteData {
   final String description;
@@ -22,6 +23,9 @@ class BusListPresenter extends BasePresenter<BusListUiState> {
     BusListUiState.empty(),
   );
   BusListUiState get currentUiState => uiState.value;
+
+  // Search controller moved from UI to presenter
+  final TextEditingController searchController = TextEditingController();
 
   @override
   void onInit() {
@@ -162,6 +166,7 @@ class BusListPresenter extends BasePresenter<BusListUiState> {
 
   void clearSearch() {
     log('🚌 BusListPresenter: Clearing search');
+    searchController.clear();
     uiState.value = currentUiState.copyWith(
       filteredBuses: currentUiState.allBuses,
       searchQuery: '',
@@ -191,6 +196,17 @@ class BusListPresenter extends BasePresenter<BusListUiState> {
     await loadBusesWithRoutes(forceSync: true);
   }
 
+  /// Clear search field and unfocus when page changes
+  void clearAndUnfocusOnPageChange() {
+    log('🚌 BusListPresenter: Clearing and unfocusing on page change');
+    searchController.clear();
+    FocusManager.instance.primaryFocus?.unfocus();
+    uiState.value = currentUiState.copyWith(
+      filteredBuses: currentUiState.allBuses,
+      searchQuery: '',
+    );
+  }
+
   @override
   Future<void> addUserMessage(String message) async {
     uiState.value = currentUiState.copyWith(userMessage: message);
@@ -205,6 +221,7 @@ class BusListPresenter extends BasePresenter<BusListUiState> {
   @override
   void onClose() {
     log('🚌 BusListPresenter: Presenter disposed');
+    searchController.dispose();
     super.onClose();
   }
 }

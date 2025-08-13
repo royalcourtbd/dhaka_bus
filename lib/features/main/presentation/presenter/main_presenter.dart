@@ -1,8 +1,11 @@
 import 'dart:async';
 import 'package:flutter/services.dart';
 import 'package:dhaka_bus/core/base/base_presenter.dart';
+import 'package:dhaka_bus/core/di/service_locator.dart';
 import 'package:dhaka_bus/core/utility/navigation_helpers.dart';
 import 'package:dhaka_bus/core/services/time_service.dart';
+import 'package:dhaka_bus/features/bus_list/presentation/presenter/bus_list_presenter.dart';
+import 'package:dhaka_bus/features/bus_management/presentation/presenter/bus_presenter.dart';
 import 'package:dhaka_bus/features/main/presentation/presenter/main_ui_state.dart';
 
 class MainPresenter extends BasePresenter<MainUiState> {
@@ -14,7 +17,29 @@ class MainPresenter extends BasePresenter<MainUiState> {
   MainPresenter(this._timeService);
 
   void changeNavigationIndex(int index) {
+    // Clear and unfocus text fields when changing pages
+    _clearAllPresentersOnPageChange();
+
     uiState.value = currentUiState.copyWith(selectedBottomNavIndex: index);
+  }
+
+  /// Clear and unfocus all presenter text fields when page changes
+  void _clearAllPresentersOnPageChange() {
+    try {
+      // Clear BusPresenter (Bus Routes Display Page) - Page 0 & 2
+      final busPresenter = locate<BusPresenter>();
+      busPresenter.clearAndUnfocusOnPageChange();
+    } catch (e) {
+      // Presenter might not be initialized yet
+    }
+
+    try {
+      // Clear BusListPresenter (Bus List Page) - Page 1
+      final busListPresenter = locate<BusListPresenter>();
+      busListPresenter.clearAndUnfocusOnPageChange();
+    } catch (e) {
+      // Presenter might not be initialized yet
+    }
   }
 
   Future<void> handleBackPress() async {

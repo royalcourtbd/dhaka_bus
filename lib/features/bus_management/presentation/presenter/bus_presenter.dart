@@ -125,11 +125,11 @@ class BusPresenter extends BasePresenter<BusUiState> {
           log(
             '🎯 BusPresenter: ✅ DATA LOADING COMPLETE - UI State updated with all data',
           );
-
-          FlutterNativeSplash.remove();
         },
       );
     });
+    FlutterNativeSplash.remove();
+    log('🚀 Native splash screen removed - App ready!');
   }
 
   /// Search for buses that travel between the selected origin and destination

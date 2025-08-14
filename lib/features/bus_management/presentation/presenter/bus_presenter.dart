@@ -7,6 +7,7 @@ import 'package:dhaka_bus/core/base/base_presenter.dart';
 import 'package:dhaka_bus/core/utility/navigation_helpers.dart';
 import 'package:dhaka_bus/features/bus_management/bus_management_export.dart';
 import 'package:flutter/widgets.dart';
+import 'package:flutter_native_splash/flutter_native_splash.dart';
 
 class BusPresenter extends BasePresenter<BusUiState> {
   final GetBusesUseCase _getAllActiveBusesUseCase;
@@ -124,6 +125,8 @@ class BusPresenter extends BasePresenter<BusUiState> {
           log(
             '🎯 BusPresenter: ✅ DATA LOADING COMPLETE - UI State updated with all data',
           );
+
+          FlutterNativeSplash.remove();
         },
       );
     });

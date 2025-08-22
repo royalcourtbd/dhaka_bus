@@ -59,27 +59,8 @@ class SplashPage extends StatelessWidget {
                   ),
                   gapH16,
 
-                  // Loading indicator
-                  if (_splashPresenter.currentUiState.isLoading)
-                    const LoadingIndicator()
-                  else if (!_splashPresenter
-                      .currentUiState
-                      .isInitializationComplete)
-                    Text(
-                      'Initializing...',
-                      style: textStyle?.copyWith(
-                        fontStyle: FontStyle.italic,
-                        color: appThemeColor.captionColor,
-                      ),
-                    )
-                  else
-                    Text(
-                      'Ready!',
-                      style: textStyle?.copyWith(
-                        color: appThemeColor.successColor,
-                        fontWeight: FontWeight.w500,
-                      ),
-                    ),
+                  // Dynamic status indicator
+                  _buildStatusIndicator(context, textStyle, appThemeColor),
                 ],
               ),
             ),
@@ -88,6 +69,65 @@ class SplashPage extends StatelessWidget {
             _buildNavigationListener(context),
           ],
         ),
+      ),
+    );
+  }
+
+  /// Builds the dynamic status indicator based on the UI state.
+  Widget _buildStatusIndicator(
+    BuildContext context,
+    TextStyle? textStyle,
+    AppThemeColor appThemeColor,
+  ) {
+    final state = _splashPresenter.currentUiState;
+    final hasError = state.userMessage?.isNotEmpty == true;
+
+    if (hasError) {
+      // Show error message and a retry button
+      return Column(
+        mainAxisSize: MainAxisSize.min,
+        children: [
+          Text(
+            state.userMessage!,
+            textAlign: TextAlign.center,
+            style: textStyle?.copyWith(
+              color: appThemeColor.errorColor,
+              fontWeight: FontWeight.w500,
+            ),
+          ),
+          gapH16,
+          ElevatedButton.icon(
+            icon: const Icon(Icons.refresh),
+            label: const Text('Retry'),
+            onPressed: () => _splashPresenter.initializeSplash(),
+            style: ElevatedButton.styleFrom(
+              backgroundColor: appThemeColor.primaryBtn,
+              foregroundColor: Colors.white,
+            ),
+          ),
+        ],
+      );
+    }
+
+    if (state.isLoading) {
+      return const LoadingIndicator();
+    }
+
+    if (!state.isInitializationComplete) {
+      return Text(
+        'Initializing...',
+        style: textStyle?.copyWith(
+          fontStyle: FontStyle.italic,
+          color: appThemeColor.captionColor,
+        ),
+      );
+    }
+
+    return Text(
+      'Ready!',
+      style: textStyle?.copyWith(
+        color: appThemeColor.successColor,
+        fontWeight: FontWeight.w500,
       ),
     );
   }

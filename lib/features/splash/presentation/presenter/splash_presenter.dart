@@ -1,6 +1,5 @@
 import 'dart:async';
 import 'package:dhaka_bus/core/base/base_presenter.dart';
-import 'package:dhaka_bus/core/utility/navigation_helpers.dart';
 import 'package:dhaka_bus/features/splash/presentation/presenter/splash_ui_state.dart';
 import 'package:dhaka_bus/features/splash/domain/usecase/initialize_app_use_case.dart';
 import 'package:dhaka_bus/core/utility/logger_utility.dart';
@@ -18,14 +17,18 @@ class SplashPresenter extends BasePresenter<SplashUiState> {
   DateTime? _splashStartTime;
   StreamSubscription<DateTime>? _timeSubscription;
 
-  /// Initialize the splash screen flow
+  /// Initialize the splash screen flow, also used for retrying.
   Future<void> initializeSplash() async {
     logInfo('🎬 SplashPresenter: Starting splash screen flow...');
+
+    // Reset state for initialization or retry
+    uiState.value = SplashUiState.empty().copyWith(isLoading: true);
 
     // Record splash start time
     _splashStartTime = _timeService.getCurrentTime();
 
-    // Start monitoring time for minimum duration
+    // Cancel any existing timer before starting a new one
+    _timeSubscription?.cancel();
     _startTimeMonitoring();
 
     // Start app initialization
@@ -70,6 +73,7 @@ class SplashPresenter extends BasePresenter<SplashUiState> {
         if (success) {
           logInfo('✅ App initialization completed successfully');
           _markInitializationComplete();
+          // We don't need to call toggleLoading(false) here because it's handled by _checkIfReadyToNavigate logic implicitly
           _checkIfReadyToNavigate();
         }
       },
@@ -78,11 +82,20 @@ class SplashPresenter extends BasePresenter<SplashUiState> {
 
   /// Mark initialization as complete in UI state
   void _markInitializationComplete() {
-    uiState.value = currentUiState.copyWith(isInitializationComplete: true);
+    uiState.value = currentUiState.copyWith(
+      isInitializationComplete: true,
+      isLoading: false, // Stop loading on success
+    );
   }
 
   /// Check if both minimum time and initialization are complete
   void _checkIfReadyToNavigate() {
+    // Do not navigate if there is an error message.
+    if (currentUiState.userMessage?.isNotEmpty == true) {
+      logInfo('🚫 Navigation blocked due to an error message.');
+      return;
+    }
+
     final bool minimumTimeCompleted = currentUiState.minimumTimeCompleted;
     final bool initializationCompleted =
         currentUiState.isInitializationComplete;
@@ -126,8 +139,13 @@ class SplashPresenter extends BasePresenter<SplashUiState> {
 
   @override
   Future<void> addUserMessage(String message) async {
-    uiState.value = currentUiState.copyWith(userMessage: message);
-    showMessage(message: currentUiState.userMessage);
+    // When an error occurs, stop loading and show the message.
+    uiState.value = currentUiState.copyWith(
+      userMessage: message,
+      isLoading: false,
+    );
+    // The base presenter might show a toast/snackbar, which is fine.
+    // showMessage(message: currentUiState.userMessage);
   }
 
   @override

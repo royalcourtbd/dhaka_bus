@@ -49,11 +49,15 @@ class DataSyncService {
       '📱 DataSyncService: Loaded ${cachedBuses.length} buses from LOCAL STORAGE (Hive)',
     );
 
-    // If no cached data and no internet, return empty list
+    // If no cached data and no internet, throw an exception.
     final bool hasInternet = await isInternetAvailable();
     if (cachedBuses.isEmpty && !hasInternet) {
-      logWarning('🚌 No cached buses and no internet connection');
-      return [];
+      logWarning(
+        '🚌 No cached buses and no internet connection. Throwing error.',
+      );
+      throw Exception(
+        'No internet connection.\nPlease check your network and retry.',
+      );
     }
 
     // If we have cached data and don't need to force sync, return cached data
@@ -138,11 +142,15 @@ class DataSyncService {
       '📱 DataSyncService: Loaded ${cachedRoutes.length} routes from LOCAL STORAGE (Hive)',
     );
 
-    // If no cached data and no internet, return empty list
+    // If no cached data and no internet, throw an exception.
     final bool hasInternet = await isInternetAvailable();
     if (cachedRoutes.isEmpty && !hasInternet) {
-      logWarning('🛣️ No cached routes and no internet connection');
-      return [];
+      logWarning(
+        '🛣️ No cached routes and no internet connection. Throwing error.',
+      );
+      throw Exception(
+        'No internet connection.\nPlease check your network and retry.',
+      );
     }
 
     // If we have cached data and don't need to force sync, return cached data

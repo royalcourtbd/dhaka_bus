@@ -31,10 +31,10 @@ class BusRouteCardItem extends StatelessWidget {
     // Get search status and terms for highlighting
     final isSearchActive = busPresenter.currentUiState.searchQuery.isNotEmpty;
     final String? origin = isSearchActive
-        ? busPresenter.startingStationNameController.text.trim()
+        ? busPresenter.currentUiState.startingStation.trim()
         : null;
     final String? destination = isSearchActive
-        ? busPresenter.destinationStationNameController.text.trim()
+        ? busPresenter.currentUiState.destinationStation.trim()
         : null;
 
     return BusRouteCard(

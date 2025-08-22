@@ -15,6 +15,8 @@ class BusUiState extends BaseUiState {
     required this.busRoutes, // Routes for selected bus
     required this.expandedCardId, // Track which card is currently expanded
     required this.uniqueStops,
+    required this.startingStation,
+    required this.destinationStation,
     this.lastDataSource,
     this.isFirstTimeLoad = false,
   });
@@ -31,6 +33,8 @@ class BusUiState extends BaseUiState {
       busRoutes: {},
       expandedCardId: null,
       uniqueStops: [],
+      startingStation: '',
+      destinationStation: '',
       lastDataSource: null,
       isFirstTimeLoad: false,
     );
@@ -45,6 +49,8 @@ class BusUiState extends BaseUiState {
   final String?
   expandedCardId; // Track which card is currently expanded (null means none)
   final List<String> uniqueStops;
+  final String startingStation; // Track starting station text
+  final String destinationStation; // Track destination station text
   final String? lastDataSource; // Track where data was loaded from
   final bool isFirstTimeLoad; // Track if this is first time loading
 
@@ -60,6 +66,8 @@ class BusUiState extends BaseUiState {
     busRoutes,
     expandedCardId,
     uniqueStops,
+    startingStation,
+    destinationStation,
     lastDataSource,
     isFirstTimeLoad,
   ];
@@ -76,6 +84,8 @@ class BusUiState extends BaseUiState {
     bool clearExpandedCardId =
         false, // Flag to explicitly set expandedCardId to null
     List<String>? uniqueStops,
+    String? startingStation,
+    String? destinationStation,
     String? lastDataSource,
     bool? isFirstTimeLoad,
   }) {
@@ -92,6 +102,8 @@ class BusUiState extends BaseUiState {
           ? null
           : (expandedCardId ?? this.expandedCardId),
       uniqueStops: uniqueStops ?? this.uniqueStops,
+      startingStation: startingStation ?? this.startingStation,
+      destinationStation: destinationStation ?? this.destinationStation,
       lastDataSource: lastDataSource ?? this.lastDataSource,
       isFirstTimeLoad: isFirstTimeLoad ?? this.isFirstTimeLoad,
     );

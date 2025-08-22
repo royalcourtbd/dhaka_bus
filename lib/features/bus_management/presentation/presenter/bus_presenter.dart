@@ -29,9 +29,26 @@ class BusPresenter extends BasePresenter<BusUiState> {
   final TextEditingController destinationStationNameController =
       TextEditingController();
 
+  /// Listen to starting station text changes
+  void _onStartingStationChanged() {
+    uiState.value = currentUiState.copyWith(
+      startingStation: startingStationNameController.text,
+    );
+  }
+
+  /// Listen to destination station text changes
+  void _onDestinationStationChanged() {
+    uiState.value = currentUiState.copyWith(
+      destinationStation: destinationStationNameController.text,
+    );
+  }
+
   @override
   void onInit() {
     super.onInit();
+    // Add listeners to sync TextEditingController with UI state
+    startingStationNameController.addListener(_onStartingStationChanged);
+    destinationStationNameController.addListener(_onDestinationStationChanged);
     // Load data from cache first (instant loading after splash)
     loadCachedDataOnly();
   }
@@ -188,8 +205,8 @@ class BusPresenter extends BasePresenter<BusUiState> {
   /// Search for buses that travel between the selected origin and destination
   /// Supports bidirectional route search (both forward and reverse directions)
   void findBusesByRoute() {
-    final String origin = startingStationNameController.text.trim();
-    final String destination = destinationStationNameController.text.trim();
+    final String origin = currentUiState.startingStation.trim();
+    final String destination = currentUiState.destinationStation.trim();
 
     if (origin.isEmpty || destination.isEmpty) {
       clearSearch();
@@ -382,11 +399,21 @@ class BusPresenter extends BasePresenter<BusUiState> {
   }
 
   void swapLocations() {
+    log('🔄 BusPresenter: Swapping station locations');
+
     final temp = startingStationNameController.text;
     startingStationNameController.text = destinationStationNameController.text;
     destinationStationNameController.text = temp;
 
-    uiState.value = currentUiState.copyWith();
+    // Update UI state to trigger reactive rebuilds
+    uiState.value = currentUiState.copyWith(
+      startingStation: startingStationNameController.text,
+      destinationStation: destinationStationNameController.text,
+    );
+
+    log(
+      '🔄 Swapped: Starting="${startingStationNameController.text}", Destination="${destinationStationNameController.text}"',
+    );
   }
 
   /// Clear text fields and unfocus when page changes
@@ -395,6 +422,13 @@ class BusPresenter extends BasePresenter<BusUiState> {
     startingStationNameController.clear();
     destinationStationNameController.clear();
     FocusManager.instance.primaryFocus?.unfocus();
+
+    // Update UI state to reflect cleared text fields
+    uiState.value = currentUiState.copyWith(
+      startingStation: '',
+      destinationStation: '',
+    );
+
     clearSearch();
   }
 
@@ -412,6 +446,12 @@ class BusPresenter extends BasePresenter<BusUiState> {
   @override
   void onClose() {
     log('🚌 BusPresenter: Presenter is being disposed');
+    // Remove listeners before disposing controllers
+    startingStationNameController.removeListener(_onStartingStationChanged);
+    destinationStationNameController.removeListener(
+      _onDestinationStationChanged,
+    );
+
     startingStationNameController.dispose();
     destinationStationNameController.dispose();
     super.onClose();

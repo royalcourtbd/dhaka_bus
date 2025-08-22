@@ -17,6 +17,9 @@ export 'data/repositories/route_repository_impl.dart';
 //services
 export 'data/services/data_sync_service.dart';
 
+///Dependency Injection
+export 'di/bus_management_di.dart';
+
 ///Entities
 export 'domain/entities/bus_entity.dart';
 export 'domain/entities/route_entity.dart';
@@ -30,12 +33,15 @@ export 'domain/usecase/get_all_active_buses_use_case.dart';
 export 'domain/usecase/get_routes_use_case.dart';
 export 'domain/usecase/get_routes_by_bus_id_use_case.dart';
 
-//Presentation
+//Presenter
 export 'presentation/presenter/bus_presenter.dart';
 export 'presentation/presenter/bus_ui_state.dart';
-export 'presentation/ui/bus_routes_display_page.dart';
-export 'presentation/widgets/bus_route_card_widget.dart';
-export 'presentation/widgets/swap_button.dart';
 
-//DI
-export 'di/bus_management_di.dart';
+//UI
+export 'presentation/ui/bus_routes_display_page.dart';
+export 'presentation/widgets/bus_data_source_indicator.dart';
+export 'presentation/widgets/bus_route_card_item.dart';
+export 'presentation/widgets/bus_routes_list_widget.dart';
+export 'presentation/widgets/bus_route_card_widget.dart';
+export 'presentation/widgets/search_section.dart';
+export 'presentation/widgets/swap_button.dart';

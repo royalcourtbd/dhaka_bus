@@ -5,6 +5,7 @@ import 'package:dhaka_bus/features/splash/presentation/presenter/splash_ui_state
 import 'package:dhaka_bus/features/splash/domain/usecase/initialize_app_use_case.dart';
 import 'package:dhaka_bus/core/utility/logger_utility.dart';
 import 'package:dhaka_bus/core/services/time_service.dart';
+import 'package:flutter_native_splash/flutter_native_splash.dart';
 
 class SplashPresenter extends BasePresenter<SplashUiState> {
   SplashPresenter(this._initializeAppUseCase, this._timeService);
@@ -16,17 +17,6 @@ class SplashPresenter extends BasePresenter<SplashUiState> {
 
   DateTime? _splashStartTime;
   StreamSubscription<DateTime>? _timeSubscription;
-
-  @override
-  Future<void> addUserMessage(String message) async {
-    uiState.value = currentUiState.copyWith(userMessage: message);
-    showMessage(message: currentUiState.userMessage);
-  }
-
-  @override
-  Future<void> toggleLoading({required bool loading}) async {
-    uiState.value = currentUiState.copyWith(isLoading: loading);
-  }
 
   /// Initialize the splash screen flow
   Future<void> initializeSplash() async {
@@ -109,13 +99,39 @@ class SplashPresenter extends BasePresenter<SplashUiState> {
 
   /// Navigate to the main screen
   void _navigateToMainScreen() {
+    // Guard against multiple navigation calls using UI state
+    if (currentUiState.hasNavigated) {
+      logInfo('🚫 Navigation already triggered, skipping duplicate call');
+      return;
+    }
+
+    // Remove native splash screen before navigation
+    FlutterNativeSplash.remove();
+    logInfo('🚀 Native splash screen removed');
+
     uiState.value = currentUiState.copyWith(shouldNavigateToMain: true);
     logInfo('📱 Triggering navigation to main screen');
+  }
+
+  /// Mark as navigated to prevent duplicate navigation calls
+  void markAsNavigated() {
+    uiState.value = currentUiState.copyWith(hasNavigated: true);
   }
 
   @override
   void onClose() {
     _timeSubscription?.cancel();
     super.onClose();
+  }
+
+  @override
+  Future<void> addUserMessage(String message) async {
+    uiState.value = currentUiState.copyWith(userMessage: message);
+    showMessage(message: currentUiState.userMessage);
+  }
+
+  @override
+  Future<void> toggleLoading({required bool loading}) async {
+    uiState.value = currentUiState.copyWith(isLoading: loading);
   }
 }

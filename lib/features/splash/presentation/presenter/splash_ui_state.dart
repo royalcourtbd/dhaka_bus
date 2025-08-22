@@ -8,12 +8,14 @@ class SplashUiState extends BaseUiState {
     required this.shouldNavigateToMain,
     required this.elapsedSeconds,
     required this.minimumTimeCompleted,
+    required this.hasNavigated,
   });
 
   final bool isInitializationComplete;
   final bool shouldNavigateToMain;
   final int elapsedSeconds;
   final bool minimumTimeCompleted;
+  final bool hasNavigated; // Track if navigation has already occurred
 
   factory SplashUiState.empty() {
     return SplashUiState(
@@ -23,6 +25,7 @@ class SplashUiState extends BaseUiState {
       shouldNavigateToMain: false,
       elapsedSeconds: 0,
       minimumTimeCompleted: false,
+      hasNavigated: false,
     );
   }
 
@@ -34,6 +37,7 @@ class SplashUiState extends BaseUiState {
     shouldNavigateToMain,
     elapsedSeconds,
     minimumTimeCompleted,
+    hasNavigated,
   ];
 
   SplashUiState copyWith({
@@ -43,6 +47,7 @@ class SplashUiState extends BaseUiState {
     bool? shouldNavigateToMain,
     int? elapsedSeconds,
     bool? minimumTimeCompleted,
+    bool? hasNavigated,
   }) {
     return SplashUiState(
       isLoading: isLoading ?? this.isLoading,
@@ -52,6 +57,7 @@ class SplashUiState extends BaseUiState {
       shouldNavigateToMain: shouldNavigateToMain ?? this.shouldNavigateToMain,
       elapsedSeconds: elapsedSeconds ?? this.elapsedSeconds,
       minimumTimeCompleted: minimumTimeCompleted ?? this.minimumTimeCompleted,
+      hasNavigated: hasNavigated ?? this.hasNavigated,
     );
   }
 }

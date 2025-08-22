@@ -7,7 +7,6 @@ import 'package:dhaka_bus/core/base/base_presenter.dart';
 import 'package:dhaka_bus/core/utility/navigation_helpers.dart';
 import 'package:dhaka_bus/features/bus_management/bus_management_export.dart';
 import 'package:flutter/widgets.dart';
-import 'package:flutter_native_splash/flutter_native_splash.dart';
 
 class BusPresenter extends BasePresenter<BusUiState> {
   final GetBusesUseCase _getAllActiveBusesUseCase;
@@ -33,43 +32,98 @@ class BusPresenter extends BasePresenter<BusUiState> {
   @override
   void onInit() {
     super.onInit();
-    loadBusesAndRoutes(
-      forceSync: false,
-    ); // Changed from true to false for normal cache-first behavior
+    // Load data from cache first (instant loading after splash)
+    loadCachedDataOnly();
   }
 
-  /// Load all buses and routes together (cache-first strategy)
+  /// Load cached data only (instant loading after splash initialization)
+  Future<void> loadCachedDataOnly() async {
+    log('⚡ BusPresenter: Loading cached data only (post-splash fast load)');
+
+    await executeTaskWithLoading(() async {
+      // Load buses from cache only
+      await parseDataFromEitherWithUserMessage<List<BusEntity>>(
+        task: () => _getAllActiveBusesUseCase.execute(forceSync: false),
+        onDataLoaded: (List<BusEntity> buses) {
+          log('🚌 BusPresenter: ✅ Loaded ${buses.length} buses from cache');
+
+          // Sort the bus list alphabetically by name
+          buses.sort((a, b) => a.busNameEn.compareTo(b.busNameEn));
+
+          uiState.value = currentUiState.copyWith(
+            allBuses: buses,
+            lastDataSource: 'localStorage',
+          );
+        },
+      );
+
+      // Load routes from cache only
+      await parseDataFromEitherWithUserMessage<List<RouteEntity>>(
+        task: () => _getRoutesUseCase.execute(forceSync: false),
+        onDataLoaded: (List<RouteEntity> routes) {
+          log('🛣️ BusPresenter: ✅ Loaded ${routes.length} routes from cache');
+
+          // Group routes by bus_id for quick lookup
+          final Map<String, List<RouteEntity>> busRoutesMap = {};
+          for (final route in routes) {
+            if (!busRoutesMap.containsKey(route.busId)) {
+              busRoutesMap[route.busId] = [];
+            }
+            busRoutesMap[route.busId]!.add(route);
+          }
+
+          // Create unique stops list
+          final Set<String> uniqueStopsSet = {};
+          for (final route in routes) {
+            uniqueStopsSet.addAll(route.stops);
+          }
+          final List<String> uniqueStopsList = uniqueStopsSet.toList()..sort();
+
+          uiState.value = currentUiState.copyWith(
+            allRoutes: routes,
+            busRoutes: busRoutesMap,
+            uniqueStops: uniqueStopsList,
+          );
+
+          log(
+            '⚡ BusPresenter: ✅ FAST CACHE LOAD COMPLETE - UI ready instantly!',
+          );
+        },
+      );
+    });
+
+    log('🚀 Cache data loaded - App ready for interaction!');
+  }
+
+  /// Load all buses and routes together (used for manual refresh)
   Future<void> loadBusesAndRoutes({bool forceSync = false}) async {
     final syncType = forceSync ? 'FORCE SYNC' : 'CACHE-FIRST';
-    log('🚌 BusPresenter: Loading buses and routes... (strategy: $syncType)');
+    log(
+      '🚌 BusPresenter: Manual refresh - Loading buses and routes... (strategy: $syncType)',
+    );
 
     // Check if this is first time load
     final busSync = await _dataSyncService.getSyncStatus();
     final isFirstTime = busSync['needsSync'] == true;
 
     await executeTaskWithLoading(() async {
-      // Update UI state to indicate first time load
+      // Update UI state to indicate refresh in progress
       uiState.value = currentUiState.copyWith(
         isFirstTimeLoad: isFirstTime,
-        lastDataSource: 'loading',
+        lastDataSource: forceSync ? 'firebase' : 'refreshing',
       );
 
-      // Load buses first (from cache, then sync if needed)
+      // Load buses (from cache or force from Firebase)
       await parseDataFromEitherWithUserMessage<List<BusEntity>>(
         task: () => _getAllActiveBusesUseCase.execute(forceSync: forceSync),
         onDataLoaded: (List<BusEntity> buses) {
-          log(
-            '🚌 BusPresenter: ✅ Successfully loaded ${buses.length} buses in UI State',
-          );
+          log('🚌 BusPresenter: ✅ Refreshed ${buses.length} buses in UI State');
 
           // Sort the bus list alphabetically by name
           buses.sort((a, b) => a.busNameEn.compareTo(b.busNameEn));
           log('🚌 BusPresenter: Sorted bus list alphabetically.');
 
-          // Determine data source based on DataSyncService behavior:
-          // - forceSync=true: Always tries Firebase first
-          // - forceSync=false + isFirstTime=true: Cache empty, goes to Firebase
-          // - forceSync=false + isFirstTime=false: Uses cache (localStorage)
+          // Determine data source
           String dataSource;
           if (forceSync) {
             dataSource = 'firebase';
@@ -86,12 +140,12 @@ class BusPresenter extends BasePresenter<BusUiState> {
         },
       );
 
-      // Then load all routes (from cache, then sync if needed)
+      // Then load all routes (from cache or force from Firebase)
       await parseDataFromEitherWithUserMessage<List<RouteEntity>>(
         task: () => _getRoutesUseCase.execute(forceSync: forceSync),
         onDataLoaded: (List<RouteEntity> routes) {
           log(
-            '🛣️ BusPresenter: ✅ Successfully loaded ${routes.length} routes in UI State',
+            '🛣️ BusPresenter: ✅ Refreshed ${routes.length} routes in UI State',
           );
 
           // Group routes by bus_id for quick lookup
@@ -108,7 +162,6 @@ class BusPresenter extends BasePresenter<BusUiState> {
           );
 
           //Create a unique stops list
-
           final Set<String> uniqueStopsSet = {};
           for (final route in routes) {
             uniqueStopsSet.addAll(route.stops);
@@ -123,13 +176,13 @@ class BusPresenter extends BasePresenter<BusUiState> {
           );
 
           log(
-            '🎯 BusPresenter: ✅ DATA LOADING COMPLETE - UI State updated with all data',
+            '🔄 BusPresenter: ✅ MANUAL REFRESH COMPLETE - UI State updated with fresh data',
           );
         },
       );
     });
-    FlutterNativeSplash.remove();
-    log('🚀 Native splash screen removed - App ready!');
+
+    log('� Manual refresh completed successfully');
   }
 
   /// Search for buses that travel between the selected origin and destination
@@ -225,6 +278,56 @@ class BusPresenter extends BasePresenter<BusUiState> {
   /// Get route count for a specific bus
   int getRouteCountForBus(String busId) {
     return getRoutesForBus(busId).length;
+  }
+
+  /// Optional: Background refresh without loading indicator
+  Future<void> backgroundRefresh() async {
+    log('🔄 BusPresenter: Background refresh starting...');
+
+    // Refresh data in background without showing loading to user
+    try {
+      final buses = await _getAllActiveBusesUseCase.execute(forceSync: false);
+      final routes = await _getRoutesUseCase.execute(forceSync: false);
+
+      buses.fold((error) => log('⚠️ Background bus refresh failed: $error'), (
+        busData,
+      ) {
+        busData.sort((a, b) => a.busNameEn.compareTo(b.busNameEn));
+
+        routes.fold(
+          (error) => log('⚠️ Background route refresh failed: $error'),
+          (routeData) {
+            // Update UI state silently
+            final Map<String, List<RouteEntity>> busRoutesMap = {};
+            for (final route in routeData) {
+              if (!busRoutesMap.containsKey(route.busId)) {
+                busRoutesMap[route.busId] = [];
+              }
+              busRoutesMap[route.busId]!.add(route);
+            }
+
+            final Set<String> uniqueStopsSet = {};
+            for (final route in routeData) {
+              uniqueStopsSet.addAll(route.stops);
+            }
+            final List<String> uniqueStopsList = uniqueStopsSet.toList()
+              ..sort();
+
+            uiState.value = currentUiState.copyWith(
+              allBuses: busData,
+              allRoutes: routeData,
+              busRoutes: busRoutesMap,
+              uniqueStops: uniqueStopsList,
+              lastDataSource: 'background_refresh',
+            );
+
+            log('🔄 Background refresh completed successfully');
+          },
+        );
+      });
+    } catch (e) {
+      log('⚠️ Background refresh error: $e');
+    }
   }
 
   /// Clear search results

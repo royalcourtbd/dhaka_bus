@@ -4,10 +4,7 @@ import 'package:dhaka_bus/features/settings/presentation/ui/settings_page.dart';
 import 'package:flutter/material.dart';
 import 'package:dhaka_bus/core/di/service_locator.dart';
 import 'package:dhaka_bus/core/widgets/presentable_widget_builder.dart';
-import 'package:dhaka_bus/features/main/presentation/presenter/main_presenter.dart';
-import 'package:dhaka_bus/features/main/presentation/presenter/main_ui_state.dart';
-import 'package:dhaka_bus/features/main/presentation/widgets/double_tap_back_to_exit_app.dart';
-import 'package:dhaka_bus/features/main/presentation/widgets/main_navigation_bar.dart';
+import 'package:dhaka_bus/features/main/main_export.dart';
 
 class MainPage extends StatelessWidget {
   MainPage({super.key});

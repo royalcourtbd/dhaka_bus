@@ -5,9 +5,9 @@ import 'package:dhaka_bus/core/di/service_locator.dart';
 import 'package:dhaka_bus/core/utility/navigation_helpers.dart';
 import 'package:dhaka_bus/core/services/time_service.dart';
 import 'package:dhaka_bus/core/utility/trial_utility.dart';
-import 'package:dhaka_bus/features/bus_list/presentation/presenter/bus_list_presenter.dart';
-import 'package:dhaka_bus/features/bus_management/presentation/presenter/bus_presenter.dart';
-import 'package:dhaka_bus/features/main/presentation/presenter/main_ui_state.dart';
+import 'package:dhaka_bus/features/bus_list/bus_list_export.dart';
+import 'package:dhaka_bus/features/bus_management/bus_management_export.dart';
+import 'package:dhaka_bus/features/main/main_export.dart';
 
 class MainPresenter extends BasePresenter<MainUiState> {
   final Obs<MainUiState> uiState = Obs<MainUiState>(MainUiState.empty());

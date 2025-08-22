@@ -1,7 +1,6 @@
 import 'package:dhaka_bus/core/external_libs/feedback/customizable_feedback_widget.dart';
 import 'package:dhaka_bus/core/utility/extensions.dart';
 import 'package:dhaka_bus/features/bus_management/bus_management_export.dart';
-import 'package:dhaka_bus/features/bus_management/presentation/widgets/bus_route_card_item.dart';
 import 'package:dhaka_bus/shared/components/skeleton_widgets/bus_route_card_skeleton.dart';
 import 'package:flutter/material.dart';
 

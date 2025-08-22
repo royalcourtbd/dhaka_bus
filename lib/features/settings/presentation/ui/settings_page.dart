@@ -14,6 +14,12 @@ class SettingsPage extends StatelessWidget {
       body: SingleChildScrollView(
         child: Column(
           children: [
+            // _buildListTile(
+            //   context: context,
+            //   title: 'Language / ভাষা',
+            //   iconPath: SvgPath.icLanguage,
+            //   onTap: () {},
+            // ),
             _buildListTile(
               context: context,
               title: 'Notification',
@@ -23,15 +29,28 @@ class SettingsPage extends StatelessWidget {
 
             _buildListTile(
               context: context,
-              title: 'Email for Queries.',
+              title: 'Contact Support',
               iconPath: SvgPath.icMail,
+              onTap: () {},
+            ),
+            _buildListTile(
+              context: context,
+              title: 'Feedback',
+              iconPath: SvgPath.icFeedback,
               onTap: () {},
             ),
 
             _buildListTile(
               context: context,
-              title: 'Join Facebook',
+              title: 'Follow Us',
               iconPath: SvgPath.icFacebook,
+              onTap: () {},
+            ),
+
+            _buildListTile(
+              context: context,
+              title: 'Share app',
+              iconPath: SvgPath.icShare,
               onTap: () {},
             ),
 
@@ -44,15 +63,14 @@ class SettingsPage extends StatelessWidget {
 
             _buildListTile(
               context: context,
-              title: 'Feedback',
-              iconPath: SvgPath.icFeedback,
+              title: 'About Dhaka Bus',
+              iconPath: SvgPath.icAbout,
               onTap: () {},
             ),
-
             _buildListTile(
               context: context,
-              title: 'Share app',
-              iconPath: SvgPath.icShare,
+              title: 'Privacy Policy',
+              iconPath: SvgPath.icPrivacy,
               onTap: () {},
             ),
 

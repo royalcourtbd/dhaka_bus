@@ -21,6 +21,9 @@ class SvgPath {
   static const String icShare = 'assets/svg/ic_share.svg';
   static const String icStar = 'assets/svg/ic_star.svg';
   static const String icPlayStore = 'assets/svg/ic_play_store.svg';
+  static const String icPrivacy = 'assets/svg/ic_privacy.svg';
+  static const String icLanguage = 'assets/svg/ic_language.svg';
+  static const String icAbout = 'assets/svg/ic_about.svg';
   static const String animBusLoading =
       'assets/animation/security_car_black.json';
 }

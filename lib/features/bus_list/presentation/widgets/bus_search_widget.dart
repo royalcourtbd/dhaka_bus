@@ -22,6 +22,15 @@ class BusSearchWidget extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    // Safely check if controller has text and is not disposed
+    bool hasText = false;
+    try {
+      hasText = controller.text.isNotEmpty;
+    } catch (e) {
+      // Controller might be disposed, default to false
+      hasText = false;
+    }
+
     return Padding(
       padding: padding,
       child: UserInputField(
@@ -33,10 +42,15 @@ class BusSearchWidget extends StatelessWidget {
         onTapSuffixIcon:
             onClear ??
             () {
-              controller.clear();
-              onChanged('');
+              try {
+                controller.clear();
+                onChanged('');
+              } catch (e) {
+                // Handle disposed controller gracefully
+                onChanged('');
+              }
             },
-        suffixIconPath: controller.text.isNotEmpty ? SvgPath.icCross : null,
+        suffixIconPath: hasText ? SvgPath.icCross : null,
       ),
     );
   }

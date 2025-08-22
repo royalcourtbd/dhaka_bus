@@ -25,7 +25,11 @@ class BusListPresenter extends BasePresenter<BusListUiState> {
   BusListUiState get currentUiState => uiState.value;
 
   // Search controller moved from UI to presenter
-  final TextEditingController searchController = TextEditingController();
+  TextEditingController? _searchController;
+  TextEditingController get searchController {
+    _searchController ??= TextEditingController();
+    return _searchController!;
+  }
 
   @override
   void onInit() {
@@ -166,7 +170,11 @@ class BusListPresenter extends BasePresenter<BusListUiState> {
 
   void clearSearch() {
     log('🚌 BusListPresenter: Clearing search');
-    searchController.clear();
+    try {
+      searchController.clear();
+    } catch (e) {
+      log('⚠️ BusListPresenter: Error clearing search controller: $e');
+    }
     uiState.value = currentUiState.copyWith(
       filteredBuses: currentUiState.allBuses,
       searchQuery: '',
@@ -199,7 +207,13 @@ class BusListPresenter extends BasePresenter<BusListUiState> {
   /// Clear search field and unfocus when page changes
   void clearAndUnfocusOnPageChange() {
     log('🚌 BusListPresenter: Clearing and unfocusing on page change');
-    searchController.clear();
+    try {
+      searchController.clear();
+    } catch (e) {
+      log(
+        '⚠️ BusListPresenter: Error clearing search controller on page change: $e',
+      );
+    }
     FocusManager.instance.primaryFocus?.unfocus();
     uiState.value = currentUiState.copyWith(
       filteredBuses: currentUiState.allBuses,
@@ -221,7 +235,8 @@ class BusListPresenter extends BasePresenter<BusListUiState> {
   @override
   void onClose() {
     log('🚌 BusListPresenter: Presenter disposed');
-    searchController.dispose();
+    _searchController?.dispose();
+    _searchController = null;
     super.onClose();
   }
 }

@@ -79,7 +79,8 @@ class BusRoutesListWidget extends StatelessWidget {
         child: Padding(
           padding: const EdgeInsets.all(8.0),
           child: CustomizableFeedbackWidget(
-            messageTitle: 'No buses found for the selected route.',
+            messageTitle: 'No buses found',
+            messageDescription: 'Try searching for a different route.',
           ),
         ),
       );

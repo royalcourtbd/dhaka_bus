@@ -12,8 +12,8 @@ class BusUiState extends BaseUiState {
     required this.searchResults,
     required this.searchQuery,
     required this.allRoutes,
-    required this.busRoutes, // Routes for selected bus
-    required this.expandedCardId, // Track which card is currently expanded
+    required this.busRoutes,
+    required this.expandedCardId,
     required this.uniqueStops,
     required this.startingStation,
     required this.destinationStation,
@@ -45,14 +45,13 @@ class BusUiState extends BaseUiState {
   final List<BusEntity> searchResults;
   final String searchQuery;
   final List<RouteEntity> allRoutes;
-  final Map<String, List<RouteEntity>> busRoutes; // bus_id -> routes mapping
-  final String?
-  expandedCardId; // Track which card is currently expanded (null means none)
+  final Map<String, List<RouteEntity>> busRoutes;
+  final String? expandedCardId;
   final List<String> uniqueStops;
-  final String startingStation; // Track starting station text
-  final String destinationStation; // Track destination station text
-  final String? lastDataSource; // Track where data was loaded from
-  final bool isFirstTimeLoad; // Track if this is first time loading
+  final String startingStation;
+  final String destinationStation;
+  final String? lastDataSource;
+  final bool isFirstTimeLoad;
 
   @override
   List<Object?> get props => [
@@ -81,8 +80,7 @@ class BusUiState extends BaseUiState {
     List<RouteEntity>? allRoutes,
     Map<String, List<RouteEntity>>? busRoutes,
     String? expandedCardId,
-    bool clearExpandedCardId =
-        false, // Flag to explicitly set expandedCardId to null
+    bool clearExpandedCardId = false,
     List<String>? uniqueStops,
     String? startingStation,
     String? destinationStation,

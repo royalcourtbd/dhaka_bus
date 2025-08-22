@@ -15,7 +15,7 @@ class SplashUiState extends BaseUiState {
   final bool shouldNavigateToMain;
   final int elapsedSeconds;
   final bool minimumTimeCompleted;
-  final bool hasNavigated; // Track if navigation has already occurred
+  final bool hasNavigated;
 
   factory SplashUiState.empty() {
     return SplashUiState(

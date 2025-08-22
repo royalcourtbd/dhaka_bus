@@ -1,6 +1,3 @@
-///Data sources
-library;
-
 export 'data/datasource/bus_remote_datasource.dart';
 export 'data/datasource/bus_local_datasource.dart';
 export 'data/datasource/route_remote_datasource.dart';

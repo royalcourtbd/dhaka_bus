@@ -1,4 +1,4 @@
-import 'package:dhaka_bus/features/bus_list/presentation/presenter/bus_list_presenter.dart';
+import 'package:dhaka_bus/features/bus_list/bus_list_export.dart';
 import 'package:dhaka_bus/features/bus_management/bus_management_export.dart';
 import 'package:flutter/material.dart';
 

@@ -18,8 +18,6 @@ class SplashPresenter extends BasePresenter<SplashUiState> {
 
   /// Initialize the splash screen flow, also used for retrying.
   Future<void> initializeSplash() async {
-    logInfo('🎬 SplashPresenter: Starting splash screen flow...');
-
     // Reset state for initialization or retry
     uiState.value = SplashUiState.empty().copyWith(isLoading: true);
 
@@ -36,10 +34,6 @@ class SplashPresenter extends BasePresenter<SplashUiState> {
 
   /// Start monitoring time using TimeService
   void _startTimeMonitoring() {
-    logInfo(
-      '⏱️ Starting time monitoring for minimum splash duration (3 seconds)...',
-    );
-
     _timeSubscription = _timeService.currentTimeStream.listen((currentTime) {
       if (_splashStartTime != null) {
         final elapsedSeconds = currentTime
@@ -55,7 +49,6 @@ class SplashPresenter extends BasePresenter<SplashUiState> {
 
         // Check if minimum time has passed and we're ready to navigate
         if (minimumTimeCompleted) {
-          logInfo('⏱️ Minimum splash display time (3 seconds) completed');
           _checkIfReadyToNavigate();
         }
       }
@@ -64,13 +57,10 @@ class SplashPresenter extends BasePresenter<SplashUiState> {
 
   /// Perform app initialization
   Future<void> _performAppInitialization() async {
-    logInfo('🔄 Starting app initialization process...');
-
     await parseDataFromEitherWithUserMessage<bool>(
       task: () => _initializeAppUseCase.execute(),
       onDataLoaded: (bool success) {
         if (success) {
-          logInfo('✅ App initialization completed successfully');
           _markInitializationComplete();
           // We don't need to call toggleLoading(false) here because it's handled by _checkIfReadyToNavigate logic implicitly
           _checkIfReadyToNavigate();
@@ -99,12 +89,7 @@ class SplashPresenter extends BasePresenter<SplashUiState> {
     final bool initializationCompleted =
         currentUiState.isInitializationComplete;
 
-    logInfo('🎯 Checking navigation readiness:');
-    logInfo('   - Minimum time completed: $minimumTimeCompleted');
-    logInfo('   - Initialization completed: $initializationCompleted');
-
     if (minimumTimeCompleted && initializationCompleted) {
-      logInfo('🚀 Ready to navigate to main screen');
       _navigateToMainScreen();
     }
   }
@@ -113,7 +98,6 @@ class SplashPresenter extends BasePresenter<SplashUiState> {
   void _navigateToMainScreen() {
     // Guard against multiple navigation calls using UI state
     if (currentUiState.hasNavigated) {
-      logInfo('🚫 Navigation already triggered, skipping duplicate call');
       return;
     }
 
@@ -122,7 +106,6 @@ class SplashPresenter extends BasePresenter<SplashUiState> {
     logInfo('🚀 Native splash screen removed');
 
     uiState.value = currentUiState.copyWith(shouldNavigateToMain: true);
-    logInfo('📱 Triggering navigation to main screen');
   }
 
   /// Mark as navigated to prevent duplicate navigation calls

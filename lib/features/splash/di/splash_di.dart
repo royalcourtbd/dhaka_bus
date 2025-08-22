@@ -19,7 +19,7 @@ class SplashDi {
 
     // Presenters
     serviceLocator.registerFactory(
-      () => loadPresenter(SplashPresenter(locate())),
+      () => loadPresenter(SplashPresenter(locate(), locate())),
     );
   }
 }

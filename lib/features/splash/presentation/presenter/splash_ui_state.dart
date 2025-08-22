@@ -6,10 +6,14 @@ class SplashUiState extends BaseUiState {
     required super.userMessage,
     required this.isInitializationComplete,
     required this.shouldNavigateToMain,
+    required this.elapsedSeconds,
+    required this.minimumTimeCompleted,
   });
 
   final bool isInitializationComplete;
   final bool shouldNavigateToMain;
+  final int elapsedSeconds;
+  final bool minimumTimeCompleted;
 
   factory SplashUiState.empty() {
     return SplashUiState(
@@ -17,6 +21,8 @@ class SplashUiState extends BaseUiState {
       userMessage: '',
       isInitializationComplete: false,
       shouldNavigateToMain: false,
+      elapsedSeconds: 0,
+      minimumTimeCompleted: false,
     );
   }
 
@@ -26,6 +32,8 @@ class SplashUiState extends BaseUiState {
     userMessage,
     isInitializationComplete,
     shouldNavigateToMain,
+    elapsedSeconds,
+    minimumTimeCompleted,
   ];
 
   SplashUiState copyWith({
@@ -33,6 +41,8 @@ class SplashUiState extends BaseUiState {
     String? userMessage,
     bool? isInitializationComplete,
     bool? shouldNavigateToMain,
+    int? elapsedSeconds,
+    bool? minimumTimeCompleted,
   }) {
     return SplashUiState(
       isLoading: isLoading ?? this.isLoading,
@@ -40,6 +50,8 @@ class SplashUiState extends BaseUiState {
       isInitializationComplete:
           isInitializationComplete ?? this.isInitializationComplete,
       shouldNavigateToMain: shouldNavigateToMain ?? this.shouldNavigateToMain,
+      elapsedSeconds: elapsedSeconds ?? this.elapsedSeconds,
+      minimumTimeCompleted: minimumTimeCompleted ?? this.minimumTimeCompleted,
     );
   }
 }

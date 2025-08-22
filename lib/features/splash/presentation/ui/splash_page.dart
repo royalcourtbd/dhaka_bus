@@ -5,6 +5,7 @@ import 'package:dhaka_bus/core/base/base_export.dart';
 import 'package:dhaka_bus/core/di/service_locator.dart';
 import 'package:dhaka_bus/core/widgets/presentable_widget_builder.dart';
 import 'package:dhaka_bus/features/splash/presentation/presenter/splash_presenter.dart';
+import 'package:dhaka_bus/core/utility/ui_helper.dart';
 
 class SplashPage extends StatelessWidget {
   SplashPage({super.key});
@@ -13,6 +14,7 @@ class SplashPage extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    final ThemeData theme = Theme.of(context);
     return PresentableWidgetBuilder(
       presenter: _splashPresenter,
       onInit: () => _splashPresenter.initializeSplash(),
@@ -40,7 +42,7 @@ class SplashPage extends StatelessWidget {
                   // App title or loading text
                   Text(
                     'Dhaka Bus',
-                    style: Theme.of(context).textTheme.headlineMedium?.copyWith(
+                    style: theme.textTheme.headlineMedium?.copyWith(
                       fontWeight: FontWeight.bold,
                     ),
                   ),
@@ -54,14 +56,14 @@ class SplashPage extends StatelessWidget {
                       .isInitializationComplete)
                     Text(
                       'Initializing...',
-                      style: Theme.of(
-                        context,
-                      ).textTheme.bodyMedium?.copyWith(color: Colors.grey[600]),
+                      style: theme.textTheme.bodyMedium?.copyWith(
+                        color: Colors.grey[600],
+                      ),
                     )
                   else
                     Text(
                       'Ready!',
-                      style: Theme.of(context).textTheme.bodyMedium?.copyWith(
+                      style: theme.textTheme.bodyMedium?.copyWith(
                         color: Colors.green[600],
                         fontWeight: FontWeight.w500,
                       ),
@@ -81,7 +83,7 @@ class SplashPage extends StatelessWidget {
   Widget _buildNavigationListener() {
     return Obx(() {
       if (_splashPresenter.currentUiState.shouldNavigateToMain) {
-        WidgetsBinding.instance.addPostFrameCallback((_) {
+        UiHelper.doOnPageLoaded(() {
           _navigateToMainScreen();
         });
       }

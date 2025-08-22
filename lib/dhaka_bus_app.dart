@@ -1,4 +1,4 @@
-import 'package:dhaka_bus/features/main/presentation/ui/main_page.dart';
+import 'package:dhaka_bus/features/splash/presentation/ui/splash_page.dart';
 import 'package:flutter/material.dart';
 import 'package:get/route_manager.dart';
 import 'package:dhaka_bus/core/config/app_screen.dart';
@@ -33,7 +33,8 @@ class InitialApp extends StatelessWidget {
           theme: AappTheme.lightTheme,
           title: 'Dhaka Bus',
           // home: isFirstRun ? OnboardingPage() : MainPage(),
-          home: MainPage(),
+          // Start with splash screen, it will handle navigation to onboarding or main
+          home: SplashPage(),
         );
       },
     );

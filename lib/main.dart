@@ -13,6 +13,7 @@ Future<void> main() async {
     );
     await _initializeApp();
     runApp(InitialApp(isFirstRun: await _checkFirstRun()));
+    // Remove native splash after app starts - our custom splash will take over
     FlutterNativeSplash.remove();
   }, (error, stackTrace) => (error, stackTrace, fatal: true));
 }

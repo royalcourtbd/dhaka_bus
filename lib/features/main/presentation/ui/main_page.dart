@@ -16,7 +16,7 @@ class MainPage extends StatelessWidget {
   final List<Widget> _pages = <Widget>[
     BusRoutesDisplayPage(),
     BusListPage(),
-    BusRoutesDisplayPage(),
+
     SettingsPage(),
   ];
 

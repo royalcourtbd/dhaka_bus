@@ -42,19 +42,13 @@ class MainNavigationBar extends StatelessWidget {
             fillIcon: SvgPath.icBusFilled,
             label: 'Bus',
           ),
+
           NavDestinationItem(
             index: 2,
             selectedIndex: selectedIndex,
-            outlineIcon: SvgPath.icHomeOutline,
-            fillIcon: SvgPath.icHomeOutline,
-            label: 'Events',
-          ),
-          NavDestinationItem(
-            index: 3,
-            selectedIndex: selectedIndex,
             outlineIcon: SvgPath.icCategoryOutline,
             fillIcon: SvgPath.icCategoryFill,
-            label: 'Audio',
+            label: 'Settings',
           ),
         ],
       ),

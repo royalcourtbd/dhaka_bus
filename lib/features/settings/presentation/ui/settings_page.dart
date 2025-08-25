@@ -55,18 +55,14 @@ class SettingsPage extends StatelessWidget {
               context: context,
               title: 'Share app',
               iconPath: SvgPath.icShare,
-              onTap: () {
-                settingsPresenter.onShareButtonClicked(context);
-              },
+              onTap: settingsPresenter.onShareButtonClicked,
             ),
 
             _buildListTile(
               context: context,
               title: 'Rate the app',
               iconPath: SvgPath.icStar,
-              onTap: () {
-                settingsPresenter.onRatingClicked();
-              },
+              onTap: settingsPresenter.onRatingClicked,
             ),
 
             _buildListTile(
@@ -79,9 +75,7 @@ class SettingsPage extends StatelessWidget {
               context: context,
               title: 'Privacy Policy',
               iconPath: SvgPath.icPrivacy,
-              onTap: () {
-                settingsPresenter.onPrivacyPolicyClicked();
-              },
+              onTap: settingsPresenter.onPrivacyPolicyClicked,
             ),
 
             _buildListTile(

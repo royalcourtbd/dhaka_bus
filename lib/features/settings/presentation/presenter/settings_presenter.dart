@@ -19,7 +19,7 @@ class SettingsPresenter extends BasePresenter<SettingsUiState> {
     return openUrl(url: suitableAppStoreUrl);
   }
 
-  Future<void> onShareButtonClicked(BuildContext context) async {
+  Future<void> onShareButtonClicked() async {
     final String shareableText =
         "Dhaka Bus (ঢাকা বাস) হল ঢাকা শহরের সম্পূর্ণ বাস রুট এবং তথ্যের জন্য "
         "একটি দুর্দান্ত অ্যাপ। এই অ্যাপে আপনি পাবেন:\n"

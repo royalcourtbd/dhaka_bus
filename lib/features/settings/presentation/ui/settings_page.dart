@@ -1,11 +1,15 @@
 import 'package:dhaka_bus/core/config/app_screen.dart';
+import 'package:dhaka_bus/core/di/service_locator.dart';
 import 'package:dhaka_bus/core/external_libs/action_list_tile/action_list_tile.dart';
 import 'package:dhaka_bus/core/static/svg_path.dart';
+import 'package:dhaka_bus/features/settings/presentation/presenter/settings_presenter.dart';
 import 'package:dhaka_bus/shared/components/custom_app_bar_widget.dart';
 import 'package:flutter/material.dart';
 
 class SettingsPage extends StatelessWidget {
-  const SettingsPage({super.key});
+  SettingsPage({super.key});
+
+  final SettingsPresenter settingsPresenter = locate<SettingsPresenter>();
 
   @override
   Widget build(BuildContext context) {
@@ -51,14 +55,18 @@ class SettingsPage extends StatelessWidget {
               context: context,
               title: 'Share app',
               iconPath: SvgPath.icShare,
-              onTap: () {},
+              onTap: () {
+                settingsPresenter.onShareButtonClicked(context);
+              },
             ),
 
             _buildListTile(
               context: context,
               title: 'Rate the app',
               iconPath: SvgPath.icStar,
-              onTap: () {},
+              onTap: () {
+                settingsPresenter.onRatingClicked();
+              },
             ),
 
             _buildListTile(
@@ -71,7 +79,9 @@ class SettingsPage extends StatelessWidget {
               context: context,
               title: 'Privacy Policy',
               iconPath: SvgPath.icPrivacy,
-              onTap: () {},
+              onTap: () {
+                settingsPresenter.onPrivacyPolicyClicked();
+              },
             ),
 
             _buildListTile(

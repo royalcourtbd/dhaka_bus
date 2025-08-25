@@ -10,6 +10,9 @@ const String appStoreUrl =
     "https://apps.apple.com/sa/app/al-hadith/id$appStoreAppId";
 const String websiteUrl = "https://oratiq.com";
 
+const String privacyPolicyUrl =
+    "https://royalcourtbd.com/privacy-policy-for-dhaka-bus-route-%e0%a6%a2%e0%a6%be%e0%a6%95%e0%a6%be-%e0%a6%ac%e0%a6%be%e0%a6%b8-%e0%a6%b0%e0%a7%81%e0%a6%9f/";
+
 //==============================================//
 const String reportEmailAddress = 'report.irdfoundation@gmail.com';
 const String donationUrl = 'https://irdfoundation.com/sadaqa-jaria.html';

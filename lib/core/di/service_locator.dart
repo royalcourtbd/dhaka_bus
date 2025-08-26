@@ -14,6 +14,7 @@
 // Instead of modifying every object that relies on a particular dependency, we
 // only need to update the service locator itself. This centralization reduces
 // code changes and minimizes potential errors.
+import 'package:dhaka_bus/features/about/di/about_di.dart';
 import 'package:get_it/get_it.dart';
 import 'package:dhaka_bus/core/base/base_presenter.dart';
 import 'package:dhaka_bus/core/di/setup/service_setup.dart';
@@ -70,6 +71,7 @@ class ServiceLocator {
     await AppManagementDi.setup(_serviceLocator);
 
     //Feature DI setup
+    await AboutDi.setup(_serviceLocator);
     await SplashDi.setup(_serviceLocator);
     await BusListDi.setup(_serviceLocator);
     await SettingsDi.setup(_serviceLocator);

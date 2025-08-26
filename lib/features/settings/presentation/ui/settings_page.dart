@@ -2,6 +2,8 @@ import 'package:dhaka_bus/core/config/app_screen.dart';
 import 'package:dhaka_bus/core/di/service_locator.dart';
 import 'package:dhaka_bus/core/external_libs/action_list_tile/action_list_tile.dart';
 import 'package:dhaka_bus/core/static/svg_path.dart';
+import 'package:dhaka_bus/core/utility/extensions.dart';
+import 'package:dhaka_bus/features/about/presentation/ui/about_page.dart';
 import 'package:dhaka_bus/features/settings/presentation/presenter/settings_presenter.dart';
 import 'package:dhaka_bus/shared/components/custom_app_bar_widget.dart';
 import 'package:flutter/material.dart';
@@ -69,7 +71,7 @@ class SettingsPage extends StatelessWidget {
               context: context,
               title: 'About Dhaka Bus',
               iconPath: SvgPath.icAbout,
-              onTap: () {},
+              onTap: () => context.navigatorPush(AboutPage()),
             ),
             _buildListTile(
               context: context,

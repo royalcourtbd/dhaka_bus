@@ -26,4 +26,5 @@ class SvgPath {
   static const String icAbout = 'assets/svg/ic_about.svg';
   static const String animBusLoading =
       'assets/animation/security_car_black.json';
+  static const String imgLogo = 'assets/png/splash.png';
 }

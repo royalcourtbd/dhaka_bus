@@ -1,5 +1,6 @@
 import 'package:dhaka_bus/core/config/app_screen.dart';
 import 'package:dhaka_bus/core/di/service_locator.dart';
+import 'package:dhaka_bus/core/static/constants.dart';
 import 'package:dhaka_bus/core/widgets/presentable_widget_builder.dart';
 import 'package:dhaka_bus/features/about/presentation/presenter/about_presenter.dart';
 import 'package:dhaka_bus/features/about/presentation/widgets/header_section.dart';
@@ -77,14 +78,14 @@ class AboutPage extends StatelessWidget {
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [
           Text(
-            'সম্পর্কে',
+            'About',
             style: Theme.of(
               context,
             ).textTheme.titleLarge?.copyWith(fontWeight: FontWeight.bold),
           ),
           SizedBox(height: twelvePx),
           Text(
-            'Dhaka Bus (ঢাকা বাস) হল ঢাকা শহরের বাস পরিবহন ব্যবস্থার জন্য একটি সম্পূর্ণ ডিজিটাল গাইড। এই অ্যাপটি যাত্রীদের সহজে বাস রুট খুঁজে পেতে এবং তাদের যাত্রার পরিকল্পনা করতে সাহায্য করে।',
+            'Dhaka Bus is a comprehensive digital guide for the bus transportation system of Dhaka city. This app helps passengers easily find bus routes and plan their journeys.',
             style: Theme.of(context).textTheme.bodyLarge,
             textAlign: TextAlign.justify,
           ),
@@ -97,28 +98,28 @@ class AboutPage extends StatelessWidget {
     final features = [
       {
         'icon': Icons.route,
-        'title': 'সকল বাস রুট',
-        'desc': 'ঢাকা শহরের সম্পূর্ণ বাস রুটের তথ্য',
+        'title': 'All Bus Routes',
+        'desc': 'Complete bus route information for Dhaka city',
       },
       {
         'icon': Icons.location_on,
-        'title': 'বাস স্টপ',
-        'desc': 'সকল বাস স্টপের সঠিক অবস্থান',
+        'title': 'Bus Stops',
+        'desc': 'Exact locations of all bus stops',
       },
       {
         'icon': Icons.search,
-        'title': 'সহজ খোঁজা',
-        'desc': 'দ্রুত এবং সহজ বাস রুট খোঁজার সুবিধা',
+        'title': 'Easy Search',
+        'desc': 'Quick and easy bus route finding facility',
       },
       {
         'icon': Icons.directions,
-        'title': 'যাত্রা পরিকল্পনা',
-        'desc': 'গন্তব্য অনুযায়ী সেরা রুট সাজেশন',
+        'title': 'Trip Planning',
+        'desc': 'Best route suggestions according to destination',
       },
       {
         'icon': Icons.offline_pin,
-        'title': 'অফলাইন সাপোর্ট',
-        'desc': 'ইন্টারনেট ছাড়াই ব্যবহার করুন',
+        'title': 'Offline Support',
+        'desc': 'Use without internet connection',
       },
     ];
 
@@ -140,7 +141,7 @@ class AboutPage extends StatelessWidget {
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [
           Text(
-            'বৈশিষ্ট্যসমূহ',
+            'Features',
             style: Theme.of(
               context,
             ).textTheme.titleLarge?.copyWith(fontWeight: FontWeight.bold),
@@ -262,14 +263,14 @@ class AboutPage extends StatelessWidget {
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [
           Text(
-            'ডেভেলপার',
+            'Developer',
             style: Theme.of(
               context,
             ).textTheme.titleLarge?.copyWith(fontWeight: FontWeight.bold),
           ),
           SizedBox(height: twelvePx),
           Text(
-            'Royal Court BD',
+            'Sarah Tech',
             style: Theme.of(context).textTheme.titleMedium?.copyWith(
               fontWeight: FontWeight.w600,
               color: Theme.of(context).primaryColor,
@@ -277,7 +278,7 @@ class AboutPage extends StatelessWidget {
           ),
           SizedBox(height: eightPx),
           Text(
-            'আমরা বাংলাদেশের জন্য উপযোগী এবং মানসম্মত মোবাইল অ্যাপ্লিকেশন তৈরি করি যা মানুষের দৈনন্দিন জীবনকে সহজ করে তোলে।',
+            'We create useful and quality mobile applications for Bangladesh that make people\'s daily lives easier.',
             style: Theme.of(context).textTheme.bodyMedium,
             textAlign: TextAlign.justify,
           ),
@@ -305,7 +306,7 @@ class AboutPage extends StatelessWidget {
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [
           Text(
-            'যোগাযোগ',
+            'Contact',
             style: Theme.of(
               context,
             ).textTheme.titleLarge?.copyWith(fontWeight: FontWeight.bold),
@@ -321,7 +322,7 @@ class AboutPage extends StatelessWidget {
                 SizedBox(width: twelvePx),
                 Expanded(
                   child: Text(
-                    'report.irdfoundation@gmail.com',
+                    reportEmailAddress,
                     style: Theme.of(context).textTheme.bodyMedium?.copyWith(
                       color: Theme.of(context).primaryColor,
                       decoration: TextDecoration.underline,
@@ -357,7 +358,7 @@ class AboutPage extends StatelessWidget {
           SizedBox(height: sixteenPx),
 
           Text(
-            'যেকোনো সমস্যা, পরামর্শ বা মতামতের জন্য আমাদের সাথে যোগাযোগ করুন।',
+            'Contact us for any issues, suggestions or feedback.',
             style: Theme.of(context).textTheme.bodySmall?.copyWith(
               color: Colors.grey[600],
               fontStyle: FontStyle.italic,

@@ -28,6 +28,8 @@ class BusPresenter extends BasePresenter<BusUiState> {
       TextEditingController();
   final TextEditingController destinationStationNameController =
       TextEditingController();
+  final TextEditingController instantStationNameController =
+      TextEditingController();
 
   /// Listen to starting station text changes
   void _onStartingStationChanged() {
@@ -43,12 +45,23 @@ class BusPresenter extends BasePresenter<BusUiState> {
     );
   }
 
+  /// Listen to instant station text changes and filter buses instantly
+  void _onInstantStationChanged() {
+    final String stationName = instantStationNameController.text.trim();
+    if (stationName.isNotEmpty) {
+      findBusesByInstantLocation(stationName);
+    } else {
+      clearSearch();
+    }
+  }
+
   @override
   void onInit() {
     super.onInit();
     // Add listeners to sync TextEditingController with UI state
     startingStationNameController.addListener(_onStartingStationChanged);
     destinationStationNameController.addListener(_onDestinationStationChanged);
+    instantStationNameController.addListener(_onInstantStationChanged);
     // Load data from cache first (instant loading after splash)
     loadCachedDataOnly();
   }
@@ -253,6 +266,39 @@ class BusPresenter extends BasePresenter<BusUiState> {
     );
   }
 
+  /// Search for buses that pass through a specific location instantly
+  void findBusesByInstantLocation(String location) {
+    if (location.isEmpty) {
+      clearSearch();
+      return;
+    }
+
+    final List<BusEntity> allBuses = currentUiState.allBuses;
+    final Map<String, List<RouteEntity>> allBusRoutes =
+        currentUiState.busRoutes;
+    final List<BusEntity> filteredBuses = [];
+
+    for (final bus in allBuses) {
+      final List<RouteEntity>? routesForBus = allBusRoutes[bus.busId];
+      if (routesForBus != null) {
+        for (final route in routesForBus) {
+          // Check if the location exists in this route's stops
+          if (route.stops.contains(location)) {
+            filteredBuses.add(bus);
+            log('🚌 Bus ${bus.busNameEn} passes through $location');
+            break; // Bus found, move to the next bus
+          }
+        }
+      }
+    }
+
+    log('Found ${filteredBuses.length} buses passing through $location');
+    uiState.value = currentUiState.copyWith(
+      searchResults: filteredBuses,
+      searchQuery: 'instant-$location',
+    );
+  }
+
   /// Load all buses (cache-first strategy)
   Future<void> loadBuses({bool forceSync = false}) async {
     await executeTaskWithLoading(() async {
@@ -421,6 +467,7 @@ class BusPresenter extends BasePresenter<BusUiState> {
     log('🚌 BusPresenter: Clearing and unfocusing on page change');
     startingStationNameController.clear();
     destinationStationNameController.clear();
+    instantStationNameController.clear();
     FocusManager.instance.primaryFocus?.unfocus();
 
     // Update UI state to reflect cleared text fields
@@ -451,9 +498,11 @@ class BusPresenter extends BasePresenter<BusUiState> {
     destinationStationNameController.removeListener(
       _onDestinationStationChanged,
     );
+    instantStationNameController.removeListener(_onInstantStationChanged);
 
     startingStationNameController.dispose();
     destinationStationNameController.dispose();
+    instantStationNameController.dispose();
     super.onClose();
   }
 }

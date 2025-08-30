@@ -76,7 +76,7 @@ class BusRoutesListWidget extends StatelessWidget {
     if (busesToDisplay.isEmpty && isSearchActive) {
       return Expanded(
         child: Padding(
-          padding: const EdgeInsets.all(8.0),
+          padding: const EdgeInsets.all(10),
           child: CustomizableFeedbackWidget(
             messageTitle: 'No buses found',
             messageDescription: 'Try searching for a different route.',

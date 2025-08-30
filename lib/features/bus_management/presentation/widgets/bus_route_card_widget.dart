@@ -97,8 +97,9 @@ class BusRouteCard extends StatelessWidget {
     return Container(
       width: _iconContainerSize,
       height: _iconContainerSize,
+      alignment: Alignment.center,
       decoration: BoxDecoration(color: backgroundColor, borderRadius: radius8),
-      child: Icon(Icons.directions_bus, color: iconColor, size: twentyFourPx),
+      child: Text(bus.busId),
     );
   }
 

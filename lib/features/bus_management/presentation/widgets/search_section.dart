@@ -65,6 +65,20 @@ class SearchSection extends StatelessWidget {
                         }
                       : null,
                 ),
+                gapH16,
+                _buildAutocompleteField(
+                  context: context,
+                  hintText: 'instant result using location',
+                  controller: busPresenter.instantStationNameController,
+                  options: busPresenter.currentUiState.uniqueStops,
+                  isEnabled: areStopsLoaded,
+                  onFieldSubmitted: (value) {
+                    if (value.trim().isNotEmpty && areStopsLoaded) {
+                      FocusScope.of(context).unfocus();
+                      busPresenter.findBusesByInstantLocation(value.trim());
+                    }
+                  },
+                ),
               ],
             ),
           ),
@@ -80,6 +94,7 @@ class SearchSection extends StatelessWidget {
     required TextEditingController controller,
     required List<String> options,
     bool isEnabled = true,
+    Function(String)? onFieldSubmitted,
   }) {
     // Special identifier for the "no data found" case
     const String noDataFound = 'No data found';
@@ -108,6 +123,10 @@ class SearchSection extends StatelessWidget {
         }
         if (isEnabled) {
           controller.text = selection;
+          // Trigger instant search if onFieldSubmitted callback is provided
+          if (onFieldSubmitted != null) {
+            onFieldSubmitted(selection);
+          }
         }
       },
       fieldViewBuilder:

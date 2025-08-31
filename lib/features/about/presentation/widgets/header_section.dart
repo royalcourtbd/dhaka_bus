@@ -40,7 +40,7 @@ class HeaderSection extends StatelessWidget {
 
         // App Tagline
         Text(
-          'ঢাকা শহরের সম্পূর্ণ বাস রুট গাইড',
+          'Dhaka Bus - Your Reliable Travel Companion',
           style: textTheme.titleMedium?.copyWith(
             color: Colors.grey[600],
             fontStyle: FontStyle.italic,

@@ -216,9 +216,9 @@ class AboutPage extends StatelessWidget {
           Divider(height: twentyFourPx),
           _buildInfoRow(context, 'Package Name', 'com.royalcourtbd.dhaka_bus'),
           Divider(height: twentyFourPx),
-          _buildInfoRow(context, 'Last Updated', 'August 2024'),
+          _buildInfoRow(context, 'Last Updated', 'August 2025'),
           Divider(height: twentyFourPx),
-          _buildInfoRow(context, 'Platform', 'Android & iOS'),
+          _buildInfoRow(context, 'Platform', 'Android'),
         ],
       ),
     );

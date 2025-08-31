@@ -6,6 +6,7 @@ import signal
 import platform
 import subprocess
 import glob
+import re  # Added for git tag functionality
 from functools import wraps
 
 # Colors for output
@@ -249,19 +250,35 @@ def install_apk():
     """
     Installs the built APK on a connected Android device using adb.
     Tries to install arm64-v8a APK first if available.
+    Handles signature mismatch by uninstalling existing app first.
     """
     apk_files = glob.glob("build/app/outputs/flutter-apk/*.apk")
     if not apk_files:
         print(f"{RED}No APK found to install!{NC}")
         return False
-    # Try to install arm64-v8a APK first
+    
+    # Try to install arm64-v8a APK first, otherwise use the first apk
+    target_apk = None
     for apk_path in apk_files:
         if "arm64-v8a" in apk_path:
-            print(f"{YELLOW}Installing {apk_path}...{NC}")
-            return run_flutter_command(["adb", "install", "-r", apk_path], "Installing on device...                              ")
-    # If not found, install the first apk
-    print(f"{YELLOW}Installing {apk_files[0]}...{NC}")
-    return run_flutter_command(["adb", "install", "-r", apk_files[0]], "Installing on device...                              ")
+            target_apk = apk_path
+            break
+    if not target_apk:
+        target_apk = apk_files[0]
+    
+    print(f"{YELLOW}Installing {target_apk}...{NC}")
+    
+    # First try normal install
+    success = run_flutter_command(["adb", "install", "-r", target_apk], "Installing on device...                              ")
+    
+    if not success:
+        print(f"{YELLOW}Installation failed, trying to uninstall existing app first...{NC}")
+        # Try to uninstall existing app first
+        run_flutter_command(["adb", "uninstall", "com.royalcourtbd.dhaka_bus"], "Uninstalling existing app...                        ")
+        # Then try to install again
+        success = run_flutter_command(["adb", "install", target_apk], "Reinstalling on device...                           ")
+    
+    return success
 
 @timer_decorator
 def update_pods():
@@ -284,6 +301,90 @@ def update_pods():
     # Return to root directory
     os.chdir(current_dir)
     print(f"\n{GREEN}✓ iOS pods updated successfully!{NC}")
+
+# ============================================================================
+# GIT TAG FUNCTIONS
+# ============================================================================
+
+def get_version_from_pubspec():
+    """Get the version from pubspec.yaml using regex"""
+    if os.path.isfile("pubspec.yaml"):
+        with open("pubspec.yaml", 'r') as file:
+            try:
+                content = file.read()
+                # Use regex to find the version field in pubspec.yaml
+                version_match = re.search(r'^version:\s*(.+)$', content, re.MULTILINE)
+                if version_match:
+                    version = version_match.group(1).strip()
+                    # Remove quotes if present and split by + to get only version number
+                    version = version.strip('"\'').split('+')[0]
+                    return version
+                else:
+                    print(f"{RED}Error: Could not find 'version' field in pubspec.yaml.{NC}")
+                    return None
+            except Exception as e:
+                print(f"{RED}Error: Could not read pubspec.yaml: {e}{NC}")
+                return None
+    else:
+        print(f"{RED}Error: pubspec.yaml not found in the current directory.{NC}")
+        print(f"Please run this command from the root of a Flutter project.")
+        return None
+
+def create_and_push_tag():
+    """Create git tag from pubspec version and push to remote"""
+    print(f"{YELLOW}Creating and pushing git tag...{NC}\n")
+    
+    # Get version from pubspec.yaml
+    version = get_version_from_pubspec()
+    if not version:
+        return False
+    
+    tag_name = f"v{version}"
+    
+    print(f"{BLUE}Version found: {version}{NC}")
+    print(f"{BLUE}Tag name: {tag_name}{NC}\n")
+    
+    # Check if tag already exists
+    try:
+        result = subprocess.run(["git", "tag", "-l", tag_name], 
+                              capture_output=True, text=True)
+        if result.stdout.strip():
+            print(f"{YELLOW}Warning: Tag {tag_name} already exists locally.{NC}")
+            user_input = input(f"Do you want to delete and recreate it? (y/N): ")
+            if user_input.lower() != 'y':
+                print(f"{YELLOW}Operation cancelled.{NC}")
+                return False
+            # Delete existing tag
+            subprocess.run(["git", "tag", "-d", tag_name])
+            print(f"{GREEN}Deleted existing local tag: {tag_name}{NC}")
+    except Exception as e:
+        print(f"{RED}Error checking existing tags: {e}{NC}")
+        return False
+    
+    # Create git tag
+    success = run_flutter_command(["git", "tag", tag_name], f"Creating tag {tag_name}...                             ")
+    if not success:
+        print(f"{RED}Failed to create git tag.{NC}")
+        return False
+    
+    # Push tag to remote
+    success = run_flutter_command(["git", "push", "-u", "origin", tag_name], f"Pushing tag to remote...                            ")
+    if not success:
+        print(f"{RED}Failed to push tag to remote.{NC}")
+        return False
+    
+    print(f"\n{GREEN}✓ Git tag {tag_name} created and pushed successfully!{NC}")
+    return True
+
+def uninstall_app():
+    """Uninstall the app from connected device"""
+    print(f"{YELLOW}Uninstalling app from device...{NC}\n")
+    success = run_flutter_command(["adb", "uninstall", "com.royalcourtbd.dhaka_bus"], "Uninstalling app...                                 ")
+    if success:
+        print(f"\n{GREEN}✓ App uninstalled successfully!{NC}")
+    else:
+        print(f"\n{RED}✗ Failed to uninstall app!{NC}")
+    return success
 
 def create_page(page_name):
     """Create page structure"""
@@ -316,7 +417,9 @@ def show_usage():
     print("  cache-repair Repair pub cache")
     print("  cleanup      Clean project and get dependencies")
     print("  release-run  Build & install release APK on connected device")
+    print("  uninstall    Uninstall app from connected device")
     print("  pod          Update iOS pods")
+    print("  tag          Create and push git tag from pubspec version")
     print("  page         Create page structure (usage: {sys.argv[0]} page <page_name>)")
     sys.exit(1)
 
@@ -346,8 +449,12 @@ def main():
         cleanup_project()
     elif command == "release-run":
         release_run()
+    elif command == "uninstall":
+        uninstall_app()
     elif command == "pod":
         update_pods()
+    elif command == "tag":
+        create_and_push_tag()
     elif command == "page":
         if len(sys.argv) < 3:
             print(f"{RED}Error: Page name is required.{NC}")

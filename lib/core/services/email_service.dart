@@ -40,15 +40,11 @@ Future<void> sendEmail({
   String emailBody = body;
   if (emailBody.isEmpty) emailBody = await getEmailBody();
 
-  final Map<String, String> mailContent = {
-    'subject': subject,
-    'body': emailBody,
-  };
-  final Uri uri = Uri(
-    scheme: 'mailto',
-    path: email,
-    queryParameters: mailContent,
-  );
-  final String urlString = uri.toString();
+  // Manually encode to avoid + signs in spaces
+  final String encodedSubject = Uri.encodeComponent(subject);
+  final String encodedBody = Uri.encodeComponent(emailBody);
+
+  final String urlString =
+      'mailto:$email?subject=$encodedSubject&body=$encodedBody';
   await openUrl(url: urlString);
 }

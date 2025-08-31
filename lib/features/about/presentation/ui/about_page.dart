@@ -216,7 +216,11 @@ class AboutPage extends StatelessWidget {
           Divider(height: twentyFourPx),
           _buildInfoRow(context, 'Package Name', 'com.royalcourtbd.dhaka_bus'),
           Divider(height: twentyFourPx),
-          _buildInfoRow(context, 'Last Updated', 'August 2025'),
+          _buildInfoRow(
+            context,
+            'Last Updated',
+            _presenter.currentUiState.lastUpdated,
+          ),
           Divider(height: twentyFourPx),
           _buildInfoRow(context, 'Platform', 'Android'),
         ],

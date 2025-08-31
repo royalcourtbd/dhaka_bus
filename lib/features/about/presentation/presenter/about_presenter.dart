@@ -2,6 +2,7 @@ import 'dart:async';
 import 'package:dhaka_bus/core/base/base_presenter.dart';
 import 'package:dhaka_bus/core/services/email_service.dart';
 import 'package:dhaka_bus/core/services/launcher_service.dart';
+import 'package:dhaka_bus/core/static/build_info.dart';
 import 'package:dhaka_bus/core/utility/navigation_helpers.dart';
 import 'package:dhaka_bus/core/utility/trial_utility.dart';
 import 'package:dhaka_bus/features/about/presentation/presenter/about_ui_state.dart';
@@ -22,14 +23,27 @@ class AboutPresenter extends BasePresenter<AboutUiState> {
       return await PackageInfo.fromPlatform();
     });
 
+    // Get build time from compile time
+    final buildTime = _getBuildDate();
+
     if (packageInfo != null) {
       uiState.value = currentUiState.copyWith(
         appVersion: '${packageInfo.version} (${packageInfo.buildNumber})',
+        lastUpdated: buildTime,
       );
     } else {
       // Fallback version if package info fails
-      uiState.value = currentUiState.copyWith(appVersion: '1.0.0');
+      uiState.value = currentUiState.copyWith(
+        appVersion: '1.0.0',
+        lastUpdated: buildTime,
+      );
     }
+  }
+
+  String _getBuildDate() {
+    // Use BuildInfo for consistent build date
+    // This can be auto-updated during CI/CD process
+    return BuildInfo.formattedBuildDate;
   }
 
   Future<void> onContactEmailTap() async {

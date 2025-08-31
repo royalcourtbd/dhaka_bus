@@ -1,7 +1,7 @@
 import 'dart:async';
 import 'package:dhaka_bus/core/base/base_presenter.dart';
+import 'package:dhaka_bus/core/services/email_service.dart';
 import 'package:dhaka_bus/core/services/launcher_service.dart';
-import 'package:dhaka_bus/core/static/constants.dart';
 import 'package:dhaka_bus/core/utility/navigation_helpers.dart';
 import 'package:dhaka_bus/core/utility/trial_utility.dart';
 import 'package:dhaka_bus/features/about/presentation/presenter/about_ui_state.dart';
@@ -33,30 +33,30 @@ class AboutPresenter extends BasePresenter<AboutUiState> {
   }
 
   Future<void> onContactEmailTap() async {
-    const email = reportEmailAddress;
-    const subject = 'Dhaka Bus App - Feedback';
-    const body = 'আপনার মতামত এখানে লিখুন...';
-
-    final emailUrl =
-        'mailto:$email?subject=${Uri.encodeComponent(subject)}&body=${Uri.encodeComponent(body)}';
-
-    try {
-      await openUrl(url: emailUrl);
-    } catch (e) {
-      await addUserMessage(
-        'ইমেইল অ্যাপ খুলতে সমস্যা হয়েছে। অনুগ্রহ করে ম্যানুয়ালি ইমেইল করুন: $email',
+    final bool? result = await catchAndReturnFuture<bool>(() async {
+      await sendEmail(
+        subject: 'Dhaka Bus App - Feedback',
+        body: 'Write your feedback here...\n\n',
       );
+      return true;
+    });
+
+    if (result == null) {
+      await addUserMessage('Failed to open email app. Please try again.');
     }
   }
 
   Future<void> onWebsiteTap() async {
-    const websiteUrl = 'https://royalcourtbd.com';
+    const String websiteUrl = 'https://royalcourtbd.com';
 
-    try {
+    final bool? result = await catchAndReturnFuture<bool>(() async {
       await openUrl(url: websiteUrl);
-    } catch (e) {
+      return true;
+    });
+
+    if (result == null) {
       await addUserMessage(
-        'ওয়েবসাইট খুলতে সমস্যা হয়েছে। অনুগ্রহ করে ব্রাউজারে ভিজিট করুন: $websiteUrl',
+        'Failed to open website. Please visit in your browser: $websiteUrl',
       );
     }
   }

@@ -1,6 +1,7 @@
 import 'dart:async';
 import 'package:dhaka_bus/core/base/base_presenter.dart';
 import 'package:dhaka_bus/core/services/launcher_service.dart';
+import 'package:dhaka_bus/core/static/constants.dart';
 import 'package:dhaka_bus/core/utility/navigation_helpers.dart';
 import 'package:dhaka_bus/core/utility/trial_utility.dart';
 import 'package:dhaka_bus/features/about/presentation/presenter/about_ui_state.dart';
@@ -32,7 +33,7 @@ class AboutPresenter extends BasePresenter<AboutUiState> {
   }
 
   Future<void> onContactEmailTap() async {
-    const email = 'report.irdfoundation@gmail.com';
+    const email = reportEmailAddress;
     const subject = 'Dhaka Bus App - Feedback';
     const body = 'আপনার মতামত এখানে লিখুন...';
 

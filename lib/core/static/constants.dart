@@ -15,7 +15,6 @@ const String privacyPolicyUrl =
 
 //==============================================//
 const String reportEmailAddress = 'sarahtech624@gmail.com';
-const String donationUrl = 'https://irdfoundation.com/sadaqa-jaria.html';
 const String messengerUrl = "https://m.me/ihadis.official";
 const String twitterUrl = "https://twitter.com/irdofficial";
 const String facebookGroupUrl = "https://www.facebook.com/groups/irdofficial";

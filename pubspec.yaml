@@ -1,5 +1,5 @@
 name: dhaka_bus
-description: "A new Flutter project."
+description: "Dhaka Bus - Your reliable companion for navigating Dhaka's public transportation system. Find bus routes, schedules, and real-time information to make your daily commute easier and more efficient."
 # The following line prevents the package from being accidentally published to
 # pub.dev using `flutter pub publish`. This is preferred for private packages.
 publish_to: "none" # Remove this line if you wish to publish to pub.dev

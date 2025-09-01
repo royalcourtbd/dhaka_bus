@@ -1,7 +1,3 @@
-// File: bus_management/presentation/presenter/bus_presenter.dart
-
-// lib/presentation/bus/presenter/bus_presenter.dart
-
 import 'dart:developer';
 import 'package:dhaka_bus/core/base/base_presenter.dart';
 import 'package:dhaka_bus/core/utility/navigation_helpers.dart';
@@ -55,15 +51,11 @@ class BusPresenter extends BasePresenter<BusUiState> {
 
   /// Load cached data only (instant loading after splash initialization)
   Future<void> loadCachedDataOnly() async {
-    log('⚡ BusPresenter: Loading cached data only (post-splash fast load)');
-
     await executeTaskWithLoading(() async {
       // Load buses from cache only
       await parseDataFromEitherWithUserMessage<List<BusEntity>>(
         task: () => _getAllActiveBusesUseCase.execute(forceSync: false),
         onDataLoaded: (List<BusEntity> buses) {
-          log('🚌 BusPresenter: ✅ Loaded ${buses.length} buses from cache');
-
           // Sort the bus list alphabetically by name
           buses.sort((a, b) => a.busNameEn.compareTo(b.busNameEn));
 
@@ -78,8 +70,6 @@ class BusPresenter extends BasePresenter<BusUiState> {
       await parseDataFromEitherWithUserMessage<List<RouteEntity>>(
         task: () => _getRoutesUseCase.execute(forceSync: false),
         onDataLoaded: (List<RouteEntity> routes) {
-          log('🛣️ BusPresenter: ✅ Loaded ${routes.length} routes from cache');
-
           // Group routes by bus_id for quick lookup
           final Map<String, List<RouteEntity>> busRoutesMap = {};
           for (final route in routes) {
@@ -108,8 +98,6 @@ class BusPresenter extends BasePresenter<BusUiState> {
         },
       );
     });
-
-    log('🚀 Cache data loaded - App ready for interaction!');
   }
 
   /// Load all buses and routes together (used for manual refresh)
@@ -134,11 +122,8 @@ class BusPresenter extends BasePresenter<BusUiState> {
       await parseDataFromEitherWithUserMessage<List<BusEntity>>(
         task: () => _getAllActiveBusesUseCase.execute(forceSync: forceSync),
         onDataLoaded: (List<BusEntity> buses) {
-          log('🚌 BusPresenter: ✅ Refreshed ${buses.length} buses in UI State');
-
           // Sort the bus list alphabetically by name
           buses.sort((a, b) => a.busNameEn.compareTo(b.busNameEn));
-          log('🚌 BusPresenter: Sorted bus list alphabetically.');
 
           // Determine data source
           String dataSource;
@@ -198,8 +183,6 @@ class BusPresenter extends BasePresenter<BusUiState> {
         },
       );
     });
-
-    log('� Manual refresh completed successfully');
   }
 
   /// Search for buses that travel between the selected origin and destination
@@ -246,7 +229,6 @@ class BusPresenter extends BasePresenter<BusUiState> {
       }
     }
 
-    log('Found ${filteredBuses.length} buses for route $origin → $destination');
     uiState.value = currentUiState.copyWith(
       searchResults: filteredBuses,
       searchQuery: '$origin-$destination',
@@ -269,13 +251,9 @@ class BusPresenter extends BasePresenter<BusUiState> {
 
   /// Load routes for a specific bus
   Future<void> loadRoutesForBus(String busId) async {
-    log('🛣️ BusPresenter: Loading routes for bus: $busId');
-
     await parseDataFromEitherWithUserMessage<List<RouteEntity>>(
       task: () => _getRoutesByBusIdUseCase.execute(busId),
       onDataLoaded: (List<RouteEntity> routes) {
-        log('🛣️ BusPresenter: Found ${routes.length} routes for bus: $busId');
-
         // Update the busRoutes map
         final updatedBusRoutes = Map<String, List<RouteEntity>>.from(
           currentUiState.busRoutes,
@@ -299,8 +277,6 @@ class BusPresenter extends BasePresenter<BusUiState> {
 
   /// Optional: Background refresh without loading indicator
   Future<void> backgroundRefresh() async {
-    log('🔄 BusPresenter: Background refresh starting...');
-
     // Refresh data in background without showing loading to user
     try {
       final buses = await _getAllActiveBusesUseCase.execute(forceSync: false);
@@ -337,8 +313,6 @@ class BusPresenter extends BasePresenter<BusUiState> {
               uniqueStops: uniqueStopsList,
               lastDataSource: 'background_refresh',
             );
-
-            log('🔄 Background refresh completed successfully');
           },
         );
       });
@@ -349,25 +323,20 @@ class BusPresenter extends BasePresenter<BusUiState> {
 
   /// Clear search results
   void clearSearch() {
-    log('🚌 BusPresenter: Clearing search results');
     // Reset search-related UI state
     uiState.value = currentUiState.copyWith(searchResults: [], searchQuery: '');
   }
 
   /// Refresh all data (force sync from server)
   Future<void> refreshAllData() async {
-    log('🚌 BusPresenter: Force refreshing all bus and route data...');
     await loadBusesAndRoutes(forceSync: true);
-    log('🚌 BusPresenter: All data refreshed successfully');
   }
 
   /// Clear all cached data
   Future<void> clearAllCache() async {
-    log('🗑️ BusPresenter: Clearing all cached data...');
     await _dataSyncService.clearAllCache();
     // Reload data after clearing cache
     await loadBusesAndRoutes(forceSync: true);
-    log('🗑️ BusPresenter: Cache cleared and data reloaded');
   }
 
   /// Get sync status information
@@ -399,8 +368,6 @@ class BusPresenter extends BasePresenter<BusUiState> {
   }
 
   void swapLocations() {
-    log('🔄 BusPresenter: Swapping station locations');
-
     final temp = startingStationNameController.text;
     startingStationNameController.text = destinationStationNameController.text;
     destinationStationNameController.text = temp;
@@ -410,15 +377,10 @@ class BusPresenter extends BasePresenter<BusUiState> {
       startingStation: startingStationNameController.text,
       destinationStation: destinationStationNameController.text,
     );
-
-    log(
-      '🔄 Swapped: Starting="${startingStationNameController.text}", Destination="${destinationStationNameController.text}"',
-    );
   }
 
   /// Clear text fields and unfocus when page changes
   void clearAndUnfocusOnPageChange() {
-    log('🚌 BusPresenter: Clearing and unfocusing on page change');
     startingStationNameController.clear();
     destinationStationNameController.clear();
     FocusManager.instance.primaryFocus?.unfocus();
@@ -445,7 +407,6 @@ class BusPresenter extends BasePresenter<BusUiState> {
 
   @override
   void onClose() {
-    log('🚌 BusPresenter: Presenter is being disposed');
     // Remove listeners before disposing controllers
     startingStationNameController.removeListener(_onStartingStationChanged);
     destinationStationNameController.removeListener(

@@ -91,10 +91,6 @@ class BusPresenter extends BasePresenter<BusUiState> {
             busRoutes: busRoutesMap,
             uniqueStops: uniqueStopsList,
           );
-
-          log(
-            '⚡ BusPresenter: ✅ FAST CACHE LOAD COMPLETE - UI ready instantly!',
-          );
         },
       );
     });
@@ -102,11 +98,6 @@ class BusPresenter extends BasePresenter<BusUiState> {
 
   /// Load all buses and routes together (used for manual refresh)
   Future<void> loadBusesAndRoutes({bool forceSync = false}) async {
-    final syncType = forceSync ? 'FORCE SYNC' : 'CACHE-FIRST';
-    log(
-      '🚌 BusPresenter: Manual refresh - Loading buses and routes... (strategy: $syncType)',
-    );
-
     // Check if this is first time load
     final busSync = await _dataSyncService.getSyncStatus();
     final isFirstTime = busSync['needsSync'] == true;
@@ -146,10 +137,6 @@ class BusPresenter extends BasePresenter<BusUiState> {
       await parseDataFromEitherWithUserMessage<List<RouteEntity>>(
         task: () => _getRoutesUseCase.execute(forceSync: forceSync),
         onDataLoaded: (List<RouteEntity> routes) {
-          log(
-            '🛣️ BusPresenter: ✅ Refreshed ${routes.length} routes in UI State',
-          );
-
           // Group routes by bus_id for quick lookup
           final Map<String, List<RouteEntity>> busRoutesMap = {};
           for (final route in routes) {
@@ -158,10 +145,6 @@ class BusPresenter extends BasePresenter<BusUiState> {
             }
             busRoutesMap[route.busId]!.add(route);
           }
-
-          log(
-            '🛣️ BusPresenter: Grouped routes for ${busRoutesMap.keys.length} unique buses',
-          );
 
           //Create a unique stops list
           final Set<String> uniqueStopsSet = {};
@@ -175,10 +158,6 @@ class BusPresenter extends BasePresenter<BusUiState> {
             allRoutes: routes,
             busRoutes: busRoutesMap,
             uniqueStops: uniqueStopsList,
-          );
-
-          log(
-            '🔄 BusPresenter: ✅ MANUAL REFRESH COMPLETE - UI State updated with fresh data',
           );
         },
       );
@@ -219,9 +198,7 @@ class BusPresenter extends BasePresenter<BusUiState> {
 
             if (isForwardRoute || isReverseRoute) {
               filteredBuses.add(bus);
-              log(
-                '🚌 Bus ${bus.busNameEn} matches route: ${isForwardRoute ? 'Forward' : 'Reverse'} direction',
-              );
+
               break; // Bus found, move to the next bus
             }
           }

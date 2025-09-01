@@ -1,8 +1,13 @@
+import 'dart:io';
+
 import 'package:dhaka_bus/core/base/base_export.dart';
+import 'package:dhaka_bus/core/services/connectivity_service.dart';
 import 'package:dhaka_bus/core/services/launcher_service.dart';
 import 'package:dhaka_bus/core/static/constants.dart';
+import 'package:dhaka_bus/core/utility/extensions.dart';
 import 'package:dhaka_bus/core/utility/navigation_helpers.dart';
 import 'package:dhaka_bus/core/utility/utility.dart';
+import 'package:dhaka_bus/features/our_projects/presentation/ui/our_projects_page.dart';
 import 'package:dhaka_bus/features/settings/presentation/presenter/settings_ui_state.dart';
 
 class SettingsPresenter extends BasePresenter<SettingsUiState> {
@@ -17,6 +22,32 @@ class SettingsPresenter extends BasePresenter<SettingsUiState> {
 
   Future<void> onRatingClicked() {
     return openUrl(url: suitableAppStoreUrl);
+  }
+
+  Future<void> onPlayStoreLinkClicked(BuildContext context) =>
+      _onPromotionInteraction(
+        onInternet: (url) => openUrl(url: url),
+        onNoInternet: () => context.navigatorPush(OurProjectsPage()),
+      );
+
+  Future<void> _onPromotionInteraction({
+    required void Function(String promotionUrl) onInternet,
+    required VoidCallback onNoInternet,
+  }) async {
+    final bool isNetworkAvailable = await checkInternetConnection();
+    if (!isNetworkAvailable) {
+      onNoInternet();
+      return;
+    }
+
+    const String playStoreUrl =
+        'https://play.google.com/store/apps/dev?id=8459316973763163049';
+
+    const String appStoreUrl = 'https://apps.apple.com/us/developer/';
+
+    final String promotionUrl = Platform.isAndroid ? playStoreUrl : appStoreUrl;
+
+    onInternet(promotionUrl);
   }
 
   Future<void> onShareButtonClicked() async {

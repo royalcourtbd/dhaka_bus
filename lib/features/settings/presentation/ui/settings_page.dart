@@ -84,7 +84,7 @@ class SettingsPage extends StatelessWidget {
               context: context,
               title: 'Other Apps',
               iconPath: SvgPath.icPlayStore,
-              onTap: () {},
+              onTap: () => settingsPresenter.onPlayStoreLinkClicked(context),
             ),
           ],
         ),

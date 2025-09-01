@@ -67,7 +67,7 @@ class AboutPage extends StatelessWidget {
         borderRadius: BorderRadius.circular(twelvePx),
         boxShadow: [
           BoxShadow(
-            color: Colors.grey.withOpacity(0.1),
+            color: Colors.grey.withValues(alpha: .1),
             spreadRadius: 1,
             blurRadius: 4,
             offset: Offset(0, 2),
@@ -130,7 +130,7 @@ class AboutPage extends StatelessWidget {
         borderRadius: BorderRadius.circular(twelvePx),
         boxShadow: [
           BoxShadow(
-            color: Colors.grey.withOpacity(0.1),
+            color: Colors.grey.withValues(alpha: .1),
             spreadRadius: 1,
             blurRadius: 4,
             offset: Offset(0, 2),
@@ -155,7 +155,9 @@ class AboutPage extends StatelessWidget {
                   Container(
                     padding: EdgeInsets.all(eightPx),
                     decoration: BoxDecoration(
-                      color: Theme.of(context).primaryColor.withOpacity(0.1),
+                      color: Theme.of(
+                        context,
+                      ).primaryColor.withValues(alpha: .1),
                       borderRadius: BorderRadius.circular(eightPx),
                     ),
                     child: Icon(
@@ -199,7 +201,7 @@ class AboutPage extends StatelessWidget {
         borderRadius: BorderRadius.circular(twelvePx),
         boxShadow: [
           BoxShadow(
-            color: Colors.grey.withOpacity(0.1),
+            color: Colors.grey.withValues(alpha: .1),
             spreadRadius: 1,
             blurRadius: 4,
             offset: Offset(0, 2),
@@ -256,7 +258,7 @@ class AboutPage extends StatelessWidget {
         borderRadius: BorderRadius.circular(twelvePx),
         boxShadow: [
           BoxShadow(
-            color: Colors.grey.withOpacity(0.1),
+            color: Colors.grey.withValues(alpha: .1),
             spreadRadius: 1,
             blurRadius: 4,
             offset: Offset(0, 2),
@@ -299,7 +301,7 @@ class AboutPage extends StatelessWidget {
         borderRadius: BorderRadius.circular(twelvePx),
         boxShadow: [
           BoxShadow(
-            color: Colors.grey.withOpacity(0.1),
+            color: Colors.grey.withValues(alpha: .1),
             spreadRadius: 1,
             blurRadius: 4,
             offset: Offset(0, 2),

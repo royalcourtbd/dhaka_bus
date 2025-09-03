@@ -8,13 +8,44 @@ import 'package:dhaka_bus/core/utility/extensions.dart';
 import 'package:dhaka_bus/core/utility/navigation_helpers.dart';
 import 'package:dhaka_bus/core/utility/utility.dart';
 import 'package:dhaka_bus/features/our_projects/presentation/ui/our_projects_page.dart';
+import 'package:dhaka_bus/features/settings/domain/usecase/get_app_version_usecase.dart';
 import 'package:dhaka_bus/features/settings/presentation/presenter/settings_ui_state.dart';
 
 class SettingsPresenter extends BasePresenter<SettingsUiState> {
+  final GetAppVersionUseCase _getAppVersionUseCase;
+
+  SettingsPresenter(this._getAppVersionUseCase);
+
   final Obs<SettingsUiState> uiState = Obs<SettingsUiState>(
     SettingsUiState.empty(),
   );
   SettingsUiState get currentUiState => uiState.value;
+
+  StreamSubscription<Either<String, String?>>? _appVersionSubscription;
+
+  @override
+  void onInit() {
+    super.onInit();
+    _loadAppVersion();
+  }
+
+  Future<void> _loadAppVersion() async {
+    await handleStreamEvents<String?>(
+      stream: _getAppVersionUseCase.execute(),
+      subscription: _appVersionSubscription,
+      onData: (version) {
+        uiState.value = currentUiState.copyWith(
+          appVersion: version ?? 'Version not available',
+        );
+      },
+    );
+  }
+
+  @override
+  void onClose() {
+    _appVersionSubscription?.cancel();
+    super.onClose();
+  }
 
   Future<void> onPrivacyPolicyClicked() {
     return openUrl(url: privacyPolicyUrl);

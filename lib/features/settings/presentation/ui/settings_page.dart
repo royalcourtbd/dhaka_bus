@@ -3,6 +3,7 @@ import 'package:dhaka_bus/core/di/service_locator.dart';
 import 'package:dhaka_bus/core/external_libs/action_list_tile/action_list_tile.dart';
 import 'package:dhaka_bus/core/static/svg_path.dart';
 import 'package:dhaka_bus/core/utility/extensions.dart';
+import 'package:dhaka_bus/core/widgets/presentable_widget_builder.dart';
 import 'package:dhaka_bus/features/about/presentation/ui/about_page.dart';
 import 'package:dhaka_bus/features/settings/presentation/presenter/settings_presenter.dart';
 import 'package:dhaka_bus/shared/components/custom_app_bar_widget.dart';
@@ -15,78 +16,86 @@ class SettingsPage extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return Scaffold(
-      appBar: CustomAppBar(title: 'Menu', isRoot: true, centerTitle: true),
-      body: SingleChildScrollView(
-        child: Column(
-          children: [
-            // _buildListTile(
-            //   context: context,
-            //   title: 'Language / ভাষা',
-            //   iconPath: SvgPath.icLanguage,
-            //   onTap: () {},
-            // ),
-            _buildListTile(
-              context: context,
-              title: 'Notification',
-              iconPath: SvgPath.icNotification,
-              onTap: () {},
-            ),
+    return PresentableWidgetBuilder(
+      presenter: settingsPresenter,
+      builder: () => Scaffold(
+        appBar: CustomAppBar(title: 'Menu', isRoot: true, centerTitle: true),
+        body: SingleChildScrollView(
+          child: Column(
+            children: [
+              // _buildListTile(
+              //   context: context,
+              //   title: 'Language / ভাষা',
+              //   iconPath: SvgPath.icLanguage,
+              //   onTap: () {},
+              // ),
+              _buildListTile(
+                context: context,
+                title: 'Notification',
+                iconPath: SvgPath.icNotification,
+                onTap: () {},
+              ),
 
-            _buildListTile(
-              context: context,
-              title: 'Contact Support',
-              iconPath: SvgPath.icMail,
-              onTap: () {},
-            ),
-            _buildListTile(
-              context: context,
-              title: 'Feedback',
-              iconPath: SvgPath.icFeedback,
-              onTap: () {},
-            ),
+              _buildListTile(
+                context: context,
+                title: 'Contact Support',
+                iconPath: SvgPath.icMail,
+                onTap: () {},
+              ),
+              _buildListTile(
+                context: context,
+                title: 'Feedback',
+                iconPath: SvgPath.icFeedback,
+                onTap: () {},
+              ),
 
-            _buildListTile(
-              context: context,
-              title: 'Follow Us',
-              iconPath: SvgPath.icFacebook,
-              onTap: () {},
-            ),
+              _buildListTile(
+                context: context,
+                title: 'Follow Us',
+                iconPath: SvgPath.icFacebook,
+                onTap: () {},
+              ),
 
-            _buildListTile(
-              context: context,
-              title: 'Share app',
-              iconPath: SvgPath.icShare,
-              onTap: settingsPresenter.onShareButtonClicked,
-            ),
+              _buildListTile(
+                context: context,
+                title: 'Share app',
+                iconPath: SvgPath.icShare,
+                onTap: settingsPresenter.onShareButtonClicked,
+              ),
 
-            _buildListTile(
-              context: context,
-              title: 'Rate the app',
-              iconPath: SvgPath.icStar,
-              onTap: settingsPresenter.onRatingClicked,
-            ),
+              _buildListTile(
+                context: context,
+                title: 'Rate the app',
+                iconPath: SvgPath.icStar,
+                onTap: settingsPresenter.onRatingClicked,
+              ),
 
-            _buildListTile(
-              context: context,
-              title: 'About Dhaka Bus',
-              iconPath: SvgPath.icAbout,
-              onTap: () => context.navigatorPush(AboutPage()),
-            ),
-            _buildListTile(
-              context: context,
-              title: 'Privacy Policy',
-              iconPath: SvgPath.icPrivacy,
-              onTap: settingsPresenter.onPrivacyPolicyClicked,
-            ),
+              _buildListTile(
+                context: context,
+                title: 'About Dhaka Bus',
+                iconPath: SvgPath.icAbout,
+                onTap: () => context.navigatorPush(AboutPage()),
+              ),
+              _buildListTile(
+                context: context,
+                title: 'Privacy Policy',
+                iconPath: SvgPath.icPrivacy,
+                onTap: settingsPresenter.onPrivacyPolicyClicked,
+              ),
 
-            _buildListTile(
-              context: context,
-              title: 'Other Apps',
-              iconPath: SvgPath.icPlayStore,
-              onTap: () => settingsPresenter.onPlayStoreLinkClicked(context),
-            ),
-          ],
+              _buildListTile(
+                context: context,
+                title: 'Other Apps',
+                iconPath: SvgPath.icPlayStore,
+                onTap: () => settingsPresenter.onPlayStoreLinkClicked(context),
+              ),
+
+              Text(
+                'App Version: ${settingsPresenter.currentUiState.appVersion ?? 'Loading...'}',
+                style: Theme.of(context).textTheme.bodyMedium,
+              ),
+            ],
+          ),
         ),
       ),
     );
@@ -104,7 +113,6 @@ class SettingsPage extends StatelessWidget {
       onTap: onTap,
       theme: ActionListTileTheme(
         iconSize: twentyFivePx,
-
         textStyle: Theme.of(context).textTheme.titleLarge!.copyWith(
           fontSize: 18,
           fontWeight: FontWeight.w500,

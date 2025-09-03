@@ -1,5 +1,6 @@
 import 'dart:async';
 import 'package:cloud_firestore/cloud_firestore.dart';
+import 'package:dhaka_bus/features/settings/data/models/app_settings_model.dart';
 import 'package:firebase_analytics/firebase_analytics.dart';
 import 'package:firebase_messaging/firebase_messaging.dart';
 import 'package:dhaka_bus/core/utility/logger_utility.dart';
@@ -37,6 +38,8 @@ class BackendAsAService {
   static const String busesCollection = 'buses';
   static const String routesCollection = 'routes';
   static const String noticeCollection = 'notice';
+  static const String settingsCollection = 'settings';
+  static const String appVersion = 'app_version';
   static const String noticeDoc = 'notice-bn';
   static const String appUpdateDoc = 'app-update';
   static const String deviceTokensCollection = 'device_tokens';
@@ -110,17 +113,13 @@ class BackendAsAService {
           final List<Map<String, dynamic>> buses = querySnapshot.docs.map((
             doc,
           ) {
-            final data = doc.data();
-            // Add document ID as 'id' field for consistency
+            final Map<String, dynamic> data = doc.data();
+
             return {
               ...data,
               'id': doc.id, // Firebase document ID
             };
           }).toList();
-
-          logInfo(
-            '✅ Successfully fetched ${buses.length} active buses from Firestore',
-          );
 
           // Log service type breakdown for debugging
           final Map<String, int> serviceTypes = {};
@@ -128,8 +127,6 @@ class BackendAsAService {
             final serviceType = bus['service_type'] as String? ?? 'Unknown';
             serviceTypes[serviceType] = (serviceTypes[serviceType] ?? 0) + 1;
           }
-
-          logInfo('📊 Active Bus Breakdown: $serviceTypes');
 
           return buses;
         }) ??
@@ -140,8 +137,6 @@ class BackendAsAService {
   /// This replaces individual route operations - fetches all routes
   Future<List<Map<String, dynamic>>> getAllRoutes() async {
     return await catchAndReturnFuture<List<Map<String, dynamic>>>(() async {
-          logInfo('🛣️ Fetching all routes from Firestore...');
-
           final QuerySnapshot<Map<String, dynamic>> querySnapshot =
               await _fireStore.collection(routesCollection).get();
 
@@ -155,10 +150,6 @@ class BackendAsAService {
               'id': doc.id, // Firebase document ID
             };
           }).toList();
-
-          logInfo(
-            '✅ Successfully fetched ${routes.length} routes from Firestore',
-          );
 
           // Log route statistics for debugging
           final Map<String, int> busRouteCount = {};
@@ -181,5 +172,19 @@ class BackendAsAService {
           return routes;
         }) ??
         [];
+  }
+
+  Stream<List<AppSettingsModel>> getAppSettingsStream() {
+    return _fireStore.collection(settingsCollection).snapshots().map((
+      snapshot,
+    ) {
+      return catchAndReturn(() {
+            return snapshot.docs.map((doc) {
+              final data = doc.data();
+              return AppSettingsModel.fromJson(data);
+            }).toList();
+          }) ??
+          <AppSettingsModel>[];
+    });
   }
 }

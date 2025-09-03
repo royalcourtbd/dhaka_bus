@@ -1,0 +1,1 @@
+enum DialogIconType { svg, materialIcon }

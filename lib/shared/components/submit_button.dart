@@ -11,6 +11,9 @@ class SubmitButton extends StatelessWidget {
     this.svgPicture,
     this.buttonHeight,
     required this.theme,
+    this.fontSize,
+    this.fontWeight,
+    this.customTextStyle,
   });
 
   final String title;
@@ -21,6 +24,9 @@ class SubmitButton extends StatelessWidget {
   final ThemeData theme;
   final String? fontFamily;
   final double? buttonHeight;
+  final double? fontSize;
+  final FontWeight? fontWeight;
+  final TextStyle? customTextStyle;
 
   // Const values for better performance
   static const _horizontalPadding = EdgeInsets.symmetric(horizontal: 10);

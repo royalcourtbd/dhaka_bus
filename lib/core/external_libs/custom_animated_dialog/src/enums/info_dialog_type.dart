@@ -1,0 +1,1 @@
+enum InfoDialogType { info, success, warning, error }

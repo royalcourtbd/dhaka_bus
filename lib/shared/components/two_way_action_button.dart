@@ -1,5 +1,6 @@
-import 'package:flutter/material.dart';
+import 'package:dhaka_bus/core/utility/extensions.dart';
 import 'package:dhaka_bus/shared/components/submit_button.dart';
+import 'package:flutter/material.dart';
 
 class TwoWayActionButton extends StatelessWidget {
   const TwoWayActionButton({
@@ -16,6 +17,19 @@ class TwoWayActionButton extends StatelessWidget {
     this.cancelButtonBgColor,
     this.cancelButtonTextColor,
     this.isLoading = false,
+    this.submitButtonFontSize,
+    this.submitButtonFontWeight,
+    this.submitButtonFontFamily,
+    this.submitButtonCustomTextStyle,
+    this.cancelButtonFontSize,
+    this.cancelButtonFontWeight,
+    this.cancelButtonFontFamily,
+    this.cancelButtonLetterSpacing,
+    this.cancelButtonTextDecoration,
+    this.cancelButtonCustomTextStyle,
+    this.commonFontSize,
+    this.commonFontWeight,
+    this.commonFontFamily,
   });
 
   final Widget? svgPictureForOkButton;
@@ -31,16 +45,29 @@ class TwoWayActionButton extends StatelessWidget {
   final bool isLoading;
   final ThemeData theme;
 
+  final double? submitButtonFontSize;
+  final FontWeight? submitButtonFontWeight;
+  final String? submitButtonFontFamily;
+  final TextStyle? submitButtonCustomTextStyle;
+
+  final double? cancelButtonFontSize;
+  final FontWeight? cancelButtonFontWeight;
+  final String? cancelButtonFontFamily;
+  final double? cancelButtonLetterSpacing;
+  final TextDecoration? cancelButtonTextDecoration;
+  final TextStyle? cancelButtonCustomTextStyle;
+
+  final double? commonFontSize;
+  final FontWeight? commonFontWeight;
+  final String? commonFontFamily;
+
   @override
   Widget build(BuildContext context) {
-    // Pre-compute colors to avoid repeated null checks in widget tree
     final submitBgColor = submitButtonBgColor ?? theme.colorScheme.primary;
     final submitTextColor =
         submitButtonTextColor ?? theme.colorScheme.onPrimary;
-    final cancelBgColor = cancelButtonBgColor ?? Colors.white;
-    final cancelTextColor = cancelButtonTextColor ?? Colors.black;
-
-    // Pre-compute submit button icon to reduce nesting and improve readability
+    final cancelBgColor = cancelButtonBgColor ?? context.color.primaryColor25;
+    final cancelTextColor = cancelButtonTextColor ?? context.color.titleColor;
     final submitIcon = isLoading
         ? SizedBox(
             width: 20,
@@ -62,6 +89,11 @@ class TwoWayActionButton extends StatelessWidget {
             onTap: onCancelButtonTap,
             buttonColor: cancelBgColor,
             textColor: cancelTextColor,
+
+            fontSize: cancelButtonFontSize ?? commonFontSize,
+            fontWeight: cancelButtonFontWeight ?? commonFontWeight,
+            fontFamily: cancelButtonFontFamily ?? commonFontFamily,
+            customTextStyle: cancelButtonCustomTextStyle,
           ),
         ),
         const SizedBox(width: 16),
@@ -73,6 +105,10 @@ class TwoWayActionButton extends StatelessWidget {
             onTap: isLoading ? null : onSubmitButtonTap,
             buttonColor: submitBgColor,
             textColor: submitTextColor,
+            fontSize: submitButtonFontSize ?? commonFontSize,
+            fontWeight: submitButtonFontWeight ?? commonFontWeight,
+            fontFamily: submitButtonFontFamily ?? commonFontFamily,
+            customTextStyle: submitButtonCustomTextStyle,
           ),
         ),
       ],

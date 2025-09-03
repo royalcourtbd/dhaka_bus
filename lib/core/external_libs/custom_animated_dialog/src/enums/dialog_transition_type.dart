@@ -1,0 +1,16 @@
+enum DialogTransitionType {
+  fade,
+  slideFromTop,
+  slideFromTopFade,
+  slideFromBottom,
+  slideFromBottomFade,
+  slideFromLeft,
+  slideFromLeftFade,
+  slideFromRight,
+  slideFromRightFade,
+  scale,
+  fadeScale,
+  size,
+  sizeFade,
+  none,
+}

@@ -151,7 +151,6 @@ class SplashPage extends StatelessWidget {
   }
 
   void _navigateToMainScreen(BuildContext context) {
-    logInfo('🏠 Navigating to MainPage');
     context.navigatorPushReplacement(MainPage());
   }
 }

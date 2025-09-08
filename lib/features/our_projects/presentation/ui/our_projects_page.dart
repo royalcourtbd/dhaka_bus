@@ -147,7 +147,7 @@ class OurProjectsPage extends StatelessWidget {
                       title: 'Download App',
                       theme: theme,
                       buttonColor: context.color.primaryColor100,
-                      onTap: () => print('Download App: $appDownloadUrl'),
+
                       svgPicture: SvgImage(SvgPath.icPlayStore),
                     ),
                   ),
@@ -159,7 +159,7 @@ class OurProjectsPage extends StatelessWidget {
                       title: 'Visit Website',
                       theme: theme,
                       buttonColor: context.color.primaryColor100,
-                      onTap: () => print('Visit Website: $websiteUrl'),
+
                       svgPicture: SvgImage(SvgPath.icPlayStore),
                     ),
                   ),

@@ -102,8 +102,6 @@ class BackendAsAService {
   /// This replaces individual bus operations - fetches only active buses
   Future<List<Map<String, dynamic>>> getAllActiveBuses() async {
     return await catchAndReturnFuture<List<Map<String, dynamic>>>(() async {
-          logInfo('🚌 Fetching all active buses from Firestore...');
-
           final QuerySnapshot<Map<String, dynamic>> querySnapshot =
               await _fireStore
                   .collection(busesCollection)

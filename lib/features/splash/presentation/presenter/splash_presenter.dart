@@ -81,7 +81,6 @@ class SplashPresenter extends BasePresenter<SplashUiState> {
   void _checkIfReadyToNavigate() {
     // Do not navigate if there is an error message.
     if (currentUiState.userMessage?.isNotEmpty == true) {
-      logInfo('🚫 Navigation blocked due to an error message.');
       return;
     }
 
@@ -103,7 +102,6 @@ class SplashPresenter extends BasePresenter<SplashUiState> {
 
     // Remove native splash screen before navigation
     FlutterNativeSplash.remove();
-    logInfo('🚀 Native splash screen removed');
 
     uiState.value = currentUiState.copyWith(shouldNavigateToMain: true);
   }

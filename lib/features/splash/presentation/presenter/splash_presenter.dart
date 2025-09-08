@@ -1,7 +1,6 @@
 import 'dart:async';
 import 'package:dhaka_bus/core/base/base_presenter.dart';
 import 'package:dhaka_bus/features/splash/splash_export.dart';
-import 'package:dhaka_bus/core/utility/logger_utility.dart';
 import 'package:dhaka_bus/core/services/time_service.dart';
 import 'package:flutter_native_splash/flutter_native_splash.dart';
 

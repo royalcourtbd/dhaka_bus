@@ -29,13 +29,12 @@ class SettingsPage extends StatelessWidget {
               //   iconPath: SvgPath.icLanguage,
               //   onTap: () {},
               // ),
-              _buildListTile(
-                context: context,
-                title: 'Notification',
-                iconPath: SvgPath.icNotification,
-                onTap: () {},
-              ),
-
+              // _buildListTile(
+              //   context: context,
+              //   title: 'Notification',
+              //   iconPath: SvgPath.icNotification,
+              //   onTap: () {},
+              // ),
               _buildListTile(
                 context: context,
                 title: 'Contact Support',

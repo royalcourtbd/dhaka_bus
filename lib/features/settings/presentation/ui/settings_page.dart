@@ -5,6 +5,7 @@ import 'package:dhaka_bus/core/static/svg_path.dart';
 import 'package:dhaka_bus/core/utility/extensions.dart';
 import 'package:dhaka_bus/core/widgets/presentable_widget_builder.dart';
 import 'package:dhaka_bus/features/about/presentation/ui/about_page.dart';
+import 'package:dhaka_bus/features/feedback/presentation/ui/feedback_page.dart';
 import 'package:dhaka_bus/features/settings/presentation/presenter/settings_presenter.dart';
 import 'package:dhaka_bus/shared/components/custom_app_bar_widget.dart';
 import 'package:flutter/material.dart';
@@ -35,24 +36,24 @@ class SettingsPage extends StatelessWidget {
               //   iconPath: SvgPath.icNotification,
               //   onTap: () {},
               // ),
-              _buildListTile(
-                context: context,
-                title: 'Contact Support',
-                iconPath: SvgPath.icMail,
-                onTap: () {},
-              ),
+              // _buildListTile(
+              //   context: context,
+              //   title: 'Contact Support',
+              //   iconPath: SvgPath.icMail,
+              //   onTap: () => context.navigatorPush((ContactSupportPage())),
+              // ),
               _buildListTile(
                 context: context,
                 title: 'Feedback',
                 iconPath: SvgPath.icFeedback,
-                onTap: () {},
+                onTap: () => context.navigatorPush(FeedbackPage()),
               ),
 
               _buildListTile(
                 context: context,
                 title: 'Follow Us',
                 iconPath: SvgPath.icFacebook,
-                onTap: () {},
+                onTap: () => settingsPresenter.addUserMessage('Coming Soon!'),
               ),
 
               _buildListTile(

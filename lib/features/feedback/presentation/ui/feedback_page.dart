@@ -22,237 +22,264 @@ class FeedbackPage extends StatelessWidget {
         child: Column(
           crossAxisAlignment: CrossAxisAlignment.start,
           children: [
-            _buildHeaderSection(context),
+            Container(
+              padding: EdgeInsets.all(sixteenPx),
+              decoration: BoxDecoration(
+                color: Theme.of(context).cardColor,
+                borderRadius: BorderRadius.circular(twelvePx),
+                boxShadow: [
+                  BoxShadow(
+                    color: Colors.grey.withValues(alpha: .1),
+                    spreadRadius: 1,
+                    blurRadius: 4,
+                    offset: Offset(0, 2),
+                  ),
+                ],
+              ),
+              child: Column(
+                crossAxisAlignment: CrossAxisAlignment.start,
+                children: [
+                  Row(
+                    children: [
+                      Icon(
+                        Icons.feedback,
+                        color: Theme.of(context).primaryColor,
+                        size: twentyFourPx,
+                      ),
+                      SizedBox(width: twelvePx),
+                      Expanded(
+                        child: Text(
+                          'Share Your Feedback',
+                          style: Theme.of(context).textTheme.titleLarge
+                              ?.copyWith(fontWeight: FontWeight.bold),
+                        ),
+                      ),
+                    ],
+                  ),
+                  SizedBox(height: twelvePx),
+                  Text(
+                    'We value your opinion! Your feedback helps us improve the Dhaka Bus app. Please share your thoughts, suggestions, or report any issues you have encountered.',
+                    style: Theme.of(
+                      context,
+                    ).textTheme.bodyMedium?.copyWith(color: Colors.grey[600]),
+                  ),
+                ],
+              ),
+            ),
+
             SizedBox(height: twentyFourPx),
-            _buildRatingSection(context),
+            Container(
+              padding: EdgeInsets.all(sixteenPx),
+              decoration: BoxDecoration(
+                color: Theme.of(context).cardColor,
+                borderRadius: BorderRadius.circular(twelvePx),
+                boxShadow: [
+                  BoxShadow(
+                    color: Colors.grey.withValues(alpha: .1),
+                    spreadRadius: 1,
+                    blurRadius: 4,
+                    offset: Offset(0, 2),
+                  ),
+                ],
+              ),
+              child: Column(
+                crossAxisAlignment: CrossAxisAlignment.start,
+                children: [
+                  Text(
+                    'Rate Your Experience',
+                    style: Theme.of(context).textTheme.titleMedium?.copyWith(
+                      fontWeight: FontWeight.w600,
+                    ),
+                  ),
+                  SizedBox(height: twelvePx),
+                  Text(
+                    'How would you rate your overall experience with the app?',
+                    style: Theme.of(
+                      context,
+                    ).textTheme.bodyMedium?.copyWith(color: Colors.grey[600]),
+                  ),
+                  SizedBox(height: sixteenPx),
+                  Obx(() {
+                    final currentRating = _presenter.currentUiState.rating;
+
+                    return Row(
+                      mainAxisAlignment: MainAxisAlignment.center,
+                      children: List.generate(5, (index) {
+                        final starValue = index + 1;
+                        return GestureDetector(
+                          onTap: () => _presenter.onRatingChanged(starValue),
+                          child: Padding(
+                            padding: EdgeInsets.symmetric(horizontal: fourPx),
+                            child: Icon(
+                              starValue <= currentRating
+                                  ? Icons.star
+                                  : Icons.star_border,
+                              color: starValue <= currentRating
+                                  ? Colors.amber
+                                  : Colors.grey[400],
+                              size: thirtyTwoPx,
+                            ),
+                          ),
+                        );
+                      }),
+                    );
+                  }),
+                ],
+              ),
+            ),
             SizedBox(height: twentyFourPx),
-            _buildFeedbackForm(context),
+            Container(
+              padding: EdgeInsets.all(sixteenPx),
+              decoration: BoxDecoration(
+                color: Theme.of(context).cardColor,
+                borderRadius: BorderRadius.circular(twelvePx),
+                boxShadow: [
+                  BoxShadow(
+                    color: Colors.grey.withValues(alpha: .1),
+                    spreadRadius: 1,
+                    blurRadius: 4,
+                    offset: Offset(0, 2),
+                  ),
+                ],
+              ),
+              child: Column(
+                crossAxisAlignment: CrossAxisAlignment.start,
+                children: [
+                  Text(
+                    'Feedback Details',
+                    style: Theme.of(context).textTheme.titleMedium?.copyWith(
+                      fontWeight: FontWeight.w600,
+                    ),
+                  ),
+                  SizedBox(height: sixteenPx),
+
+                  // Name Field with Label
+                  Text(
+                    'Name *',
+                    style: Theme.of(context).textTheme.bodyMedium?.copyWith(
+                      fontWeight: FontWeight.w500,
+                    ),
+                  ),
+                  SizedBox(height: eightPx),
+                  UserInputField(
+                    textEditingController: _presenter.nameController,
+                    hintText: 'Your Name',
+                    prefixIconPath: SvgPath.icMail,
+                    keyboardType: TextInputType.name,
+                  ),
+                  SizedBox(height: sixteenPx),
+
+                  // Email Field with Label
+                  Text(
+                    'Email Address *',
+                    style: Theme.of(context).textTheme.bodyMedium?.copyWith(
+                      fontWeight: FontWeight.w500,
+                    ),
+                  ),
+                  SizedBox(height: eightPx),
+                  UserInputField(
+                    textEditingController: _presenter.emailController,
+                    hintText: 'your.email@example.com',
+                    prefixIconPath: SvgPath.icMail,
+                    keyboardType: TextInputType.emailAddress,
+                  ),
+                  SizedBox(height: sixteenPx),
+
+                  // Feedback Type Dropdown
+                  _buildTypeDropdown(context),
+                  SizedBox(height: sixteenPx),
+
+                  // Subject Field with Label
+                  Text(
+                    'Subject *',
+                    style: Theme.of(context).textTheme.bodyMedium?.copyWith(
+                      fontWeight: FontWeight.w500,
+                    ),
+                  ),
+                  SizedBox(height: eightPx),
+                  UserInputField(
+                    textEditingController: _presenter.subjectController,
+                    hintText: 'Brief summary of your feedback',
+                    prefixIconPath: SvgPath.icMail,
+                  ),
+                  SizedBox(height: sixteenPx),
+
+                  // Message Field with Label
+                  Text(
+                    'Your Feedback *',
+                    style: Theme.of(context).textTheme.bodyMedium?.copyWith(
+                      fontWeight: FontWeight.w500,
+                    ),
+                  ),
+                  SizedBox(height: eightPx),
+                  Container(
+                    decoration: BoxDecoration(
+                      border: Border.all(color: Colors.grey[300]!),
+                      borderRadius: BorderRadius.circular(twentyFivePx),
+                    ),
+                    child: TextFormField(
+                      controller: _presenter.messageController,
+                      decoration: InputDecoration(
+                        hintText:
+                            'Please share your detailed feedback, suggestions, or report any issues...',
+                        border: InputBorder.none,
+                        contentPadding: EdgeInsets.all(sixteenPx),
+                      ),
+                      maxLines: 6,
+                      minLines: 4,
+                      textInputAction: TextInputAction.done,
+                    ),
+                  ),
+                  SizedBox(height: twentyFourPx),
+
+                  // Submit Button
+                  Obx(() {
+                    final currentState = _presenter.currentUiState;
+                    final isButtonEnabled =
+                        currentState.isFormValid && !currentState.isSubmitting;
+
+                    return SizedBox(
+                      width: double.infinity,
+                      child: ElevatedButton(
+                        onPressed: isButtonEnabled
+                            ? _presenter.sendFeedback
+                            : null,
+                        style: ElevatedButton.styleFrom(
+                          backgroundColor: Theme.of(context).primaryColor,
+                          foregroundColor: Colors.white,
+                          padding: EdgeInsets.symmetric(vertical: sixteenPx),
+                          shape: RoundedRectangleBorder(
+                            borderRadius: BorderRadius.circular(eightPx),
+                          ),
+                          disabledBackgroundColor: Colors.grey[300],
+                          disabledForegroundColor: Colors.grey[600],
+                        ),
+                        child: currentState.isSubmitting
+                            ? SizedBox(
+                                height: twentyPx,
+                                width: twentyPx,
+                                child: CircularProgressIndicator(
+                                  strokeWidth: 2,
+                                  valueColor: AlwaysStoppedAnimation<Color>(
+                                    Colors.white,
+                                  ),
+                                ),
+                              )
+                            : Text(
+                                'Send Feedback',
+                                style: TextStyle(
+                                  fontSize: sixteenPx,
+                                  fontWeight: FontWeight.w600,
+                                ),
+                              ),
+                      ),
+                    );
+                  }),
+                ],
+              ),
+            ),
           ],
         ),
-      ),
-    );
-  }
-
-  Widget _buildHeaderSection(BuildContext context) {
-    return Container(
-      padding: EdgeInsets.all(sixteenPx),
-      decoration: BoxDecoration(
-        color: Theme.of(context).cardColor,
-        borderRadius: BorderRadius.circular(twelvePx),
-        boxShadow: [
-          BoxShadow(
-            color: Colors.grey.withValues(alpha: .1),
-            spreadRadius: 1,
-            blurRadius: 4,
-            offset: Offset(0, 2),
-          ),
-        ],
-      ),
-      child: Column(
-        crossAxisAlignment: CrossAxisAlignment.start,
-        children: [
-          Row(
-            children: [
-              Icon(
-                Icons.feedback,
-                color: Theme.of(context).primaryColor,
-                size: twentyFourPx,
-              ),
-              SizedBox(width: twelvePx),
-              Expanded(
-                child: Text(
-                  'Share Your Feedback',
-                  style: Theme.of(
-                    context,
-                  ).textTheme.titleLarge?.copyWith(fontWeight: FontWeight.bold),
-                ),
-              ),
-            ],
-          ),
-          SizedBox(height: twelvePx),
-          Text(
-            'We value your opinion! Your feedback helps us improve the Dhaka Bus app. Please share your thoughts, suggestions, or report any issues you have encountered.',
-            style: Theme.of(
-              context,
-            ).textTheme.bodyMedium?.copyWith(color: Colors.grey[600]),
-          ),
-        ],
-      ),
-    );
-  }
-
-  Widget _buildRatingSection(BuildContext context) {
-    return Container(
-      padding: EdgeInsets.all(sixteenPx),
-      decoration: BoxDecoration(
-        color: Theme.of(context).cardColor,
-        borderRadius: BorderRadius.circular(twelvePx),
-        boxShadow: [
-          BoxShadow(
-            color: Colors.grey.withValues(alpha: .1),
-            spreadRadius: 1,
-            blurRadius: 4,
-            offset: Offset(0, 2),
-          ),
-        ],
-      ),
-      child: Column(
-        crossAxisAlignment: CrossAxisAlignment.start,
-        children: [
-          Text(
-            'Rate Your Experience',
-            style: Theme.of(
-              context,
-            ).textTheme.titleMedium?.copyWith(fontWeight: FontWeight.w600),
-          ),
-          SizedBox(height: twelvePx),
-          Text(
-            'How would you rate your overall experience with the app?',
-            style: Theme.of(
-              context,
-            ).textTheme.bodyMedium?.copyWith(color: Colors.grey[600]),
-          ),
-          SizedBox(height: sixteenPx),
-          _buildRatingStars(context),
-        ],
-      ),
-    );
-  }
-
-  Widget _buildRatingStars(BuildContext context) {
-    return Obx(() {
-      final currentRating = _presenter.currentUiState.rating;
-
-      return Row(
-        mainAxisAlignment: MainAxisAlignment.center,
-        children: List.generate(5, (index) {
-          final starValue = index + 1;
-          return GestureDetector(
-            onTap: () => _presenter.onRatingChanged(starValue),
-            child: Padding(
-              padding: EdgeInsets.symmetric(horizontal: fourPx),
-              child: Icon(
-                starValue <= currentRating ? Icons.star : Icons.star_border,
-                color: starValue <= currentRating
-                    ? Colors.amber
-                    : Colors.grey[400],
-                size: thirtyTwoPx,
-              ),
-            ),
-          );
-        }),
-      );
-    });
-  }
-
-  Widget _buildFeedbackForm(BuildContext context) {
-    return Container(
-      padding: EdgeInsets.all(sixteenPx),
-      decoration: BoxDecoration(
-        color: Theme.of(context).cardColor,
-        borderRadius: BorderRadius.circular(twelvePx),
-        boxShadow: [
-          BoxShadow(
-            color: Colors.grey.withValues(alpha: .1),
-            spreadRadius: 1,
-            blurRadius: 4,
-            offset: Offset(0, 2),
-          ),
-        ],
-      ),
-      child: Column(
-        crossAxisAlignment: CrossAxisAlignment.start,
-        children: [
-          Text(
-            'Feedback Details',
-            style: Theme.of(
-              context,
-            ).textTheme.titleMedium?.copyWith(fontWeight: FontWeight.w600),
-          ),
-          SizedBox(height: sixteenPx),
-
-          // Name Field with Label
-          Text(
-            'Name *',
-            style: Theme.of(
-              context,
-            ).textTheme.bodyMedium?.copyWith(fontWeight: FontWeight.w500),
-          ),
-          SizedBox(height: eightPx),
-          UserInputField(
-            textEditingController: _presenter.nameController,
-            hintText: 'Your Name',
-            prefixIconPath: SvgPath.icMail,
-            keyboardType: TextInputType.name,
-          ),
-          SizedBox(height: sixteenPx),
-
-          // Email Field with Label
-          Text(
-            'Email Address *',
-            style: Theme.of(
-              context,
-            ).textTheme.bodyMedium?.copyWith(fontWeight: FontWeight.w500),
-          ),
-          SizedBox(height: eightPx),
-          UserInputField(
-            textEditingController: _presenter.emailController,
-            hintText: 'your.email@example.com',
-            prefixIconPath: SvgPath.icMail,
-            keyboardType: TextInputType.emailAddress,
-          ),
-          SizedBox(height: sixteenPx),
-
-          // Feedback Type Dropdown
-          _buildTypeDropdown(context),
-          SizedBox(height: sixteenPx),
-
-          // Subject Field with Label
-          Text(
-            'Subject *',
-            style: Theme.of(
-              context,
-            ).textTheme.bodyMedium?.copyWith(fontWeight: FontWeight.w500),
-          ),
-          SizedBox(height: eightPx),
-          UserInputField(
-            textEditingController: _presenter.subjectController,
-            hintText: 'Brief summary of your feedback',
-            prefixIconPath: SvgPath.icMail,
-          ),
-          SizedBox(height: sixteenPx),
-
-          // Message Field with Label
-          Text(
-            'Your Feedback *',
-            style: Theme.of(
-              context,
-            ).textTheme.bodyMedium?.copyWith(fontWeight: FontWeight.w500),
-          ),
-          SizedBox(height: eightPx),
-          Container(
-            decoration: BoxDecoration(
-              border: Border.all(color: Colors.grey[300]!),
-              borderRadius: BorderRadius.circular(twentyFivePx),
-            ),
-            child: TextFormField(
-              controller: _presenter.messageController,
-              decoration: InputDecoration(
-                hintText:
-                    'Please share your detailed feedback, suggestions, or report any issues...',
-                border: InputBorder.none,
-                contentPadding: EdgeInsets.all(sixteenPx),
-              ),
-              maxLines: 6,
-              minLines: 4,
-              textInputAction: TextInputAction.done,
-            ),
-          ),
-          SizedBox(height: twentyFourPx),
-
-          // Submit Button
-          _buildSubmitButton(context),
-        ],
       ),
     );
   }
@@ -299,46 +326,5 @@ class FeedbackPage extends StatelessWidget {
         ),
       ],
     );
-  }
-
-  Widget _buildSubmitButton(BuildContext context) {
-    return Obx(() {
-      final currentState = _presenter.currentUiState;
-      final isButtonEnabled =
-          currentState.isFormValid && !currentState.isSubmitting;
-
-      return SizedBox(
-        width: double.infinity,
-        child: ElevatedButton(
-          onPressed: isButtonEnabled ? _presenter.sendFeedback : null,
-          style: ElevatedButton.styleFrom(
-            backgroundColor: Theme.of(context).primaryColor,
-            foregroundColor: Colors.white,
-            padding: EdgeInsets.symmetric(vertical: sixteenPx),
-            shape: RoundedRectangleBorder(
-              borderRadius: BorderRadius.circular(eightPx),
-            ),
-            disabledBackgroundColor: Colors.grey[300],
-            disabledForegroundColor: Colors.grey[600],
-          ),
-          child: currentState.isSubmitting
-              ? SizedBox(
-                  height: twentyPx,
-                  width: twentyPx,
-                  child: CircularProgressIndicator(
-                    strokeWidth: 2,
-                    valueColor: AlwaysStoppedAnimation<Color>(Colors.white),
-                  ),
-                )
-              : Text(
-                  'Send Feedback',
-                  style: TextStyle(
-                    fontSize: sixteenPx,
-                    fontWeight: FontWeight.w600,
-                  ),
-                ),
-        ),
-      );
-    });
   }
 }

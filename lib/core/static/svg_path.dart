@@ -24,6 +24,8 @@ class SvgPath {
   static const String icPrivacy = 'assets/svg/ic_privacy.svg';
   static const String icLanguage = 'assets/svg/ic_language.svg';
   static const String icAbout = 'assets/svg/ic_about.svg';
+  static const String icDownloadCircle = 'assets/svg/ic_download_circle.svg';
+  static const String icLink = 'assets/svg/ic_link.svg';
   static const String animBusLoading =
       'assets/animation/security_car_black.json';
   static const String imgLogo = 'assets/png/splash.png';

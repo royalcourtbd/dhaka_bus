@@ -6,6 +6,7 @@ import 'package:dhaka_bus/core/utility/extensions.dart';
 import 'package:dhaka_bus/core/widgets/presentable_widget_builder.dart';
 import 'package:dhaka_bus/features/about/presentation/ui/about_page.dart';
 import 'package:dhaka_bus/features/feedback/presentation/ui/feedback_page.dart';
+import 'package:dhaka_bus/features/our_project/presentation/ui/our_project_page.dart';
 import 'package:dhaka_bus/features/settings/presentation/presenter/settings_presenter.dart';
 import 'package:dhaka_bus/shared/components/custom_app_bar_widget.dart';
 import 'package:flutter/material.dart';
@@ -87,7 +88,8 @@ class SettingsPage extends StatelessWidget {
                 context: context,
                 title: 'Other Apps',
                 iconPath: SvgPath.icPlayStore,
-                onTap: () => settingsPresenter.onPlayStoreLinkClicked(context),
+                // onTap: () => settingsPresenter.onPlayStoreLinkClicked(context),
+                onTap: () => context.navigatorPush(OurProjectPage()),
               ),
 
               Text(

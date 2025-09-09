@@ -7,7 +7,7 @@ import 'package:dhaka_bus/core/static/constants.dart';
 import 'package:dhaka_bus/core/utility/extensions.dart';
 import 'package:dhaka_bus/core/utility/navigation_helpers.dart';
 import 'package:dhaka_bus/core/utility/utility.dart';
-import 'package:dhaka_bus/features/our_projects/presentation/ui/our_projects_page.dart';
+import 'package:dhaka_bus/features/our_project/presentation/ui/our_project_page.dart';
 import 'package:dhaka_bus/features/settings/domain/usecase/get_app_version_usecase.dart';
 import 'package:dhaka_bus/features/settings/presentation/presenter/settings_ui_state.dart';
 
@@ -58,7 +58,7 @@ class SettingsPresenter extends BasePresenter<SettingsUiState> {
   Future<void> onPlayStoreLinkClicked(BuildContext context) =>
       _onPromotionInteraction(
         onInternet: (url) => openUrl(url: url),
-        onNoInternet: () => context.navigatorPush(OurProjectsPage()),
+        onNoInternet: () => context.navigatorPush(OurProjectPage()),
       );
 
   Future<void> _onPromotionInteraction({

@@ -26,6 +26,7 @@ import 'package:dhaka_bus/features/settings/di/settings_di.dart';
 import 'package:dhaka_bus/features/bus_list/di/bus_list_di.dart';
 import 'package:dhaka_bus/features/splash/di/splash_di.dart';
 import 'package:dhaka_bus/features/feedback/di/feedback_di.dart';
+import 'package:dhaka_bus/features/our_project/di/our_project_di.dart';
 
 final GetIt _serviceLocator = GetIt.instance;
 
@@ -72,6 +73,7 @@ class ServiceLocator {
     await AppManagementDi.setup(_serviceLocator);
 
     //Feature DI setup
+    await OurProjectDi.setup(_serviceLocator);
     await FeedbackDi.setup(_serviceLocator);
 
     await AboutDi.setup(_serviceLocator);

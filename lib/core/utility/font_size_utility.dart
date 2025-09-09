@@ -77,33 +77,12 @@ class FontSizeUtility {
     TextStyleType.surahName: 32,
     TextStyleType.arabicAyah: 26,
   };
-  static final Map<TextStyleType, double> _arabicFontSizes = {
-    TextStyleType.displayLarge: 62,
-    TextStyleType.displayMedium: 50,
-    TextStyleType.displaySmall: 38,
-    TextStyleType.headlineLarge: 28,
-    TextStyleType.headlineMedium: 22,
-    TextStyleType.headlineSmall: 20,
-    TextStyleType.bodyLarge: 20,
-    TextStyleType.bodyMedium: 18,
-    TextStyleType.bodySmall: 16,
-    TextStyleType.titleLarge: 50,
-    TextStyleType.titleMedium: 18,
-    TextStyleType.titleSmall: 16,
-    TextStyleType.labelLarge: 20,
-    TextStyleType.labelMedium: 18,
-    TextStyleType.labelSmall: 16,
-    TextStyleType.labelExtraSmall: 14,
-    TextStyleType.buttonText: 16,
-    TextStyleType.surahName: 32,
-    TextStyleType.arabicAyah: 26,
-  };
 
   // Language-specific font size maps
   static final Map<String, Map<TextStyleType, double>> _languageFontSizes = {
     'default': _defaultFontSizes,
     banglaLocaleName: _banglaFontSizes,
-    arabicLocaleName: _arabicFontSizes,
+
     // Add more languages as needed
   };
 
@@ -113,8 +92,6 @@ class FontSizeUtility {
 
     final String language = currentLanguage == LanguageType.bangla.code
         ? banglaLocaleName
-        : currentLanguage == LanguageType.arabic.code
-        ? arabicLocaleName
         : 'default';
 
     // Check if we have specific sizes for this language

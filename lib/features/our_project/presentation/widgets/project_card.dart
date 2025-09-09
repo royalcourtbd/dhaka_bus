@@ -1,6 +1,6 @@
-import 'package:dhaka_bus/core/config/app_color.dart';
 import 'package:dhaka_bus/core/config/app_screen.dart';
 import 'package:dhaka_bus/core/static/ui_const.dart';
+import 'package:dhaka_bus/core/utility/extensions.dart';
 import 'package:dhaka_bus/features/our_project/presentation/widgets/project_card_buttons.dart';
 import 'package:flutter/material.dart';
 
@@ -40,12 +40,12 @@ class ProjectCard extends StatelessWidget {
                 Container(
                   padding: padding12,
                   decoration: BoxDecoration(
-                    color: AppColor.primaryColor50,
+                    color: context.color.primaryColor50,
                     borderRadius: radius10,
                   ),
                   child: Icon(
                     icon,
-                    color: AppColor.primaryColor500,
+                    color: context.color.primaryColor,
                     size: thirtyPx,
                   ),
                 ),
@@ -59,7 +59,7 @@ class ProjectCard extends StatelessWidget {
                         style: theme.textTheme.titleLarge?.copyWith(
                           fontSize: eighteenPx,
                           fontWeight: FontWeight.w600,
-                          color: AppColor.titleColor,
+                          color: context.color.titleColor,
                         ),
                       ),
                       gapH4,
@@ -67,7 +67,7 @@ class ProjectCard extends StatelessWidget {
                         companyName,
                         style: theme.textTheme.bodyMedium?.copyWith(
                           fontSize: fourteenPx,
-                          color: AppColor.subTitleColor,
+                          color: context.color.subTitleColor,
                           fontWeight: FontWeight.w400,
                         ),
                       ),
@@ -81,15 +81,17 @@ class ProjectCard extends StatelessWidget {
               description,
               style: theme.textTheme.bodyMedium?.copyWith(
                 fontSize: fifteenPx,
-                color: AppColor.bodyColor,
+                color: context.color.bodyColor,
                 height: 1.5,
               ),
             ),
             if (appDownloadUrl != null || websiteUrl != null) ...[
               gapH20,
-              ProjectCardButtons(
-                appDownloadUrl: appDownloadUrl,
-                websiteUrl: websiteUrl,
+              RepaintBoundary(
+                child: ProjectCardButtons(
+                  appDownloadUrl: appDownloadUrl,
+                  websiteUrl: websiteUrl,
+                ),
               ),
             ],
           ],

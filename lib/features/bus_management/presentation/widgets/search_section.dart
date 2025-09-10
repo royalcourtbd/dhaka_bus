@@ -117,11 +117,23 @@ class SearchSection extends StatelessWidget {
             FocusNode fieldFocusNode,
             VoidCallback onFieldSubmitted,
           ) {
-            // Sync presenter's controller with field's controller
-            fieldController.text = controller.text;
-            fieldController.addListener(() {
-              controller.text = fieldController.text;
-            });
+            // Initialize field controller with presenter's controller value
+            if (fieldController.text != controller.text) {
+              fieldController.text = controller.text;
+            }
+
+            // Create a safe listener that synchronizes controllers
+            void onTextChanged() {
+              // Only update if the text values are different
+              if (controller.text != fieldController.text) {
+                controller.text = fieldController.text;
+              }
+            }
+
+            // Remove any existing listeners to prevent duplicates
+            fieldController.removeListener(onTextChanged);
+            // Add the new listener
+            fieldController.addListener(onTextChanged);
 
             return UserInputField(
               textEditingController: fieldController,

@@ -42,6 +42,7 @@ class BackendAsAService {
   static const String appVersion = 'app_version';
   static const String noticeDoc = 'notice-bn';
   static const String appUpdateDoc = 'app-update';
+  static const String appUpdateDocument = 'app_update';
   static const String deviceTokensCollection = 'device_tokens';
   static const String isActive = 'is_active';
 
@@ -173,16 +174,19 @@ class BackendAsAService {
   }
 
   Stream<List<AppSettingsModel>> getAppSettingsStream() {
-    return _fireStore.collection(settingsCollection).snapshots().map((
-      snapshot,
-    ) {
-      return catchAndReturn(() {
-            return snapshot.docs.map((doc) {
-              final data = doc.data();
-              return AppSettingsModel.fromJson(data);
-            }).toList();
-          }) ??
-          <AppSettingsModel>[];
-    });
+    return _fireStore
+        .collection(settingsCollection)
+        .doc(appUpdateDocument)
+        .snapshots()
+        .map((snapshot) {
+          return catchAndReturn(() {
+                if (snapshot.exists && snapshot.data() != null) {
+                  final data = snapshot.data()!;
+                  return [AppSettingsModel.fromJson(data)];
+                }
+                return <AppSettingsModel>[];
+              }) ??
+              <AppSettingsModel>[];
+        });
   }
 }

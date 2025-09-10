@@ -1,5 +1,5 @@
 import 'package:dhaka_bus/core/base/base_export.dart';
-import 'package:dhaka_bus/features/settings/data/datasource/app_settings_remote_data_source.dart';
+import 'package:dhaka_bus/features/settings/domain/datasource/app_settings_remote_data_source.dart';
 import 'package:dhaka_bus/features/settings/domain/entities/app_settings_entity.dart';
 import 'package:dhaka_bus/features/settings/domain/repositories/app_settings_repository.dart';
 

@@ -8,7 +8,6 @@ class ErrorMessageHandlerImpl implements ErrorMessageHandler {
     if (error is FormatException) {
       return 'Data format is not correct';
     }
-
     return error.toString();
   }
 }
